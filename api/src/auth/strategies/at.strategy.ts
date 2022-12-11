@@ -13,7 +13,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt-access-token') {
   }
 
   validate<T>(payload: T) {
-    console.log({ payload });
     return payload;
   }
 }

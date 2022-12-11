@@ -4,6 +4,7 @@ CREATE TABLE "users" (
     "pId" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "username" TEXT,
     "provider" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
     "picture" TEXT NOT NULL,
@@ -21,3 +22,6 @@ CREATE UNIQUE INDEX "users_pId_key" ON "users"("pId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");

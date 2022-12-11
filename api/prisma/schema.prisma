@@ -14,6 +14,7 @@ model users {
   pId             String    @unique @default(uuid()) @db.Uuid
   name            String
   email           String    @unique
+  username        String?    @unique
   provider        String
   providerId      String
   picture         String

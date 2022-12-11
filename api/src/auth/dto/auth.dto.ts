@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsIn, IsJWT } from 'class-validator';
+import { IsNotEmpty, IsIn, IsJWT } from 'class-validator';
 
 export class AuthZeroDto {
   @IsNotEmpty()
@@ -9,3 +9,4 @@ export class AuthZeroDto {
   @IsIn(['google'])
   platform: string;
 }
+

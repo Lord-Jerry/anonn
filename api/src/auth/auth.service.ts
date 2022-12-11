@@ -11,6 +11,7 @@ import { DatabaseService } from "src/providers/database/database.service";
 import { ConfigMangerService } from "src/common/config/";
 import { AuthZeroDto } from "./dto";
 
+
 @Injectable()
 export class AuthService {
 	private client: OAuth2Client;
@@ -95,20 +96,5 @@ export class AuthService {
 			...checkUserExists,
 			token,
 		};
-	}
-
-
-	async findUserOrFail(userId: string) {
-		const user = await this.db.users.findFirst({
-			where: {
-				pId: userId,
-			},
-		});
-
-		if (!user) {
-			throw new NotFoundException("user not found");
-		}
-
-		return user;
 	}
 }
