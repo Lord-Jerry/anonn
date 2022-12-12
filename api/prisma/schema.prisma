@@ -22,6 +22,8 @@ model users {
   updatedAt       DateTime  @default(now())
 
   conversations   users_conversations[]
+  polls           polls[]
+  votes           votes[]
 }
 
 model conversations {
@@ -72,4 +74,42 @@ model messages {
   updatedAt       DateTime  @default(now())
 
   conversations   conversations @relation(fields: [conversationId], references: [id])
+}
+
+model polls {
+  id             Int       @id @unique @default(autoincrement())
+  pId             String    @unique @default(uuid()) @db.Uuid
+  question        String
+  creatorId       Int
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  poll_options    poll_options[]
+  votes           votes[]
+  users           users @relation(fields: [creatorId], references: [id])
+}
+model poll_options {
+  id             Int       @id @unique @default(autoincrement())
+  pId            String    @unique @default(uuid()) @db.Uuid
+  pollId         Int
+  option         String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+
+  polls           polls @relation(fields: [pollId], references: [id])
+  votes           votes[]
+}
+
+model votes {
+  id             Int       @id @unique @default(autoincrement())
+  pId            String    @unique @default(uuid()) @db.Uuid
+  pollId         Int
+  optionId       Int
+  userId         Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+
+  polls           polls @relation(fields: [pollId], references: [id])
+  poll_options    poll_options @relation(fields: [optionId], references: [id])
+  users           users @relation(fields: [userId], references: [id])
 }
