@@ -17,7 +17,57 @@ model users {
   username        String?    @unique
   provider        String
   providerId      String
-  picture         String
+  picture         String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @default(now())
+
+  conversations   users_conversations[]
+}
+
+model conversations {
+  id              Int       @id @unique @default(autoincrement())
+  pId             String    @unique @default(uuid()) @db.Uuid
+  creatorId       Int   
+  isOpen          Boolean   @default(true)
+  isGroup         Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  users           users_conversations[]
+  messages        messages[]
+}
+
+model users_conversations {
+  id              Int       @id @unique @default(autoincrement())
+  pId             String    @unique @default(uuid()) @db.Uuid
+  conversationId  Int
+  userId          Int
+  // for anonymity, users initiating the converations should have randomly generated usernames
+  username        String   @default("Anonymous")    
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  conversations   conversations @relation(fields: [conversationId], references: [id])
+  users           users         @relation(fields: [userId], references: [id])
+}
+
+model messages {
+  id              Int       @id @unique @default(autoincrement())
+  pId             String    @unique @default(uuid()) @db.Uuid
+  conversationId  Int
+  senderId        Int
+  content         String
+  // considered creating a view to merge the users_conversations username 
+  // with each message, but decided against it for now
+  // why ?
+  // 1. prisma doesn't aupport creating views yet.
+  // 2. it would be a lot of work to maintain the view ATM
+  // 3. might be an over kill for the project
+  // if the need ever comes up, I'll create a view and drop this column
+  // for now, sushhhhhh 🤫🤫🤫
+  username        String  @default("Anonymous")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now())
+
+  conversations   conversations @relation(fields: [conversationId], references: [id])
 }

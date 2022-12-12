@@ -53,4 +53,18 @@ export class UserService {
 			},
 		});
 	}
+
+	async findUserByUsername(username: string) {
+		const user = await this.db.users.findFirst({
+			where: {
+				username,
+			},
+		});
+
+		if (!user) {
+			throw new NotFoundException(`username ${username} not found`);
+		}
+
+		return user;
+	}
 }

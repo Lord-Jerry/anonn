@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthZeroDto } from "./dto";
-import { UserEntity } from "./entities";
+import { UserEntity } from "../user/entities";
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)

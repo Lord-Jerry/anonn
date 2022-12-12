@@ -1,7 +1,9 @@
 import {
+	Get,
 	Post,
 	Body,
 	Put,
+	Param,
 	Controller,
 	HttpCode,
 	HttpStatus,
@@ -11,10 +13,12 @@ import {
   ClassSerializerInterceptor,
 } from "@nestjs/common";
 
+import { UserNameDto } from "./dto";
+import { UserEntity } from "./entities";
 import { AtGuard } from "../auth/guards";
 import { UserService } from "./user.service";
 
-import { UserNameDto } from "./dto";
+
 import { IRequestUser } from "src/common/types";
 
 @Controller('user')
@@ -34,5 +38,12 @@ export class UserController {
 	@HttpCode(HttpStatus.OK)
 	async setUsername(@Request() req: IRequestUser, @Body() dto: UserNameDto) {
 		await this.userService.setUsername(req.user.userId, dto.username);
+	}
+
+	@Get(':username')
+	@HttpCode(HttpStatus.OK)
+	async findUserByUsername(@Param() dto: UserNameDto) {
+		const user = await this.userService.findUserByUsername(dto.username);
+		return new UserEntity(user);
 	}
 }

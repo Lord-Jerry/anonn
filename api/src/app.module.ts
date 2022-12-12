@@ -4,6 +4,7 @@ import { PrismaModule } from './providers/database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigMangerModule, ConfigMangerService } from './common/config';
 import { UserModule } from './user/user.module';
+import { ConversationModule } from './conversation/conversation.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './user/user.module';
     }),
     JwtModule.register({}),
     UserModule,
+    ConversationModule,
   ],
   providers: [ConfigMangerService],
 })
