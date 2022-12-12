@@ -13,11 +13,11 @@ datasource db {
 model users {
   id         Int      @id @unique @default(autoincrement())
   pId        String   @unique @default(uuid()) @db.Uuid
-  name       String
-  email      String   @unique
-  username   String?  @unique
-  provider   String
-  providerId String
+  name       String   @db.VarChar(255)
+  email      String   @unique  @db.VarChar(255)
+  username   String?  @unique  @db.VarChar(100)
+  provider   String   @db.VarChar(20)
+  providerId String   @db.VarChar(20)
   picture    String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
@@ -33,8 +33,8 @@ model conversations {
   id          Int      @id @unique @default(autoincrement())
   pId         String   @unique @default(uuid()) @db.Uuid
   creatorId   Int
-  name        String?
-  description String?
+  name        String?  @db.VarChar(50)
+  description String?  
   isOpen      Boolean  @default(true)
   isGroup     Boolean  @default(false)
   createdAt   DateTime @default(now())
@@ -50,7 +50,7 @@ model users_conversations {
   conversationId Int
   userId         Int
   // for anonymity, users initiating the converations should have randomly generated usernames
-  username       String   @default("Anonymous")
+  username       String   @default("Anonymous") @db.VarChar(100)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
@@ -72,7 +72,7 @@ model messages {
   // 3. might be an over kill for the project
   // if the need ever comes up, I'll create a view and drop this column
   // for now, sushhhhhh 🤫🤫🤫
-  username       String   @default("Anonymous")
+  username       String   @default("Anonymous") @db.VarChar(100)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
@@ -122,7 +122,7 @@ model journals {
   id        Int      @id @unique @default(autoincrement())
   pId       String   @unique @default(uuid()) @db.Uuid
   userId    Int
-  title     String
+  title     String   @db.VarChar(255)
   content   String
   username  String
   createdAt DateTime @default(now())
