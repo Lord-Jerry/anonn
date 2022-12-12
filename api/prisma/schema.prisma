@@ -24,6 +24,8 @@ model users {
   conversations   users_conversations[]
   polls           polls[]
   votes           votes[]
+  secrets         secrets[]
+  secrets_reactions   secrets_reactions[]
 }
 
 model conversations {
@@ -112,4 +114,32 @@ model votes {
   polls           polls @relation(fields: [pollId], references: [id])
   poll_options    poll_options @relation(fields: [optionId], references: [id])
   users           users @relation(fields: [userId], references: [id])
+}
+
+model secrets {
+  id             Int       @id @unique @default(autoincrement())
+  pId            String    @unique @default(uuid()) @db.Uuid
+  userId         Int
+  content        String
+  username       String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+
+  secrets_reactions   secrets_reactions[]
+  users           users @relation(fields: [userId], references: [id])
+}
+
+model secrets_reactions {
+  id             Int       @id @unique @default(autoincrement())
+  pId            String    @unique @default(uuid()) @db.Uuid
+  secretId       Int
+  userId         Int
+  love           Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now())
+
+  secrets         secrets @relation(fields: [secretId], references: [id])
+  users           users @relation(fields: [userId], references: [id])
+
+  @@unique([secretId, userId])
 }
