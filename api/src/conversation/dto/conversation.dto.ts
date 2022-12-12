@@ -17,3 +17,13 @@ export class ConversationIdParamDto {
   @IsUUID()
   conversationId: string;
 }
+
+export class GroupConversationDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+}

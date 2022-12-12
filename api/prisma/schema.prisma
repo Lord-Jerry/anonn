@@ -28,6 +28,8 @@ model conversations {
   id              Int       @id @unique @default(autoincrement())
   pId             String    @unique @default(uuid()) @db.Uuid
   creatorId       Int   
+  name            String?
+  description     String?
   isOpen          Boolean   @default(true)
   isGroup         Boolean   @default(false)
   createdAt       DateTime  @default(now())
