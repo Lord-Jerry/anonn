@@ -9,60 +9,61 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-model users {
-  id              Int       @id @unique @default(autoincrement())
-  pId             String    @unique @default(uuid()) @db.Uuid
-  name            String
-  email           String    @unique
-  username        String?    @unique
-  provider        String
-  providerId      String
-  picture         String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
 
-  conversations   users_conversations[]
-  polls           polls[]
-  votes           votes[]
-  secrets         secrets[]
-  secrets_reactions   secrets_reactions[]
+model users {
+  id         Int      @id @unique @default(autoincrement())
+  pId        String   @unique @default(uuid()) @db.Uuid
+  name       String
+  email      String   @unique
+  username   String?  @unique
+  provider   String
+  providerId String
+  picture    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+
+  conversations     users_conversations[]
+  polls             polls[]
+  votes             votes[]
+  journals          journals[]
+  journal_reactions journal_reactions[]
 }
 
 model conversations {
-  id              Int       @id @unique @default(autoincrement())
-  pId             String    @unique @default(uuid()) @db.Uuid
-  creatorId       Int   
-  name            String?
-  description     String?
-  isOpen          Boolean   @default(true)
-  isGroup         Boolean   @default(false)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
+  id          Int      @id @unique @default(autoincrement())
+  pId         String   @unique @default(uuid()) @db.Uuid
+  creatorId   Int
+  name        String?
+  description String?
+  isOpen      Boolean  @default(true)
+  isGroup     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
 
-  users           users_conversations[]
-  messages        messages[]
+  users    users_conversations[]
+  messages messages[]
 }
 
 model users_conversations {
-  id              Int       @id @unique @default(autoincrement())
-  pId             String    @unique @default(uuid()) @db.Uuid
-  conversationId  Int
-  userId          Int
+  id             Int      @id @unique @default(autoincrement())
+  pId            String   @unique @default(uuid()) @db.Uuid
+  conversationId Int
+  userId         Int
   // for anonymity, users initiating the converations should have randomly generated usernames
-  username        String   @default("Anonymous")    
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
+  username       String   @default("Anonymous")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
 
-  conversations   conversations @relation(fields: [conversationId], references: [id])
-  users           users         @relation(fields: [userId], references: [id])
+  conversations conversations @relation(fields: [conversationId], references: [id])
+  users         users         @relation(fields: [userId], references: [id])
 }
 
 model messages {
-  id              Int       @id @unique @default(autoincrement())
-  pId             String    @unique @default(uuid()) @db.Uuid
-  conversationId  Int
-  senderId        Int
-  content         String
+  id             Int      @id @unique @default(autoincrement())
+  pId            String   @unique @default(uuid()) @db.Uuid
+  conversationId Int
+  senderId       Int
+  content        String
   // considered creating a view to merge the users_conversations username 
   // with each message, but decided against it for now
   // why ?
@@ -71,75 +72,77 @@ model messages {
   // 3. might be an over kill for the project
   // if the need ever comes up, I'll create a view and drop this column
   // for now, sushhhhhh 🤫🤫🤫
-  username        String  @default("Anonymous")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
+  username       String   @default("Anonymous")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
 
-  conversations   conversations @relation(fields: [conversationId], references: [id])
+  conversations conversations @relation(fields: [conversationId], references: [id])
 }
 
 model polls {
-  id             Int       @id @unique @default(autoincrement())
-  pId             String    @unique @default(uuid()) @db.Uuid
-  question        String
-  creatorId       Int
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now())
+  id        Int      @id @unique @default(autoincrement())
+  pId       String   @unique @default(uuid()) @db.Uuid
+  question  String
+  creatorId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  poll_options    poll_options[]
-  votes           votes[]
-  users           users @relation(fields: [creatorId], references: [id])
+  poll_options poll_options[]
+  votes        votes[]
+  users        users          @relation(fields: [creatorId], references: [id])
 }
-model poll_options {
-  id             Int       @id @unique @default(autoincrement())
-  pId            String    @unique @default(uuid()) @db.Uuid
-  pollId         Int
-  option         String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
 
-  polls           polls @relation(fields: [pollId], references: [id])
-  votes           votes[]
+model poll_options {
+  id        Int      @id @unique @default(autoincrement())
+  pId       String   @unique @default(uuid()) @db.Uuid
+  pollId    Int
+  option    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  polls polls   @relation(fields: [pollId], references: [id])
+  votes votes[]
 }
 
 model votes {
-  id             Int       @id @unique @default(autoincrement())
-  pId            String    @unique @default(uuid()) @db.Uuid
-  pollId         Int
-  optionId       Int
-  userId         Int
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
+  id        Int      @id @unique @default(autoincrement())
+  pId       String   @unique @default(uuid()) @db.Uuid
+  pollId    Int
+  optionId  Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  polls           polls @relation(fields: [pollId], references: [id])
-  poll_options    poll_options @relation(fields: [optionId], references: [id])
-  users           users @relation(fields: [userId], references: [id])
+  polls        polls        @relation(fields: [pollId], references: [id])
+  poll_options poll_options @relation(fields: [optionId], references: [id])
+  users        users        @relation(fields: [userId], references: [id])
 }
 
-model secrets {
-  id             Int       @id @unique @default(autoincrement())
-  pId            String    @unique @default(uuid()) @db.Uuid
-  userId         Int
-  content        String
-  username       String
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
+model journals {
+  id        Int      @id @unique @default(autoincrement())
+  pId       String   @unique @default(uuid()) @db.Uuid
+  userId    Int
+  title     String
+  content   String
+  username  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  secrets_reactions   secrets_reactions[]
-  users           users @relation(fields: [userId], references: [id])
+  journal_reactions journal_reactions[]
+  users             users               @relation(fields: [userId], references: [id])
 }
 
-model secrets_reactions {
-  id             Int       @id @unique @default(autoincrement())
-  pId            String    @unique @default(uuid()) @db.Uuid
-  secretId       Int
-  userId         Int
-  love           Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now())
+model journal_reactions {
+  id        Int      @id @unique @default(autoincrement())
+  pId       String   @unique @default(uuid()) @db.Uuid
+  journalId Int
+  userId    Int
+  love      Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
-  secrets         secrets @relation(fields: [secretId], references: [id])
-  users           users @relation(fields: [userId], references: [id])
+  journals journals @relation(fields: [journalId], references: [id])
+  users    users    @relation(fields: [userId], references: [id])
 
-  @@unique([secretId, userId])
+  @@unique([journalId, userId])
 }
