@@ -19,13 +19,6 @@ import { markMessageAsBelongsToUser } from "./utils";
 export class ConversationService {
 	constructor(private db: DatabaseService, private userService: UserService) {}
 
-	generateConversationName() {
-		return uniqueNamesGenerator({
-			dictionaries: [adjectives, animals, colors],
-			length: 2,
-		});
-	}
-
 	async checkConversationPermissions(
 		userId: string,
 		conversationId: string,
@@ -87,7 +80,7 @@ export class ConversationService {
 			 * anyone starting a conversation with the participant wants to be anonymous
 			 *
 			 */
-			const randomUsername = this.generateConversationName();
+			const randomUsername = this.userService.generateRandomUsername();
 			await tx.users_conversations.createMany({
 				data: [
 					{
@@ -301,7 +294,7 @@ export class ConversationService {
 			data: {
 				conversationId: conversation.id,
 				userId: user.id,
-				username: this.generateConversationName(),
+				username: this.userService.generateRandomUsername(),
 			},
 		});
 	}

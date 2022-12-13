@@ -1,12 +1,22 @@
-import { NotFoundException, Injectable, BadRequestException } from '@nestjs/common';
+import {
+	NotFoundException,
+	Injectable,
+	BadRequestException,
+} from "@nestjs/common";
+import {
+	uniqueNamesGenerator,
+	adjectives,
+	colors,
+	animals,
+} from "unique-names-generator";
 
 import { DatabaseService } from "src/providers/database/database.service";
 
 @Injectable()
 export class UserService {
-  constructor(private db: DatabaseService) {}
+	constructor(private db: DatabaseService) {}
 
-  async findUserById(userId: string) {
+	async findUserById(userId: string) {
 		const user = await this.db.users.findFirst({
 			where: {
 				pId: userId,
@@ -20,7 +30,7 @@ export class UserService {
 		return user;
 	}
 
-  async checkUsernameAvailability(username: string) {
+	async checkUsernameAvailability(username: string) {
 		const user = await this.db.users.findFirst({
 			where: {
 				username,
@@ -66,5 +76,12 @@ export class UserService {
 		}
 
 		return user;
+	}
+
+	generateRandomUsername() {
+		return uniqueNamesGenerator({
+			dictionaries: [adjectives, animals, colors],
+			length: 2,
+		});
 	}
 }
