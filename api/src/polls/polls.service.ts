@@ -11,7 +11,24 @@ import { DatabaseService } from "src/providers/database/database.service";
 export class PollsService {
 	constructor(private db: DatabaseService, private userService: UserService) {}
 
-	async createPoll(userId: string, question: string, options: string[]) {
+	async checkIfPollExists(pollId: string) {
+    const poll = await this.db.polls.findUnique({
+			where: {
+				pId: pollId,
+			},
+			include: {
+				poll_options: true,
+			},
+		});
+
+		if (!poll) {
+			throw new NotFoundException("Poll not found");
+		}
+
+		return poll;
+  }
+  
+  async createPoll(userId: string, question: string, options: string[]) {
 		const user = await this.userService.findUserById(userId);
 		return this.db.polls.create({
 			data: {
@@ -27,26 +44,38 @@ export class PollsService {
 	}
 
 	async getSinglePoll(pollId: string) {
-		const poll = await this.db.polls.findUnique({
-			where: {
-				pId: pollId,
-			},
-			include: {
-				poll_options: true,
-			},
-		});
+		const poll = await this.checkIfPollExists(pollId);
+    /** Potiential optimization strategy:
+     * 1. cache this result and recompute at certain intervals
+     * 2. create a cache entry for each poll option and increment/decrement the count on vote
+     */
+    const pollResult = await this.db.votes.groupBy({
+      by: ['optionId'],
+      where: {
+        pollId: poll.id,
+      },
+      _count: {
+        optionId: true,
+      },
+    });
 
-		if (!poll) {
-			throw new NotFoundException("Poll not found");
-		}
-
-		return poll;
+    return {
+      ...poll,
+      poll_options: poll.poll_options.map((option) => {
+        const result = pollResult.find((result) => result.optionId === option.id);
+  
+        return {
+          ...option,
+          votes: result?._count.optionId || 0,
+        }
+      })
+    }
 	}
 
 	async deletePoll(userId: string, pollId: string) {
 		const [user, poll] = await Promise.all([
 			this.userService.findUserById(userId),
-			this.getSinglePoll(pollId),
+			this.checkIfPollExists(pollId),
 		]);
 
 		if (poll.creatorId !== user.id) {
@@ -63,7 +92,7 @@ export class PollsService {
 	async voteOnPoll(userId: string, pollId: string, optionId: string) {
 		const [user, poll] = await Promise.all([
 			this.userService.findUserById(userId),
-			this.getSinglePoll(pollId),
+			this.checkIfPollExists(pollId),
 		]);
 
 		// TODO: implement logic that chevks if the poll is not expired.
