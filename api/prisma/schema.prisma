@@ -17,7 +17,7 @@ model users {
   email      String   @unique  @db.VarChar(255)
   username   String?  @unique  @db.VarChar(100)
   provider   String   @db.VarChar(20)
-  providerId String   @db.VarChar(20)
+  providerId String   @db.VarChar(255)
   picture    String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
@@ -89,7 +89,7 @@ model polls {
 
   poll_options poll_options[]
   votes        votes[]
-  users        users          @relation(fields: [creatorId], references: [id])
+  users        users          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 model poll_options {
@@ -100,7 +100,7 @@ model poll_options {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  polls polls   @relation(fields: [pollId], references: [id])
+  polls polls   @relation(fields: [pollId], references: [id], onDelete: Cascade)
   votes votes[]
 }
 
@@ -113,7 +113,7 @@ model votes {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  polls        polls        @relation(fields: [pollId], references: [id])
+  polls        polls        @relation(fields: [pollId], references: [id], onDelete: Cascade)
   poll_options poll_options @relation(fields: [optionId], references: [id])
   users        users        @relation(fields: [userId], references: [id])
 }

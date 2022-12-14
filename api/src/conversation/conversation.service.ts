@@ -4,12 +4,6 @@ import {
 	NotFoundException,
 	BadRequestException,
 } from "@nestjs/common";
-import {
-	uniqueNamesGenerator,
-	adjectives,
-	colors,
-	animals,
-} from "unique-names-generator";
 
 import { DatabaseService } from "src/providers/database/database.service";
 import { UserService } from "src/user/user.service";

@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigMangerModule, ConfigMangerService } from './common/config';
 import { UserModule } from './user/user.module';
 import { ConversationModule } from './conversation/conversation.module';
+import { PollsModule } from './polls/polls.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConversationModule } from './conversation/conversation.module';
     JwtModule.register({}),
     UserModule,
     ConversationModule,
+    PollsModule,
   ],
   providers: [ConfigMangerService],
 })
