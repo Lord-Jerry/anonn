@@ -12,7 +12,11 @@ export default function Home() {
   const googleBtnRef = useRef<HTMLDivElement>(null);
 
   const onGoogleLogin = async (payload: { credential: string }) => {
-    const res = await authService.authenticate(payload.credential, "google");
+    const res = await authService.authenticate(
+      payload.credential,
+      "google",
+      true
+    );
     if (!res) {
       // display error message
       return;
@@ -22,7 +26,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    SocialAuth.initializeGoogle(googleBtnRef, onGoogleLogin, "signin");
+    SocialAuth.initializeGoogle(googleBtnRef, onGoogleLogin, "signup");
   }, []);
   return (
     <>
