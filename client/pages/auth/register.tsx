@@ -6,6 +6,8 @@ import Hero from "components/hero";
 import AuthService from "services/auth";
 import SocialAuth from "utils/socialAuth";
 
+export { getServerSideProps } from './login';
+
 export default function Home() {
   const router = useRouter();
   const authService = new AuthService();
