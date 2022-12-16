@@ -10,9 +10,9 @@ export const USER_COOKIE_KEYS = {
   AVATAR: 'VVNFUl9DT09LSUVfS0VZUy5JU19BVkFUQVJfU0VU'
 } as const
 
-type AuthResponse = {
+export type UserResponse = {
   id: string;
-  token: string;
+  token?: string;
   username: string | null;
   avatar: null
 }
@@ -26,13 +26,13 @@ export default class AuthService {
 
   async authenticate(token: string, platform: AuthPlatformType, isRegistration: boolean = false) {
     const endpoint = isRegistration ? '/auth/create-account' : '/auth/login'
-    const { data } = await this.api.post<AuthResponse>(endpoint, {
+    const { data } = await this.api.post<UserResponse>(endpoint, {
       token,
       platform
     })
 
     const cookieExpiry = 60 * 60 * 24 * 30 // 30 days 
-    Cookies.set(USER_COOKIE_KEYS.TOKEN, data.token, { expires: cookieExpiry })
+    if(data.token) Cookies.set(USER_COOKIE_KEYS.TOKEN, data.token, { expires: cookieExpiry })
     if (data.username) Cookies.set(USER_COOKIE_KEYS.USERNAME, data.username)
     if (data.avatar)  Cookies.set(USER_COOKIE_KEYS.AVATAR, data.avatar)
     return true
