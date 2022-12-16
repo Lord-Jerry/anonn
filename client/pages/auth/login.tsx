@@ -1,10 +1,14 @@
 import Head from "next/head";
-import { useEffect, useRef } from "react";
+import cookies from 'next-cookies'
 import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 import Hero from "components/hero";
-import AuthService from "services/auth";
+
 import SocialAuth from "utils/socialAuth";
+import AuthService, { USER_COOKIE_KEYS } from "services/auth";
+
+import { GetServerSidePropsContext } from "next/types";
 
 export default function Home() {
   const router = useRouter();
@@ -34,3 +38,20 @@ export default function Home() {
     </>
   );
 }
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const cookie = cookies(ctx);
+  const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
+
+  if (isUserLoggedIn)
+    return {
+      redirect: {
+        destination: '/dashboard',
+      },
+    };
+
+  return {
+    props: {},
+  };
+}
+
