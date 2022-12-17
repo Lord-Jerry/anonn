@@ -12,9 +12,12 @@ export default class ProfileService {
   }
 
   async checkUsernameAvailability(username: string) {
-    const { data } = await this.api.get<boolean>("/user/check-username-availability", {
-      params: { username },
-    });
+    const { data } = await this.api.get<boolean>(
+      "/user/check-username-availability",
+      {
+        params: { username },
+      }
+    );
     return data;
   }
 
@@ -26,8 +29,8 @@ export default class ProfileService {
     return true;
   }
 
-    async setAvatar(avatar?: string) {
-        Cookies.set(USER_COOKIE_KEYS.AVATAR, avatar || 'another love');
-        return true;
-    }
+  async setAvatar(avatar?: string) {
+    Cookies.set(USER_COOKIE_KEYS.AVATAR, avatar || "another love");
+    return true;
+  }
 }

@@ -29,7 +29,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
   const isAvatarSet = cookie[USER_COOKIE_KEYS.AVATAR];
 
-  if (!isUserLoggedIn) redirectionDestination = "/auth/login";
+  if (!isUserLoggedIn) redirectionDestination = "/";
   else if (isAvatarSet) redirectionDestination = "/dashboard";
 
   if (redirectionDestination)

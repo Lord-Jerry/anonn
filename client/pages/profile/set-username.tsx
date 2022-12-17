@@ -1,5 +1,7 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import Input from "components/input";
+import ArrowRight from "icon/ArrowRight";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
@@ -7,7 +9,7 @@ import { useState } from "react";
 import { USER_COOKIE_KEYS } from "services/auth";
 import ProfileService from "services/profile";
 
-export default function SetUsername() {
+export default function SetUsername(this: any) {
   const router = useRouter();
   const profileService = new ProfileService();
   const [username, setUsername] = useState("");
@@ -23,25 +25,59 @@ export default function SetUsername() {
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
-
-    if (e.target.value.length < 3) return;
-    const usernameAvailable = await profileService.checkUsernameAvailability(
-      e.target.value
-    );
-    setUsernameIsValid(usernameAvailable);
   };
+
+  const { isLoading, data } = useQuery(
+    ["usernameData", username],
+    () => profileService.checkUsernameAvailability(username),
+    {
+      enabled: !!username,
+    }
+  );
+
+  const { mutate } = useMutation(() => profileService.setUsername(username), {
+    onSuccess(data) {
+      console.log(data);
+      router.push("/profile/set-avatar");
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+  console.log(data, username);
   return (
-    <div className="w-64 flex-1 justify-center">
-      <h1>Set username</h1>
+    <div className="mx-auto py-16 px-12 w-[400px]">
+      <h1 className="font-black text-3xl w-[260px] mb-16">
+        Welcome to <br />
+        Anonn, <span className="font-light">Stranger</span>
+      </h1>
+      <p className="text-sm font-normal mb-12">
+        Quick one, please type in a username{" "}
+      </p>
       <Input
         id="username"
         name="username"
         type="text"
-        placeholder=""
+        placeholder="@sillyjumper"
         value={username}
         onChange={onInputChange}
       />
-      <Button text="continue" theme="black" onClick={onSubmit} />
+      {data === false ? (
+        <p>Sorry, that username is already taken</p>
+      ) : (
+        <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
+          <li> Keep it Anonnn! </li>
+          <li> You can add letters or numbers </li>
+          <li>You cannot change your username</li>
+        </ul>
+      )}
+      <button
+        className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
+        onClick={() => mutate()}
+      >
+        Continue <ArrowRight />{" "}
+      </button>
+      {/* <Button text="continue" bg="F8F886" theme="black" onClick={onSubmit} /> */}
     </div>
   );
 }
@@ -52,7 +88,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
   const isUsernameSet = cookie[USER_COOKIE_KEYS.USERNAME];
 
-  if (!isUserLoggedIn) redirectionDestination = "/auth/login";
+  if (!isUserLoggedIn) redirectionDestination = "/";
   else if (isUsernameSet) redirectionDestination = "/profile/set-avatar";
 
   if (redirectionDestination)
