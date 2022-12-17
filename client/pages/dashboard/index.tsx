@@ -17,7 +17,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const isUsernameSet = cookie[USER_COOKIE_KEYS.USERNAME];
   const isAvatarSet = cookie[USER_COOKIE_KEYS.AVATAR];
 
-  if (!isUserLoggedIn) redirectionDestination = "/auth/login";
+  if (!isUserLoggedIn) redirectionDestination = "/";
   else if (!isUsernameSet) redirectionDestination = "/profile/set-username";
   else if (!isAvatarSet) redirectionDestination = "/profile/set-avatar";
 

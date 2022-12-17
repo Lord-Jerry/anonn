@@ -23,9 +23,10 @@ export default class SocialAuth {
 
       google.accounts.id.renderButton(ref.current, {
         type: "standard",
-        width: "269",
-        size: "medium",
-        text:GOOGLE_BTN_TEXT[type],
+        width: "300",
+        height: "40",
+        size: "large",
+        text: GOOGLE_BTN_TEXT[type],
         shape: "square",
       });
     }
