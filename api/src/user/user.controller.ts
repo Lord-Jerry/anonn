@@ -11,6 +11,7 @@ import {
 	UseGuards,
 	UseInterceptors,
   ClassSerializerInterceptor,
+	Query,
 } from "@nestjs/common";
 
 import { UserNameDto } from "./dto";
@@ -27,9 +28,9 @@ export class UserController {
 	constructor(private userService: UserService) {}
 
 	@UseGuards(AtGuard)
-	@Post('check-username-availability')
+	@Get('check-username-availability')
 	@HttpCode(HttpStatus.OK)
-	async checkUsernameAvailability(@Body() dto: UserNameDto) {
+	async checkUsernameAvailability(@Query() dto: UserNameDto) {
 		return this.userService.checkUsernameAvailability(dto.username);
 	}
 
@@ -37,7 +38,8 @@ export class UserController {
 	@Put('set-username')
 	@HttpCode(HttpStatus.OK)
 	async setUsername(@Request() req: IRequestUser, @Body() dto: UserNameDto) {
-		await this.userService.setUsername(req.user.userId, dto.username);
+		const user = await this.userService.setUsername(req.user.userId, dto.username);
+		return new UserEntity(user);
 	}
 
 	@Get(':username')
