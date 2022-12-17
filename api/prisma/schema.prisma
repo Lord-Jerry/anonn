@@ -18,7 +18,7 @@ model users {
   username   String?  @unique  @db.VarChar(100)
   provider   String   @db.VarChar(20)
   providerId String   @db.VarChar(255)
-  picture    String?
+  avatar    String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
 
