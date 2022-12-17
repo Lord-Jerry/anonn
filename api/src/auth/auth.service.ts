@@ -1,8 +1,6 @@
 import {
-	NotFoundException,
 	Injectable,
 	UnauthorizedException,
-	BadRequestException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { OAuth2Client } from "google-auth-library";
@@ -54,21 +52,10 @@ export class AuthService {
 		)
 	}
 
-	async createAccount(dto: AuthZeroDto) {
-		const auth0User = await this.verifyGoogleLogin(dto.token);
-		const findUser = await this.db.users.findFirst({
-			where: {
-				email: auth0User.email,
-			},
-		});
-
-		if (findUser) {
-			throw new BadRequestException("user already exists");
-		}
-
+	async createAccount(authZeroUser: Awaited<ReturnType<typeof this.verifyGoogleLogin>>) {
 		const user = await this.db.users.create({
 			data: {
-				...auth0User,
+				...authZeroUser,
 			},
 		});
 
@@ -79,21 +66,22 @@ export class AuthService {
 		};
 	}
 
-	async loginAccount(dto: AuthZeroDto) {
+
+	async authenticate (dto: AuthZeroDto) {
 		const auth0User = await this.verifyGoogleLogin(dto.token);
-		const checkUserExists = await this.db.users.findFirst({
+		const findUser = await this.db.users.findFirst({
 			where: {
 				email: auth0User.email,
-			}
-		})
-		if (!checkUserExists) {
-			throw new UnauthorizedException("user not found");
+			},
+		});
+
+		if (!findUser) {
+			return this.createAccount(auth0User)
 		}
 
-
-		const token = await this.generateToken(checkUserExists.pId);
+		const token = await this.generateToken(findUser.pId);
 		return {
-			...checkUserExists,
+			...findUser,
 			token,
 		};
 	}

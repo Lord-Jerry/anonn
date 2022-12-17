@@ -16,16 +16,10 @@ import { UserEntity } from "../user/entities";
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-	@Post('create-account')
+	@Post('/')
   @HttpCode(HttpStatus.CREATED)
 	async createAccount(@Body() dto: AuthZeroDto): Promise<UserEntity> {
-		const user = await this.authService.createAccount(dto);
-		return new UserEntity(user);
-	}
-
-	@Post('login')
-	async loginAccount(@Body() dto: AuthZeroDto): Promise<UserEntity> {
-		const user = await this.authService.loginAccount(dto);
+		const user = await this.authService.authenticate(dto);
 		return new UserEntity(user);
 	}
 }
