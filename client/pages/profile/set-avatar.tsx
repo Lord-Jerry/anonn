@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Button from "components/button";
 import ArrowRight from "icon/ArrowRight";
 import cookies from "next-cookies";
 import Image from "next/image";
@@ -42,7 +41,6 @@ export default function SetAvatar(props: Props) {
     },
   });
 
-  console.log(avatar)
   return (
     <div className="mx-auto py-4 px-12 w-[400px]">
       <p className="text-sm text-center">One last step</p>
