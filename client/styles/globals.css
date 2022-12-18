@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.cdnfonts.com/css/br-firma");
 
 html,
 body {

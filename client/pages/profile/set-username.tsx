@@ -15,13 +15,13 @@ export default function SetUsername(this: any) {
   const [username, setUsername] = useState("");
   const [usernameIsValid, setUsernameIsValid] = useState<Boolean>();
 
-  const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (!usernameIsValid) return;
+  // const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (!usernameIsValid) return;
 
-    const res = await profileService.setUsername(username);
-    if (res) router.push("/profile/set-avatar");
-  };
+  //   const res = await profileService.setUsername(username);
+  //   if (res) router.push("/profile/set-avatar");
+  // };
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
