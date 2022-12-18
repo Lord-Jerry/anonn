@@ -13,6 +13,6 @@ export class UserNameDto {
 export class AvatarDto {
   @IsNotEmpty()
   @IsString()
-  @IsIn([Object.keys(AVATARS)])
+  @IsIn(Object.keys(AVATARS))
   avatarId: keyof typeof AVATARS;
 }
