@@ -1,16 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Button from "components/button";
 import ArrowRight from "icon/ArrowRight";
 import cookies from "next-cookies";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { USER_COOKIE_KEYS } from "services/auth";
 import ProfileService from "services/profile";
 import { myLoader } from "utils/imageLoader";
 
-type Props = Pick<Awaited<ReturnType<typeof getServerSideProps>>, "props">;
+type GetServerSidePropsReturnType = Awaited<ReturnType<typeof getServerSideProps>>
+type Props = GetServerSidePropsReturnType["props"]
 
 export default function SetAvatar(props: Props) {
   const router = useRouter();

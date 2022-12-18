@@ -1,5 +1,11 @@
-import Image from "next/image"
-
-export const myLoader = ({ src, width, quality }: any) => {
-    return `${src}?w=${width}&q=${quality || 75}`
-}
+export const myLoader = ({
+    src,
+    width,
+    quality,
+}: {
+    src: string;
+    width: number;
+    quality?: number;
+}) => {
+    return `${src}?w=${width}&q=${quality || 75}`;
+};
