@@ -4,6 +4,11 @@ import { Axios } from "axios";
 import ApiService from "./api";
 import { USER_COOKIE_KEYS, UserResponse } from "./auth";
 
+type AvatarsType = {
+  key: string;
+  avatar: string;
+};
+
 export default class ProfileService {
   private api: Axios;
 
@@ -29,8 +34,18 @@ export default class ProfileService {
     return true;
   }
 
-  async setAvatar(avatar?: string) {
-    Cookies.set(USER_COOKIE_KEYS.AVATAR, avatar || "another love");
+  async getAvatars() {
+    const { data } = await this.api.get<AvatarsType[]>(
+      "/user/platform-avatars"
+    );
+    return data;
+  }
+
+  async setAvatar(avatarId: string) {
+    const { data } = await this.api.put("/user/set-avatar", {
+      avatarId,
+    });
+    Cookies.set(USER_COOKIE_KEYS.AVATAR, avatarId);
     return true;
   }
 }

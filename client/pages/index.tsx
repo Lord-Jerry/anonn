@@ -4,10 +4,9 @@ import { useRouter } from "next/router";
 import cookies from "next-cookies";
 import Hero from "components/hero";
 import AuthService, { USER_COOKIE_KEYS } from "services/auth";
-
 import SocialAuth from "utils/socialAuth";
-
 import { GetServerSidePropsContext } from "next/types";
+import Head from "next/head";
 export default function Home() {
   const router = useRouter();
   const authService = new AuthService();
@@ -40,6 +39,10 @@ export default function Home() {
   }, []);
   return (
     <>
+      <Head>
+        <script src="https://accounts.google.com/gsi/client" async defer />
+        <link href="https://fonts.cdnfonts.com/css/br-firma" rel="stylesheet" />
+      </Head>
       <Hero />
       <div className="flex justify-center py-6 px-[80px]" ref={googleBtnRef} />
       <p className="text-xs text-center opacity-50 pt-8 pb-2">
