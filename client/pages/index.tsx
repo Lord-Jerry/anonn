@@ -1,14 +1,12 @@
-import Head from "next/head";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
-import cookies from 'next-cookies'
+import cookies from "next-cookies";
 import Hero from "components/hero";
 import AuthService, { USER_COOKIE_KEYS } from "services/auth";
 import SocialAuth from "utils/socialAuth";
 import { GetServerSidePropsContext } from "next/types";
-
-
+import Head from "next/head";
 export default function Home() {
   const router = useRouter();
   const authService = new AuthService();
@@ -29,7 +27,15 @@ export default function Home() {
   };
 
   useEffect(() => {
-    SocialAuth.initializeGoogle(googleBtnRef, onGoogleLogin, "signup");
+    // @ts-ignore
+    if (window.google) return
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.addEventListener("load", function () {
+      SocialAuth.initializeGoogle(googleBtnRef, onGoogleLogin, "signup");
+    });
+    script.src = "https://accounts.google.com/gsi/client";
+    document.getElementsByTagName("head")[0].appendChild(script);
   }, []);
   return (
     <>
@@ -39,8 +45,13 @@ export default function Home() {
       </Head>
       <Hero />
       <div className="flex justify-center py-6 px-[80px]" ref={googleBtnRef} />
-      <p className="text-xs text-center opacity-50 pt-8 pb-2">By signing in you agree to our</p>
-      <p className="text-sm text-center">Terms of Service, Privacy policy, <span className="opacity-50">&</span> Cookie policy</p>
+      <p className="text-xs text-center opacity-50 pt-8 pb-2">
+        By signing in you agree to our
+      </p>
+      <p className="text-sm text-center">
+        Terms of Service, Privacy policy, <span className="opacity-50">&</span>{" "}
+        Cookie policy
+      </p>
     </>
   );
 }
@@ -52,7 +63,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (isUserLoggedIn)
     return {
       redirect: {
-        destination: '/dashboard',
+        destination: "/dashboard",
       },
     };
 
