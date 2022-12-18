@@ -15,6 +15,9 @@ export default class SocialAuth {
   ) {
     // @ts-ignore
     const google = window.google;
+    // @ts-ignore
+    const initialized = window.googleInitialized
+    if (initialized) return
     if (google) {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
@@ -29,6 +32,9 @@ export default class SocialAuth {
         text: GOOGLE_BTN_TEXT[type],
         shape: "square",
       });
+
+      // @ts-ignore
+      window.googleInitialized = true
     }
   }
 }
