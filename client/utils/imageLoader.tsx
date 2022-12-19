@@ -1,11 +1,11 @@
 export const myLoader = ({
-  src,
-  width,
-  quality,
+    src,
+    width,
+    quality,
 }: {
-  src: string;
-  width: number;
-  quality?: number;
+    src: string;
+    width: number;
+    quality?: number;
 }) => {
-  return `${src}?w=${width}&q=${quality || 75}`;
+    return `${src}?w=${width}&q=${quality || 75}`;
 };

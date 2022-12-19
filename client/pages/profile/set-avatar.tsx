@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import Button from "components/button";
 import ArrowRight from "icon/ArrowRight";
 import cookies from "next-cookies";
 import Image from "next/image";
@@ -17,12 +18,18 @@ export default function SetAvatar(props: Props) {
   const profileService = new ProfileService();
   const [avatar, setAvatar] = useState({
     key: "",
-    avatar: "",
+    avatar: ""
   });
   const [change, setChange] = useState("");
 
   const { isLoading, data } = useQuery(["avatarData"], () =>
-    profileService.getAvatars()
+    profileService.getAvatars(),
+    {
+      onSuccess(data) {
+        const d = data[Math.floor(Math.random() * data.length)]
+        setAvatar({ key: d.key, avatar: d.avatar })
+      },
+    }
   );
 
   const { mutate } = useMutation(() => profileService.setAvatar(avatar.key), {
@@ -35,10 +42,11 @@ export default function SetAvatar(props: Props) {
     },
   });
 
+  console.log(avatar)
   return (
     <div className="mx-auto py-4 px-12 w-[400px]">
       <p className="text-sm text-center">One last step</p>
-      <h1 className="text-[32px] font-black text-center mb-12">
+      <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
         Please select <br />
         an avatar to
         <br />
@@ -49,7 +57,10 @@ export default function SetAvatar(props: Props) {
         <>
           <Image
             loader={myLoader}
-            src={avatar.avatar || data[Math.floor(Math.random() * data.length)]?.avatar}
+            src={
+              avatar.avatar ||
+              data[Math.floor(Math.random() * data.length)]?.avatar
+            }
             alt="Picture of the author"
             width={100}
             height={100}
@@ -96,13 +107,12 @@ export default function SetAvatar(props: Props) {
           )}
         </>
       )}
-      <button
+      <Button
+        text="continue"
+        icon={<ArrowRight />}
         className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
         onClick={() => mutate()}
-      >
-        Continue <ArrowRight />{" "}
-      </button>
-      {/* <Button text="continue" theme="black" onClick={onSubmit} /> */}
+      />
     </div>
   );
 }
