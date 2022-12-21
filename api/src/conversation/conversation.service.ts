@@ -1,313 +1,362 @@
 import {
-	Injectable,
-	ForbiddenException,
-	NotFoundException,
-	BadRequestException,
-} from "@nestjs/common";
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 
-import { DatabaseService } from "src/providers/database/database.service";
-import { UserService } from "src/user/user.service";
-import { markMessageAsBelongsToUser } from "./utils";
+import { DatabaseService } from 'src/providers/database/database.service';
+import { UserService } from 'src/user/user.service';
+import { markMessageAsBelongsToUser } from './utils';
+import { User_conversation_status } from '@prisma/client';
 
 @Injectable()
 export class ConversationService {
-	constructor(private db: DatabaseService, private userService: UserService) {}
+  constructor(private db: DatabaseService, private userService: UserService) {}
 
-	async checkConversationPermissions(
-		userId: string,
-		conversationId: string,
-		supressError = false,
-	) {
-		const { conversations, users, username } =
-			(await this.db.users_conversations.findFirst({
-				where: {
-					conversations: {
-						pId: conversationId,
-					},
-					users: {
-						pId: userId,
-					},
-				},
-				select: {
-					conversations: true,
-					users: true,
-					username: true,
-				},
-			})) || {};
+  async checkConversationPermissions(
+    userId: string,
+    conversationId: string,
+    supressError = false,
+  ) {
+    const { users, status, conversations, conversation_username } =
+      (await this.db.users_conversations.findFirst({
+        where: {
+          conversations: {
+            pId: conversationId,
+          },
+          users: {
+            pId: userId,
+          },
+        },
+        select: {
+          users: true,
+          status: true,
+          conversations: true,
+          conversation_username: true,
+        },
+      })) || {};
 
-		if (supressError && !conversations?.id) {
-			return null;
-		}
+    if (supressError && !conversations?.id) {
+      return null;
+    }
 
-		if (!(conversations?.id && conversations.isOpen)) {
-			throw new ForbiddenException("conversation not found or already closed");
-		}
+    if (!(conversations?.id && conversations.isOpen)) {
+      throw new ForbiddenException('conversation not found or already closed');
+    }
 
-		return {
-			conversationId: conversations.id,
-			userId: users.id,
-			username,
-			isGroup: conversations.isGroup,
-		};
-	}
-	async initPrivateConversation(
-		initiatorId: string,
-		participantId: string,
-		content: string,
-	) {
-		const [conversationInitiator, conversationParticipant] = await Promise.all([
-			this.userService.findUserById(initiatorId),
-			this.userService.findUserById(participantId),
-		]);
+    return {
+      status,
+      conversationId: conversations.id,
+      userId: users.id,
+      conversation_username,
+      isGroup: conversations.isGroup,
+    };
+  }
+  async initPrivateConversation(
+    initiatorId: string,
+    participantId: string,
+    content: string,
+  ) {
+    const [conversationInitiator, conversationParticipant] = await Promise.all([
+      this.userService.findUserById(initiatorId),
+      this.userService.findUserById(participantId),
+    ]);
 
-		const message = await this.db.$transaction(async (tx) => {
-			const conversation = await tx.conversations.create({
-				data: {
-					creatorId: conversationInitiator.id,
-				},
-			});
+    const message = await this.db.$transaction(async (tx) => {
+      const conversation = await tx.conversations.create({
+        data: {
+          creatorId: conversationInitiator.id,
+        },
+      });
 
-			/**
-			 * Create permissions for both users in the conversation
-			 *  random username was genrated for the conversation starter for anonymity
-			 * the conversation participant shared his profile for engagement
-			 * anyone starting a conversation with the participant wants to be anonymous
-			 *
-			 */
-			const randomUsername = this.userService.generateRandomUsername();
-			await tx.users_conversations.createMany({
-				data: [
-					{
-						conversationId: conversation.id,
-						userId: conversationInitiator.id,
-						username: randomUsername,
-					},
-					{
-						conversationId: conversation.id,
-						userId: conversationParticipant.id,
-						username: conversationParticipant.username,
-					},
-				],
-			});
+      /**
+       *  Create permissions for both users in the conversation
+       *  random username was genrated for the conversation starter for anonymity
+       * the conversation  on participant shared his profile for engagement
+       * anyone starting a conversation with the participant wants to be anonymous
+       *
+       */
+      const randomUsername = this.userService.generateRandomUsername();
+      await tx.users_conversations.createMany({
+        data: [
+          {
+            conversationId: conversation.id,
+            userId: conversationInitiator.id,
+            conversation_username: randomUsername,
+            title: conversationParticipant.username,
+          },
+          {
+            hasNewMessage: true,
+            title: randomUsername,
+            conversationId: conversation.id,
+            userId: conversationParticipant.id,
+            status: User_conversation_status.PENDING,
+            conversation_username: conversationParticipant.username,
+          },
+        ],
+      });
 
-			return tx.messages.create({
-				data: {
-					conversationId: conversation.id,
-					senderId: conversationInitiator.id,
-					content,
-					/**
-					 * prisma/schema.prisma
-					 * check message table schema,
-					 * for more details as to why the username is denormalized
-					 */
-					username: randomUsername,
-				},
-			});
-		});
-		return markMessageAsBelongsToUser(conversationInitiator.id, message);
-	}
+      return tx.messages.create({
+        data: {
+          conversationId: conversation.id,
+          senderId: conversationInitiator.id,
+          content,
+          /**
+           * prisma/schema.prisma
+           * check message table schema,
+           * for more details as to why the username is denormalized
+           */
+          username: randomUsername,
+        },
+      });
+    });
+    return markMessageAsBelongsToUser(conversationInitiator.id, message);
+  }
 
-	async sendMessage(userId: string, conversationId: string, content: string) {
-		const conversationPermission = await this.checkConversationPermissions(
-			userId,
-			conversationId,
-		);
-		const message = await this.db.messages.create({
-			data: {
-				conversationId: conversationPermission.conversationId,
-				senderId: conversationPermission.userId,
-				username: conversationPermission.username,
-				content,
-			},
-		});
+  async approveRejectConversationRequest(
+    userId,
+    conversationId,
+    status: User_conversation_status,
+  ) {
+    const [user, users_conversation] = await Promise.all([
+      this.userService.findUserById(userId),
+      this.checkConversationPermissions(userId, conversationId),
+    ]);
 
-		return {
-			...markMessageAsBelongsToUser(conversationPermission.userId, message),
-			username: conversationPermission.username,
-		};
-	}
+    if (users_conversation.status !== User_conversation_status.PENDING) {
+      throw new BadRequestException(
+        'conversation request already approved or rejected',
+      );
+    }
 
-	async getConversations(userId: string, cursor?: string) {
-		const user = await this.userService.findUserById(userId);
-		const permittedConversations = await this.db.users_conversations.findMany({
-			take: 10,
-			skip: cursor ? 1 : 0,
-			cursor: cursor ? { pId: cursor } : undefined,
-			orderBy: {
-				conversations: {
-					createdAt: "desc",
-				},
-			},
-			where: {
-				userId: user.id,
-			},
-			select: {
-				conversationId: true,
-			},
-		});
+    return this.db.users_conversations.updateMany({
+      where: {
+        conversationId: users_conversation.conversationId,
+        userId: user.id,
+      },
+      data: {
+        status: User_conversation_status[status],
+      },
+    });
+  }
 
-		const row = await this.db.users_conversations.findMany({
-			take: 10,
-			skip: cursor ? 1 : 0,
-			cursor: cursor ? { pId: cursor } : undefined,
-			distinct: ["conversationId"],
-			orderBy: {
-				conversations: {
-					createdAt: "desc",
-				},
-			},
-			where: {
-				NOT: {
-					userId: user.id,
-				},
-				conversationId: {
-					in: permittedConversations.map((c) => c.conversationId),
-				},
-			},
-			select: {
-				conversations: {
-					select: {
-						id: true,
-						pId: true,
-						isOpen: true,
-						isGroup: true,
-						name: true,
-						description: true,
-						createdAt: true,
-						updatedAt: true,
-						messages: {
-							take: 1,
-							orderBy: {
-								createdAt: "desc",
-							},
-							select: {
-								content: true,
-								senderId: true,
-							},
-						},
-					},
-				},
-				username: true,
-			},
-		});
+  async sendMessage(userId: string, conversationId: string, content: string) {
+    const conversationPermission = await this.checkConversationPermissions(
+      userId,
+      conversationId,
+    );
 
-		return row.map((row) => ({
-			...row.conversations,
-			username: row.username,
-			message: {
-				content: row.conversations.messages[0].content,
-				isMine: row.conversations.messages[0].senderId === user.id,
-			},
-		}));
-	}
+    const [message] = await this.db.$transaction(async (tx) => {
+      return Promise.all([
+        this.db.messages.create({
+          data: {
+            conversationId: conversationPermission.conversationId,
+            senderId: conversationPermission.userId,
+            username: conversationPermission.conversation_username,
+            content,
+          },
+        }),
+        tx.users_conversations.updateMany({
+          where: {
+            conversationId: conversationPermission.conversationId,
+            NOT: {
+              userId: conversationPermission.userId,
+            },
+          },
+          data: {
+            hasNewMessage: true,
+          },
+        }),
+      ]);
+    });
 
-	async getConversationMessages(
-		userId: string,
-		conversationId: string,
-		cursor?: string,
-	) {
-		const conversationPermission = await this.checkConversationPermissions(
-			userId,
-			conversationId,
-		);
-		const messages = await this.db.messages.findMany({
-			take: 10,
-			skip: cursor ? 1 : 0,
-			cursor: cursor ? { pId: cursor } : undefined,
-			orderBy: {
-				createdAt: "desc",
-			},
-			where: {
-				conversationId: conversationPermission.conversationId,
-			},
-		});
+    return {
+      ...markMessageAsBelongsToUser(conversationPermission.userId, message),
+      username: conversationPermission.conversation_username,
+    };
+  }
 
-		return messages.map((message) =>
-			markMessageAsBelongsToUser(conversationPermission.userId, message),
-		);
-	}
+  async getConversationsByStatus({
+    userId,
+    cursor,
+    status,
+  }: {
+    userId: string;
+    cursor?: string;
+    status: User_conversation_status;
+  }) {
+    const user = await this.userService.findUserById(userId);
+    const conversations = await this.db.users_conversations.findMany({
+      take: 20,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { pId: cursor } : undefined,
+      orderBy: [
+        {
+          hasNewMessage: 'desc',
+        },
+        {
+          updatedAt: 'desc',
+        },
+      ],
+      where: {
+        userId: user.id,
+        status,
+      },
+      select: {
+        title: true,
+        hasNewMessage: true,
+        conversation_username: true,
+        conversations: {
+          select: {
+            id: true,
+            pId: true,
+            isOpen: true,
+            isGroup: true,
+            name: true,
+            description: true,
+            createdAt: true,
+            updatedAt: true,
+            messages: {
+              take: 1,
+              orderBy: {
+                createdAt: 'desc',
+              },
+              select: {
+                content: true,
+                senderId: true,
+                createdAt: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-	async initGroupConversation(
-		userId: string,
-		name: string,
-		description: string,
-	) {
-		const user = await this.userService.findUserById(userId);
-		if (!user.username) {
-			throw new BadRequestException(
-				"User must have a username to create a group",
-			);
-		}
+    return conversations.map((conversation) => ({
+      isOpen: conversation.conversations.isOpen,
+      hasNewMessage: conversation.hasNewMessage,
+      isGroup: conversation.conversations.isGroup,
+      messages: conversation.conversations.messages,
+      conversationId: conversation.conversations.pId,
+      conversationUsername: conversation.conversation_username,
+      lastMessageIsMine:
+        conversation.conversations.messages[0]?.senderId === user.id,
+      title: conversation.conversations.isGroup
+        ? conversation.conversations.name
+        : conversation.title,
+    }));
+  }
 
-		return this.db.$transaction(async (tx) => {
-			const conversation = await tx.conversations.create({
-				data: {
-					name,
-					description,
-					isGroup: true,
-					creatorId: user.id,
-				},
-			});
+  async getConversationMessages(
+    userId: string,
+    conversationId: string,
+    cursor?: string,
+  ) {
+    const conversationPermission = await this.checkConversationPermissions(
+      userId,
+      conversationId,
+    );
+    const messages = await this.db.messages.findMany({
+      take: 10,
+      skip: cursor ? 1 : 0,
+      cursor: cursor ? { pId: cursor } : undefined,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        conversationId: conversationPermission.conversationId,
+      },
+    });
 
-			await tx.users_conversations.create({
-				data: {
-					conversationId: conversation.id,
-					userId: user.id,
-					username: user.username,
-				},
-			});
+    return messages.map((message) =>
+      markMessageAsBelongsToUser(conversationPermission.userId, message),
+    );
+  }
 
-			return conversation;
-		});
-	}
+  async initGroupConversation(
+    userId: string,
+    name: string,
+    description: string,
+  ) {
+    const user = await this.userService.findUserById(userId);
+    if (!user.username) {
+      throw new BadRequestException(
+        'User must have a username to create a group',
+      );
+    }
 
-	async joinGroupConversation(userId: string, conversationId: string) {
-		const [user, conversation, conversationPermission] = await Promise.all([
-			this.userService.findUserById(userId),
-			this.db.conversations.findUnique({
-				where: {
-					pId: conversationId,
-				},
-			}),
-			this.checkConversationPermissions(userId, conversationId, true),
-		]);
+    return this.db.$transaction(async (tx) => {
+      const conversation = await tx.conversations.create({
+        data: {
+          name,
+          description,
+          isGroup: true,
+          creatorId: user.id,
+        },
+      });
 
-		if (!conversation) {
-			throw new NotFoundException("Conversation not found");
-		}
+      await tx.users_conversations.create({
+        data: {
+          conversationId: conversation.id,
+          userId: user.id,
+          title: user.username,
+          conversation_username: '',
+        },
+      });
 
-		if (!conversation.isGroup) {
-			throw new BadRequestException("Conversation is not a group");
-		}
+      return conversation;
+    });
+  }
 
-		if (conversationPermission?.userId) {
-			throw new BadRequestException("User is already in the conversation");
-		}
+  async joinGroupConversation(userId: string, conversationId: string) {
+    const [user, conversation, conversationPermission] = await Promise.all([
+      this.userService.findUserById(userId),
+      this.db.conversations.findUnique({
+        where: {
+          pId: conversationId,
+        },
+      }),
+      this.checkConversationPermissions(userId, conversationId, true),
+    ]);
 
-		return this.db.users_conversations.create({
-			data: {
-				conversationId: conversation.id,
-				userId: user.id,
-				username: this.userService.generateRandomUsername(),
-			},
-		});
-	}
+    if (!conversation) {
+      throw new NotFoundException('Conversation not found');
+    }
 
-	async leaveGroupConversation(userId: string, conversationId: string) {
-		const [user, conversationPermission] = await Promise.all([
-			this.userService.findUserById(userId),
-			this.checkConversationPermissions(userId, conversationId),
-		]);
+    if (!conversation.isGroup) {
+      throw new BadRequestException('Conversation is not a group');
+    }
 
-		if (!conversationPermission.isGroup) {
-			throw new BadRequestException("Conversation is not a group");
-		}
+    if (conversationPermission?.userId) {
+      throw new BadRequestException('User is already in the conversation');
+    }
 
-		return this.db.users_conversations.deleteMany({
-			where: {
-				conversationId: conversationPermission.conversationId,
-				userId: user.id,
-			},
-		});
-	}
+    return this.db.users_conversations.create({
+      data: {
+        conversationId: conversation.id,
+        userId: user.id,
+        title: this.userService.generateRandomUsername(),
+        conversation_username: '',
+      },
+    });
+  }
+
+  async leaveGroupConversation(userId: string, conversationId: string) {
+    const [user, conversationPermission] = await Promise.all([
+      this.userService.findUserById(userId),
+      this.checkConversationPermissions(userId, conversationId),
+    ]);
+
+    if (!conversationPermission.isGroup) {
+      throw new BadRequestException('Conversation is not a group');
+    }
+
+    return this.db.users_conversations.deleteMany({
+      where: {
+        conversationId: conversationPermission.conversationId,
+        userId: user.id,
+      },
+    });
+  }
 }

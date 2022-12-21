@@ -40,7 +40,6 @@ export default function Home() {
   return (
     <>
       <Head>
-        <script src="https://accounts.google.com/gsi/client" async defer />
         <link href="https://fonts.cdnfonts.com/css/br-firma" rel="stylesheet" />
       </Head>
       <Hero />

@@ -44,13 +44,32 @@ model conversations {
   messages messages[]
 }
 
+
+enum User_conversation_status {
+  PENDING
+  ACTIVE
+  REJECTED
+}
+
 model users_conversations {
   id             Int      @id @unique @default(autoincrement())
   pId            String   @unique @default(uuid()) @db.Uuid
   conversationId Int
   userId         Int
-  // for anonymity, users initiating the converations should have randomly generated usernames
-  username       String   @default("Anonymous") @db.VarChar(100)
+  // for anonymity, users initiating the converations would have randomly generated usernames
+  conversation_username String  @db.VarChar(100)
+  // this should be the title of the conversation, which would be the user name of the other user in a private conversation
+  // or the name of the group in a group conversation
+  title       String   @default("Anonymous") @db.VarChar(100)
+  // by default, private conversation initiators have the status of ACTIVE, while the other participant have PENDING till they accept message request
+  // all group conversations have the status of ACTIVE by default, because they opted to join the group
+  status         User_conversation_status   @default(ACTIVE) 
+  // introduced lastReadMessageId and hasNewMessage to simplify the query for unread messages
+  // creating a read receipt table for each message seem like a go to approach, 
+  // but it would complicate the query needed to retrive unread/read conversations/messages
+  // and we also don't need the history of read receipts (for now atleast)
+  lastReadMessageId Int?
+  hasNewMessage  Boolean @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 
@@ -78,6 +97,7 @@ model messages {
 
   conversations conversations @relation(fields: [conversationId], references: [id])
 }
+
 
 model polls {
   id        Int      @id @unique @default(autoincrement())
