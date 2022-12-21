@@ -1,28 +1,33 @@
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 export class ConversationEntity {
+  title: string;
+  isOpen: boolean;
+  isGroup: boolean;
+  hasNewMessage: boolean;
+  conversationId: string;
+  conversationUsername: string;
   @Exclude()
-  pId: string;
-  @Exclude()
-  creatorId: number;
-  @Exclude()
-  messages: unknown[];
-  @Exclude()
-  username: string;
+  lastMessageIsMine: boolean;
 
-  @Transform(({ obj }) => obj.pId)
-  id: string | number;
-  isOpen: Boolean;
-  isGroup: Boolean;
-  message?: {
+  @Exclude()
+  messages?: {
+    senderId: number;
     content: string;
-    isMine: boolean;
-  }
-  @Transform(({ obj }) => obj.isGroup ? obj.name : obj.username)
-  name: string;
-  description: string;
+    createdAt: Date;
+  }[];
+
   createdAt: Date;
   updatedAt: Date;
+
+  @Expose()
+  get lastMessage() {
+    return {
+      isMine: this.lastMessageIsMine,
+      content: this.messages?.[0]?.content,
+      sentAt: this.messages?.[0]?.createdAt,
+    };
+  }
 
   constructor(partial: Partial<ConversationEntity>) {
     Object.assign(this, partial);

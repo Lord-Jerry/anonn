@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsUUID} from 'class-validator';
+import { User_conversation_status } from '@prisma/client';
+import { IsIn, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class SendMessageDto {
   @IsNotEmpty()
@@ -26,4 +27,11 @@ export class GroupConversationDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+}
+
+export class ConversationTypeDto {
+  @IsNotEmpty()
+  @IsString()
+  @IsIn(Object.keys(User_conversation_status).map((key) => key.toLowerCase()))
+  type: Lowercase<User_conversation_status>;
 }
