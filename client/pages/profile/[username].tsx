@@ -7,7 +7,9 @@ import { GetServerSidePropsContext } from "next/types";
 import Button from "components/button";
 import { myLoader } from "utils/imageLoader";
 import ProfileService from "services/profile";
-import useGoogleAuth from "hooks/useGoogleAuth";
+import useGoogleAuth, {
+  AuthenticateFunctionReturnType,
+} from "hooks/useGoogleAuth";
 import { useVisitorProfileButtons } from "hooks/useProfileButtons";
 import ConversationService from "services/conversation";
 
@@ -23,7 +25,21 @@ export default function Profile(props: Props) {
   useGoogleAuth({
     googleBtnRef,
     isUserLoggedIn: props?.isloggedIn || false,
-    successCallback: () => router.push("/"),
+    successCallback: (user: AuthenticateFunctionReturnType) => {
+      if (!user.username) {
+        router.push({
+          pathname: "/profile/set-username",
+          query: { callback: router.asPath },
+        });
+      } else if (!user.avatar) {
+        router.push({
+          pathname: "/profile/set-avatar",
+          query: { callback: router.asPath },
+        });
+      } else {
+        router.push(router.asPath);
+      }
+    },
     errorCallback: () => {},
   });
   return (

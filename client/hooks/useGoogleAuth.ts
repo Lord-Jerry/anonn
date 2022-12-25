@@ -2,7 +2,7 @@ import { RefObject, useEffect } from "react";
 import AuthService from "services/auth";
 import SocialAuth from "utils/socialAuth";
 
-type AuthenticateFunctionReturnType = Awaited<
+export type AuthenticateFunctionReturnType = Awaited<
   ReturnType<typeof AuthService.prototype["authenticate"]>
 >;
 type SuccessCallbackType = (res: AuthenticateFunctionReturnType) => void;
