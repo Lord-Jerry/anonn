@@ -22,7 +22,7 @@ export default function Profile(props: Props) {
   const profileButtons = useVisitorProfileButtons(props?.lastConversationId);
   useGoogleAuth({
     googleBtnRef,
-    isUserLoggedIn: false,
+    isUserLoggedIn: props?.isloggedIn || false,
     successCallback: () => router.push("/"),
     errorCallback: () => {},
   });
