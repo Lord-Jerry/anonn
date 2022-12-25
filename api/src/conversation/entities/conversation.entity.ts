@@ -17,6 +17,8 @@ export class ConversationEntity {
     createdAt: Date;
   }[];
 
+  avatar?: string;
+
   createdAt: Date;
   updatedAt: Date;
 

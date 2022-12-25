@@ -210,6 +210,26 @@ export class ConversationService {
       },
     });
 
+    // tried to do all this on one query but prisma is not allowing me to do so
+    // find a better solution to this in the future.
+    const messageParticipantAvatar = await this.db.users_conversations.findMany(
+      {
+        where: {
+          conversationId: {
+            in: conversations.map(
+              (conversation) => conversation.conversations.id,
+            ),
+            not: user.id,
+          },
+        },
+        select: {
+          // prisma is not allowing me target only the avatar field
+          users: true,
+          conversationId: true,
+        },
+      },
+    );
+
     return conversations.map((conversation) => ({
       isOpen: conversation.conversations.isOpen,
       hasNewMessage: conversation.hasNewMessage,
@@ -222,6 +242,9 @@ export class ConversationService {
       title: conversation.conversations.isGroup
         ? conversation.conversations.name
         : conversation.title,
+      avatar: messageParticipantAvatar.find(
+        (convo) => convo.conversationId === conversation.conversations.id,
+      )?.users.avatar,
     }));
   }
 
