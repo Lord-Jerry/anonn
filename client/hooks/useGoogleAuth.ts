@@ -28,6 +28,8 @@ export default function useGoogleAuth({
       true
     );
 
+    alert(`@${res.username} welcome`)
+
     return res ? successCallback(res) : errorCallback(res);
   };
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function useGoogleAuth({
     const script = document.createElement("script");
     script.type = "text/javascript";
     script.addEventListener("load", function () {
-      SocialAuth.initializeGoogle(googleBtnRef, callback, "signup");
+      SocialAuth.initializeGoogle(googleBtnRef, callback, "continueWith");
     });
     script.src = "https://accounts.google.com/gsi/client";
     document.getElementsByTagName("head")[0].appendChild(script);
