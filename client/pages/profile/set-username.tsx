@@ -9,7 +9,7 @@ import { useState } from "react";
 import { USER_COOKIE_KEYS } from "services/auth";
 import ProfileService from "services/profile";
 
-export default function SetUsername(this: any) {
+export default function SetUsername() {
   const router = useRouter();
   const profileService = new ProfileService();
   const [username, setUsername] = useState("");

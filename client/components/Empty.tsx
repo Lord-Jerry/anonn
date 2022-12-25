@@ -1,11 +1,11 @@
 import { RequestIcon } from "icon/RequestIcon";
 import Share from "icon/Share";
-import { FC } from "react";
+import { FC, ReactElement } from "react";
 import Button from "./button";
 
 
 interface EmptyProps {
-    icon: any;
+    icon: ReactElement;
     text: string;
     link: string;
 }
