@@ -251,6 +251,32 @@ export class ConversationService {
     }));
   }
 
+  async getLastConversationWithUser(conversationInitiatorId: string, conversationParticipantId: string) {
+    const [conversationInitiator, conversationParticipant] = await Promise.all([
+      this.userService.findUserById(conversationInitiatorId),
+      this.userService.findUserById(conversationParticipantId),
+    ]);
+
+    return this.db.users_conversations.findFirst({
+      where: {
+        conversations: {
+          creatorId: conversationInitiator.id,
+        },
+        userId: conversationParticipant.id,
+        status: {
+          in: [User_conversation_status.ACTIVE, User_conversation_status.PENDING]
+        },
+      },
+      select: {
+        conversations: {
+          select: {
+            pId: true,
+          }
+        },
+      }
+    });
+  }
+
   async getConversationMessages(
     userId: string,
     conversationId: string,
