@@ -16,9 +16,11 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      disableErrorMessages: true,
+      // disableErrorMessages: true,
     }),
   );
-  await app.listen(4000, '0.0.0.0');
+  await app.listen(process.env['PORT'] || 4000, '0.0.0.0');
 }
-bootstrap();
+// AppClusterService.clusterize(bootstrap);
+bootstrap()
+

@@ -181,16 +181,16 @@ export class ConversationService {
     userId,
     cursor,
     status,
+    cursorType
   }: {
     userId: string;
-    cursor?: string;
+    cursor?: Date;
     status: User_conversation_status;
+    cursorType?: 'latest'
   }) {
     const user = await this.userService.findUserById(userId);
     const conversations = await this.db.users_conversations.findMany({
       take: 20,
-      skip: cursor ? 1 : 0,
-      cursor: cursor ? { pId: cursor } : undefined,
       orderBy: [
         {
           hasNewMessage: 'desc',
@@ -202,6 +202,9 @@ export class ConversationService {
       where: {
         userId: user.id,
         status,
+        updatedAt: cursor ? {
+          [cursorType === 'latest' ? 'gt' : 'lt']: cursor
+        } : undefined
       },
       select: {
         title: true,

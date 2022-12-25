@@ -1,5 +1,5 @@
 import { User_conversation_status } from '@prisma/client';
-import { IsIn, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsDateString, IsIn, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class SendMessageDto {
   @IsNotEmpty()
@@ -34,4 +34,14 @@ export class ConversationTypeDto {
   @IsString()
   @IsIn(Object.keys(User_conversation_status).map((key) => key.toLowerCase()))
   type: Lowercase<User_conversation_status>;
+}
+
+export class FetchConversationQueryParamDto {
+  @IsOptional()
+  @IsDateString()
+  cursor?: Date;
+
+  @IsOptional()
+  @IsIn(['latest'])
+  cursor_type?: 'latest';
 }

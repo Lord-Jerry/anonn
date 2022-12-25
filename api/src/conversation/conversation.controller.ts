@@ -20,6 +20,7 @@ import { ConversationService } from './conversation.service';
 import {
   ConversationIdParamDto,
   ConversationTypeDto,
+  FetchConversationQueryParamDto,
   GroupConversationDto,
   SendMessageDto,
   UserIdParamDto,
@@ -55,7 +56,7 @@ export class ConversationController {
   async getPendingConversations(
     @Param() params: ConversationTypeDto,
     @Request() req: IRequestUser,
-    @Query() query: { cursor: string },
+    @Query() query: FetchConversationQueryParamDto,
   ) {
     const conversationType =
       params.type.toUpperCase() as User_conversation_status;
@@ -64,6 +65,7 @@ export class ConversationController {
         userId: req.user.userId,
         status: conversationType,
         cursor: query.cursor,
+        cursorType: query.cursor_type,
       });
 
     return conversations.map(
