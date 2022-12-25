@@ -251,6 +251,38 @@ export class ConversationService {
     }));
   }
 
+  async getLastConversationWithUser(conversationInitiatorId: string, conversationParticipantId: string) {
+    const [conversationInitiator, conversationParticipant] = await Promise.all([
+      this.userService.findUserById(conversationInitiatorId),
+      this.userService.findUserById(conversationParticipantId),
+    ]);
+
+    const conversation = await this.db.users_conversations.findFirst({
+      where: {
+        conversations: {
+          creatorId: conversationInitiator.id,
+        },
+        userId: conversationParticipant.id,
+        status: {
+          in: [User_conversation_status.ACTIVE, User_conversation_status.PENDING]
+        },
+      },
+      select: {
+        conversations: {
+          select: {
+            pId: true,
+          }
+        },
+      }
+    });
+
+    if (!conversation.conversations) {
+      throw new NotFoundException('conversation not found');
+    }
+
+    return conversation.conversations
+  }
+
   async getConversationMessages(
     userId: string,
     conversationId: string,

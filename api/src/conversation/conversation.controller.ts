@@ -22,6 +22,7 @@ import {
   ConversationTypeDto,
   FetchConversationQueryParamDto,
   GroupConversationDto,
+  LastConversationDto,
   SendMessageDto,
   UserIdParamDto,
 } from './dto';
@@ -71,6 +72,24 @@ export class ConversationController {
     return conversations.map(
       (conversation) => new ConversationEntity(conversation),
     );
+  }
+
+  @UseGuards(AtGuard)
+  @Get('/last/:userId')
+  @HttpCode(HttpStatus.OK)
+  async getLastConversationWithUser(
+    @Param() params: LastConversationDto,
+    @Request() req: IRequestUser,
+  ) {
+    const conversation =
+      await this.conversationService.getLastConversationWithUser(
+        req.user.userId,
+        params.userId,
+      );
+
+    return {
+      id: conversation.pId,
+    };
   }
 
   @UseGuards(AtGuard)
