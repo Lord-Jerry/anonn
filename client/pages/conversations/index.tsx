@@ -8,7 +8,7 @@ import ProfileService from "services/profile";
 export default function Dashboard() {
   return (
     <>
-      <Navigation />
+      <Navigation text="Conversations" />
       <Tab />
       <Empty
         text="you don’t have anything going on"
