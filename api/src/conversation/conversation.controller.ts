@@ -82,13 +82,13 @@ export class ConversationController {
     @Request() req: IRequestUser,
   ) {
     const { conversations } =
-      await this.conversationService.getLastConversationWithUser(
+      (await this.conversationService.getLastConversationWithUser(
         req.user.userId,
         params.userId,
-      );
+      )) || {};
 
     return {
-      id: conversations.pId,
+      id: conversations?.pId,
     };
   }
 
