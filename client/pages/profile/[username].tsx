@@ -113,8 +113,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
   }
 
-  const lastConversation =
-    await conversationService.getLastConversationWithUser(profile.id);
+  const isloggedIn = !!token;
+  const lastConversation = isloggedIn
+    ? await conversationService.getLastConversationWithUser(profile.id)
+    : null;
 
   return {
     props: {
