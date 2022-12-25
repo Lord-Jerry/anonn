@@ -52,7 +52,7 @@ export class MessagesController {
       userId: req.user.userId,
       conversationId: param.conversationId,
       cursor: query.cursor,
-      cursorType: 'latest',
+      cursorType: query.cursor_type,
     });
 
     return messages.map((message) => new MessageEntity(message));
