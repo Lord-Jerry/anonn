@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import Input from "components/input";
+import ArrowLeft from "icon/ArrowLeft";
 import ArrowRight from "icon/ArrowRight";
 import cookies from "next-cookies";
 import { useRouter } from "next/router";
@@ -13,21 +14,16 @@ export default function SetUsername() {
   const router = useRouter();
   const profileService = new ProfileService();
   const [username, setUsername] = useState("");
-  const [usernameIsValid, setUsernameIsValid] = useState<Boolean>();
 
-    const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
-
-    if (e.target.value.length < 3) return;
-    const usernameAvailable = await profileService.checkUsernameAvailability(
-      e.target.value
-    );
-    setUsernameIsValid(usernameAvailable);
   };
 
   const { isLoading, data } = useQuery(
     ["usernameData", username],
-    () => profileService.checkUsernameAvailability(username),
+    () =>
+      username.length >= 3 &&
+      profileService.checkUsernameAvailability(username),
     {
       enabled: !!username,
     }
@@ -35,14 +31,13 @@ export default function SetUsername() {
 
   const { mutate } = useMutation(() => profileService.setUsername(username), {
     onSuccess(data) {
-      console.log(data);
       router.push("/profile/set-avatar");
     },
     onError(err) {
       console.log(err);
     },
   });
-  console.log(data, username);
+
   return (
     <div className="mx-auto py-16 px-12 w-[400px]">
       <h1 className="font-black text-3xl w-[260px] mb-16">
@@ -69,12 +64,12 @@ export default function SetUsername() {
           <li>You cannot change your username</li>
         </ul>
       )}
-      <button
-        className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
-        onClick={() => usernameIsValid && mutate()}
-      >
-        Continue <ArrowRight />{" "}
-      </button>
+      <Button
+        text="Continue"
+        icon={<ArrowRight />}
+        className="mt-4 btn2"
+        onClick={() => data !== false && mutate()}
+      />
     </div>
   );
 }
@@ -86,7 +81,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const isUsernameSet = cookie[USER_COOKIE_KEYS.USERNAME];
 
   if (!isUserLoggedIn) redirectionDestination = "/";
-  else if (isUsernameSet) redirectionDestination = "/profile/set-avatar";
+  // else if (isUsernameSet) redirectionDestination = "/profile/set-avatar";
 
   if (redirectionDestination)
     return {

@@ -36,7 +36,7 @@ export default function SetAvatar(props: Props) {
 
   const { mutate } = useMutation(() => profileService.setAvatar(avatar.key), {
     onSuccess(data) {
-      console.log(data);
+      setStage(2)
       router.push("/profile/set-avatar");
     },
     onError(err) {
@@ -46,7 +46,6 @@ export default function SetAvatar(props: Props) {
     },
   });
 
-  console.log(avatar)
   return (
     <div className="mx-auto py-4 px-12 w-[400px]">
       {stage === 1 && (
@@ -132,7 +131,7 @@ export default function SetAvatar(props: Props) {
         <Button
         text="continue"
         icon={<ArrowRight />}
-        className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
+        className="mt-12 btn2"
         onClick={() => mutate()}
       />
       }
@@ -142,12 +141,12 @@ export default function SetAvatar(props: Props) {
         <Button
         text="Share your profile link"
         icon={<Share />}
-        className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
+        className="mt-12 btn2"
         onClick={() => mutate()}
       />
-         <Button
+        <Button
         text="Go to Dashboard"
-        className="mt-4 flex justify-center items-center border-2 border-[#F8F886] text-white bg-[#000] p-4 w-full rounded-lg"
+        className="mt-4 btn"
         onClick={() => router.push('/dashboard')}
       />
       </>

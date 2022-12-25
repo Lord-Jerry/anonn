@@ -62,7 +62,6 @@ export default function Home() {
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const cookie = cookies(ctx);
   const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-  console.log(isUserLoggedIn);
   if (isUserLoggedIn)
     return {
       redirect: {

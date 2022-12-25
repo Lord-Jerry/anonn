@@ -21,6 +21,12 @@ body {
 .selected_tab {
   @apply border-b-2 border-[#F8F886];
 }
+.btn {
+  @apply p-4 w-full rounded-lg flex justify-center items-center border-2 border-[#F8F886] text-white bg-[#000];
+}
+.btn2 {
+  @apply flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg;
+}
 
 @media (prefers-color-scheme: dark) {
   html {
