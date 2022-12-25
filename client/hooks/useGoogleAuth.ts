@@ -28,8 +28,6 @@ export default function useGoogleAuth({
       true
     );
 
-    alert(`@${res.username} welcome`)
-
     return res ? successCallback(res) : errorCallback(res);
   };
   useEffect(() => {
