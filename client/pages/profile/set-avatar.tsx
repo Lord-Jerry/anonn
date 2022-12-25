@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import ArrowRight from "icon/ArrowRight";
+import Share from "icon/Share";
 import cookies from "next-cookies";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -21,6 +22,7 @@ export default function SetAvatar(props: Props) {
     avatar: ""
   });
   const [change, setChange] = useState("");
+  const [stage, setStage] = useState(1);
 
   const { isLoading, data } = useQuery(["avatarData"], () =>
     profileService.getAvatars(),
@@ -39,19 +41,35 @@ export default function SetAvatar(props: Props) {
     },
     onError(err) {
       console.log(err);
+      setStage(2)
+      setChange("");
     },
   });
 
   console.log(avatar)
   return (
     <div className="mx-auto py-4 px-12 w-[400px]">
-      <p className="text-sm text-center">One last step</p>
+      {stage === 1 && (
+      <>
+      <p className="text-sm text-center">One last step</p> 
       <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
         Please select <br />
         an avatar to
         <br />
         continue.
       </h1>
+      </>
+      )}
+      {stage === 2 && (
+      <>
+      <h1 className="text-[32px] font-black text-justify pt-8 mb-2 leading-tight">
+        Yaay, <br/>
+        you’re all set up!
+        <br />     
+      </h1>
+      <p className="text-sm mb-8 text-justify">Let the conversations flow, yeah...</p> 
+      </>
+      )}
       {isLoading && <p>Loading...</p>}
       {!isLoading && data && (
         <>
@@ -69,12 +87,15 @@ export default function SetAvatar(props: Props) {
           <p className="text-white font-black text-center mt-6">
             @{props?.username}
           </p>
-          <p
+          {stage === 1 && 
+            <p
             className="opacity-50 text-md text-center underline cursor-pointer"
             onClick={() => setChange("change")}
           >
             change avatar
           </p>
+          }
+        
           {change === "change" && (
             <div className="grid grid-cols-4 grid-flow-row gap-3 p-8">
               {data?.map((x) => (
@@ -107,12 +128,32 @@ export default function SetAvatar(props: Props) {
           )}
         </>
       )}
-      <Button
+      {stage === 1 && 
+        <Button
         text="continue"
         icon={<ArrowRight />}
         className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
         onClick={() => mutate()}
       />
+      }
+      {
+        stage === 2 && (
+          <>
+        <Button
+        text="Share your profile link"
+        icon={<Share />}
+        className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
+        onClick={() => mutate()}
+      />
+         <Button
+        text="Go to Dashboard"
+        className="mt-4 flex justify-center items-center border-2 border-[#F8F886] text-white bg-[#000] p-4 w-full rounded-lg"
+        onClick={() => router.push('/dashboard')}
+      />
+      </>
+        )
+      }
+    
     </div>
   );
 }

@@ -1,12 +1,20 @@
-import cookies from 'next-cookies'
+import Empty from "components/Empty";
+import Navigation from "components/Navigation";
+import Tab from "components/tab";
+import { RequestIcon } from "icon/RequestIcon";
+import cookies from "next-cookies";
 import { GetServerSidePropsContext } from "next/types";
 import { USER_COOKIE_KEYS } from "services/auth";
 
+
 export default function Dashboard() {
+
   return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
+    <>
+    <Navigation />
+    <Tab />
+    <Empty text="you don’t have anything going on" link="https://copy" icon={<RequestIcon />} />
+    </>
   );
 }
 

@@ -73,11 +73,10 @@ export default function SetUsername(this: any) {
       )}
       <button
         className="mt-12 flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
-        onClick={() => mutate()}
+        onClick={() => usernameIsValid && mutate()}
       >
         Continue <ArrowRight />{" "}
       </button>
-      {/* <Button text="continue" bg="F8F886" theme="black" onClick={onSubmit} /> */}
     </div>
   );
 }
