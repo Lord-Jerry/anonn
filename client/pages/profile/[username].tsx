@@ -11,6 +11,7 @@ import useGoogleAuth, {
 } from "hooks/useGoogleAuth";
 import { useVisitorProfileButtons } from "hooks/useProfileButtons";
 import ConversationService from "services/conversation";
+import Navigation from "components/Navigation";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -42,50 +43,52 @@ export default function Profile(props: Props) {
     errorCallback: () => {},
   });
   return (
-    <div className="mx-auto py-4 px-12 w-[400px]">
-      <div className="mb-6">
-        <Image
-          loader={myLoader}
-          src={props?.avatar || ""}
-          alt="Profile pic"
-          width={100}
-          height={100}
-          className="rounded-lg mx-auto"
-        />
-        <p className="text-white text-[20px] font-black text-center mt-6">
-          @{props?.username} wants to have an anonymous chat with you
-        </p>
-      </div>
+    <Navigation text="Profile">
+      <div className="mx-auto py-4 px-12 w-[400px]">
+        <div className="mb-6">
+          <Image
+            loader={myLoader}
+            src={props?.avatar || ""}
+            alt="Profile pic"
+            width={100}
+            height={100}
+            className="rounded-lg mx-auto"
+          />
+          <p className="text-white text-[20px] font-black text-center mt-6">
+            @{props?.username} wants to have an anonymous chat with you
+          </p>
+        </div>
 
-      <div>
-        {!props?.isloggedIn ? (
-          <>
-            <p className="text-white text-[16px] text-center  mb-10">
-              Pleaseeee sign in to chat.
-            </p>
-            <div
-              className="flex justify-center py-6 px-[80px]"
-              ref={googleBtnRef}
-            />
-          </>
-        ) : (
-          <>
-            {profileButtons.map((button, index) => {
-              return (
-                <Button
-                  key={index}
-                  text={button.text}
-                  bg={index === 0 ? "bg_yellow" : "bg_black"}
-                  // icon={button.icon}
-                  className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
-                  onClick={button.onClick}
-                />
-              );
-            })}
-          </>
-        )}
+        <div>
+          {!props?.isloggedIn ? (
+            <>
+              <p className="text-white text-[16px] text-center  mb-10">
+                Pleaseeee sign in to chat.
+              </p>
+              <div
+                className="flex justify-center py-6 px-[80px]"
+                ref={googleBtnRef}
+              />
+            </>
+          ) : (
+            <>
+              {profileButtons.map((button, index) => {
+                return (
+                  <Button
+                    key={index}
+                    text={button.text}
+                    bg={index === 0 ? "bg_yellow" : "bg_black"}
+                    // icon={button.icon}
+                    className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
+                    onClick={button.onClick}
+                  />
+                );
+              })}
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </Navigation>
   );
 }
 
