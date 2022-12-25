@@ -93,38 +93,6 @@ export class ConversationController {
   }
 
   @UseGuards(AtGuard)
-  @Post('send-message/:conversationId')
-  @HttpCode(HttpStatus.CREATED)
-  async sendMessage(
-    @Request() req: IRequestUser,
-    @Param() param: ConversationIdParamDto,
-    @Body() dto: SendMessageDto,
-  ) {
-    return this.conversationService.sendMessage(
-      req.user.userId,
-      param.conversationId,
-      dto.content,
-    );
-  }
-
-  @UseGuards(AtGuard)
-  @Get(':conversationId/messages')
-  @HttpCode(HttpStatus.OK)
-  async getMessages(
-    @Request() req: IRequestUser,
-    @Param() param: ConversationIdParamDto,
-    @Query() query: { cursor: string },
-  ) {
-    const messages = await this.conversationService.getConversationMessages(
-      req.user.userId,
-      param.conversationId,
-      query.cursor,
-    );
-
-    return messages.map((message) => new MessageEntity(message));
-  }
-
-  @UseGuards(AtGuard)
   @Post('init-group-conversation')
   @HttpCode(HttpStatus.CREATED)
   async initGroupConversation(

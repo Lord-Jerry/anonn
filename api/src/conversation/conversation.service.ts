@@ -63,7 +63,7 @@ export class ConversationService {
       this.userService.findUserById(participantId),
     ]);
 
-    const message = await this.db.$transaction(async (tx) => {
+    const { message, conversation } = await this.db.$transaction(async (tx) => {
       const conversation = await tx.conversations.create({
         data: {
           creatorId: conversationInitiator.id,
@@ -97,7 +97,7 @@ export class ConversationService {
         ],
       });
 
-      return tx.messages.create({
+      const message = await tx.messages.create({
         data: {
           conversationId: conversation.id,
           senderId: conversationInitiator.id,
@@ -110,8 +110,16 @@ export class ConversationService {
           username: randomUsername,
         },
       });
+
+      return {
+        message,
+        conversation,
+      };
     });
-    return markMessageAsBelongsToUser(conversationInitiator.id, message);
+    return {
+      ...markMessageAsBelongsToUser(conversationInitiator.id, message),
+      conversationId: conversation.pId,
+    };
   }
 
   async approveRejectConversationRequest(
@@ -141,52 +149,16 @@ export class ConversationService {
     });
   }
 
-  async sendMessage(userId: string, conversationId: string, content: string) {
-    const conversationPermission = await this.checkConversationPermissions(
-      userId,
-      conversationId,
-    );
-
-    const [message] = await this.db.$transaction(async (tx) => {
-      return Promise.all([
-        this.db.messages.create({
-          data: {
-            conversationId: conversationPermission.conversationId,
-            senderId: conversationPermission.userId,
-            username: conversationPermission.conversation_username,
-            content,
-          },
-        }),
-        tx.users_conversations.updateMany({
-          where: {
-            conversationId: conversationPermission.conversationId,
-            NOT: {
-              userId: conversationPermission.userId,
-            },
-          },
-          data: {
-            hasNewMessage: true,
-          },
-        }),
-      ]);
-    });
-
-    return {
-      ...markMessageAsBelongsToUser(conversationPermission.userId, message),
-      username: conversationPermission.conversation_username,
-    };
-  }
-
   async getConversationsByStatus({
     userId,
     cursor,
     status,
-    cursorType
+    cursorType,
   }: {
     userId: string;
     cursor?: Date;
     status: User_conversation_status;
-    cursorType?: 'latest'
+    cursorType?: 'latest';
   }) {
     const user = await this.userService.findUserById(userId);
     const conversations = await this.db.users_conversations.findMany({
@@ -202,9 +174,11 @@ export class ConversationService {
       where: {
         userId: user.id,
         status,
-        updatedAt: cursor ? {
-          [cursorType === 'latest' ? 'gt' : 'lt']: cursor
-        } : undefined
+        updatedAt: cursor
+          ? {
+              [cursorType === 'latest' ? 'gt' : 'lt']: cursor,
+            }
+          : undefined,
       },
       select: {
         title: true,
@@ -251,7 +225,10 @@ export class ConversationService {
     }));
   }
 
-  async getLastConversationWithUser(conversationInitiatorId: string, conversationParticipantId: string) {
+  async getLastConversationWithUser(
+    conversationInitiatorId: string,
+    conversationParticipantId: string,
+  ) {
     const [conversationInitiator, conversationParticipant] = await Promise.all([
       this.userService.findUserById(conversationInitiatorId),
       this.userService.findUserById(conversationParticipantId),
@@ -264,43 +241,20 @@ export class ConversationService {
         },
         userId: conversationParticipant.id,
         status: {
-          in: [User_conversation_status.ACTIVE, User_conversation_status.PENDING]
+          in: [
+            User_conversation_status.ACTIVE,
+            User_conversation_status.PENDING,
+          ],
         },
       },
       select: {
         conversations: {
           select: {
             pId: true,
-          }
+          },
         },
-      }
-    });
-  }
-
-  async getConversationMessages(
-    userId: string,
-    conversationId: string,
-    cursor?: string,
-  ) {
-    const conversationPermission = await this.checkConversationPermissions(
-      userId,
-      conversationId,
-    );
-    const messages = await this.db.messages.findMany({
-      take: 10,
-      skip: cursor ? 1 : 0,
-      cursor: cursor ? { pId: cursor } : undefined,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where: {
-        conversationId: conversationPermission.conversationId,
       },
     });
-
-    return messages.map((message) =>
-      markMessageAsBelongsToUser(conversationPermission.userId, message),
-    );
   }
 
   async initGroupConversation(

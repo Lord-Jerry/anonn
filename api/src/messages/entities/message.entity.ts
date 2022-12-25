@@ -3,16 +3,13 @@ import { Exclude, Transform } from 'class-transformer';
 export class MessageEntity {
   @Exclude()
   pId: string;
-  @Transform(({ obj }) =>
-    typeof obj.conversationId === 'string' ? obj.conversationId : Exclude(),
-  )
-  conversationId: number | string;
+  @Exclude()
+  conversationId: number;
   @Exclude()
   senderId: number;
 
   @Transform(({ obj }) => obj.pId)
   id: string | number;
-  conversationPId: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;
