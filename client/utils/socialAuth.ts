@@ -5,6 +5,7 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 const GOOGLE_BTN_TEXT = {
   signin: "signin_with",
   signup: "signup_with",
+  continueWith: "continue_with",
 } as const;
 
 export default class SocialAuth {
