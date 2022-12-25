@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import { Axios } from "axios";
 
 import ApiService from "./api";
+import { AVATARS } from "constants/index";
 
 type AuthPlatformType = "google" | "apple";
 export const USER_COOKIE_KEYS = {
@@ -14,7 +15,7 @@ export type UserResponse = {
   id: string;
   token?: string;
   username: string | null;
-  avatar: null;
+  avatar: keyof typeof AVATARS | null;
 };
 
 export default class AuthService {
@@ -42,5 +43,9 @@ export default class AuthService {
     if (data.username) Cookies.set(USER_COOKIE_KEYS.USERNAME, data.username);
     if (data.avatar) Cookies.set(USER_COOKIE_KEYS.AVATAR, data.avatar);
     return data;
+  }
+
+  logout() {
+    Object.values(USER_COOKIE_KEYS).forEach((key) => Cookies.remove(key));
   }
 }

@@ -45,3 +45,9 @@ export class FetchConversationQueryParamDto {
   @IsIn(['latest'])
   cursor_type?: 'latest';
 }
+
+export class LastConversationDto {
+  @IsNotEmpty()
+  @IsUUID()
+  userId: string;
+}

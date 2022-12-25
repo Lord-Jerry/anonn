@@ -1,15 +1,20 @@
 import ArrowLeft from "icon/ArrowLeft";
 import Dots from "icon/Dots";
-import { useRouter } from "next/router";
-import { useState } from "react";
 
-export default function Navigation() {
- 
+type Props = {
+  children?: React.ReactNode;
+  text: string;
+}
+
+export default function Navigation(props: Props) {
   return (
-    <div className=" bg-[#16160E] flex justify-around items-center py-8 w-[400px] h-[56px] mx-auto">
-      <ArrowLeft />
-      <p>Conversations</p>
-      <Dots />
-    </div>
+    <>
+      <div className=" bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 w-[400px] h-[56px] mx-auto">
+        <ArrowLeft />
+        <p>{props.text}</p>
+        <Dots />
+      </div>
+      {props.children}
+    </>
   );
 }

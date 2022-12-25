@@ -1,74 +1,68 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Button from "components/button";
-import ArrowRight from "icon/ArrowRight";
-import Share from "icon/Share";
-import cookies from "next-cookies";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next/types";
-import { useState } from "react";
-import { USER_COOKIE_KEYS } from "services/auth";
-import ProfileService from "services/profile";
-import { myLoader } from "utils/imageLoader";
 
-type GetServerSidePropsReturnType = Awaited<ReturnType<typeof getServerSideProps>>
-type Props = GetServerSidePropsReturnType["props"]
+import Button from "components/button";
+import ArrowRight from "icon/ArrowRight";
+import ProfileService from "services/profile";
+import { USER_COOKIE_KEYS } from "services/auth";
+import { myLoader } from "utils/imageLoader";
+import Share from "icon/Share";
+
+type GetServerSidePropsReturnType = Awaited<
+  ReturnType<typeof getServerSideProps>
+>;
+type Props = GetServerSidePropsReturnType["props"];
 
 export default function SetAvatar(props: Props) {
   const router = useRouter();
   const profileService = new ProfileService();
   const [avatar, setAvatar] = useState({
     key: "",
-    avatar: ""
+    avatar: "",
   });
   const [change, setChange] = useState("");
   const [stage, setStage] = useState(1);
 
-  const { isLoading, data } = useQuery(["avatarData"], () =>
-    profileService.getAvatars(),
+  const { isLoading, data } = useQuery(
+    ["avatarData"],
+    () => profileService.getAvatars(),
     {
       onSuccess(data) {
-        const d = data[Math.floor(Math.random() * data.length)]
-        setAvatar({ key: d.key, avatar: d.avatar })
+        const d = data[Math.floor(Math.random() * data.length)];
+        setAvatar({ key: d.key, avatar: d.avatar });
       },
     }
   );
 
   const { mutate } = useMutation(() => profileService.setAvatar(avatar.key), {
-    onSuccess(data) {
-      setStage(2)
-      router.push("/profile/set-avatar");
+    onSuccess() {
+      router.push({
+        pathname: "/profile",
+        query: {
+          isNewUser: true,
+        },
+      });
     },
     onError(err) {
       console.log(err);
-      setStage(2)
       setChange("");
     },
   });
 
   return (
     <div className="mx-auto py-4 px-12 w-[400px]">
-      {stage === 1 && (
       <>
-      <p className="text-sm text-center">One last step</p> 
-      <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
-        Please select <br />
-        an avatar to
-        <br />
-        continue.
-      </h1>
+        <p className="text-sm text-center">One last step</p>
+        <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
+          Please select <br />
+          an avatar to
+          <br />
+          continue.
+        </h1>
       </>
-      )}
-      {stage === 2 && (
-      <>
-      <h1 className="text-[32px] font-black text-justify pt-8 mb-2 leading-tight">
-        Yaay, <br/>
-        you’re all set up!
-        <br />     
-      </h1>
-      <p className="text-sm mb-8 text-justify">Let the conversations flow, yeah...</p> 
-      </>
-      )}
       {isLoading && <p>Loading...</p>}
       {!isLoading && data && (
         <>
@@ -92,9 +86,7 @@ export default function SetAvatar(props: Props) {
             onClick={() => setChange("change")}
           >
             change avatar
-          </p>
-          }
-        
+          </p>}
           {change === "change" && (
             <div className="grid grid-cols-4 grid-flow-row gap-3 p-8">
               {data?.map((x) => (
@@ -158,19 +150,21 @@ export default function SetAvatar(props: Props) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
-  let redirectionDestination = "";
-  const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-  const username = cookie[USER_COOKIE_KEYS.USERNAME];
-  const isAvatarSet = cookie[USER_COOKIE_KEYS.AVATAR];
+  const profileService = new ProfileService();
+  const { redirectionDestination, username, avatar } =
+    profileService.validateUserProfile(ctx);
 
-  if (!isUserLoggedIn) redirectionDestination = "/";
-  // else if (isAvatarSet) redirectionDestination = "/dashboard";
-
-  if (redirectionDestination)
+  if (!redirectionDestination.includes("set-avatar"))
     return {
       redirect: {
         destination: redirectionDestination,
+      },
+    };
+
+  if (avatar)
+    return {
+      redirect: {
+        destination: "/profile",
       },
     };
 

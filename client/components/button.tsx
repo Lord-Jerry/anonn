@@ -1,20 +1,9 @@
-import { Component, JSXElementConstructor, ReactComponentElement, ReactElement } from "react";
-
-const Themes = {
-  white: 'bg-white text-black',
-  black: '1E1E1E text-white'
-} as const;
-
 const Background = {
-  bg_yellow: 'F8F886 text-black'
+  bg_yellow: 'bg-[#F8F886] text-black',
+  bg_black: 'bg-[#1E1E1E] text-white hover:bg-[#F8F886] hover:text-black'
 }
 
-const Sizes = {
-  sm: 'px-3 py-2',
-  md: ''
-} as const
-
-type Props = {
+export type Props = {
   text: string;
   bg?: keyof typeof Background;
   icon?: JSX.Element;
@@ -22,10 +11,11 @@ type Props = {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 export default function Button(props: Props) {
+  const theme = props.bg ? Background[props.bg] : Background.bg_yellow;
   return (
     <button
       type="button"
-      className={props.className}
+      className={`${props.className} ${theme}`}
       onClick={props.onClick}
     >
       {props.text}{props.icon}
