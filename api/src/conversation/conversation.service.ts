@@ -257,7 +257,7 @@ export class ConversationService {
       this.userService.findUserById(conversationParticipantId),
     ]);
 
-    const conversation = await this.db.users_conversations.findFirst({
+    return this.db.users_conversations.findFirst({
       where: {
         conversations: {
           creatorId: conversationInitiator.id,
@@ -275,12 +275,6 @@ export class ConversationService {
         },
       }
     });
-
-    if (!conversation.conversations) {
-      throw new NotFoundException('conversation not found');
-    }
-
-    return conversation.conversations
   }
 
   async getConversationMessages(
