@@ -1,9 +1,11 @@
 import { useRouter } from "next/router";
 import ArrowRight from "icon/ArrowRight";
 import { Props as ButtonPropType } from "components/button";
+import AuthService from "services/auth";
 
 export const useProfileButtons = () => {
   const router = useRouter();
+  const authService = new AuthService();
   return [
     {
       bg: "bg_yellow",
@@ -25,7 +27,10 @@ export const useProfileButtons = () => {
     {
       bg: "bg_black",
       text: "Log out",
-      onClick: () => router.push("/logout"),
+      onClick: () => {
+        authService.logout();
+        router.push("/")
+      }
     },
   ] as ButtonPropType[];
 };

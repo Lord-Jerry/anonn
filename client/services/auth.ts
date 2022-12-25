@@ -44,4 +44,8 @@ export default class AuthService {
     if (data.avatar) Cookies.set(USER_COOKIE_KEYS.AVATAR, data.avatar);
     return data;
   }
+
+  logout() {
+    Object.values(USER_COOKIE_KEYS).forEach((key) => Cookies.remove(key));
+  }
 }

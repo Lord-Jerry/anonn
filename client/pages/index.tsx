@@ -1,20 +1,21 @@
 import Head from "next/head";
 import { useRef } from "react";
-import cookies from "next-cookies";
 import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
 
 import Hero from "components/hero";
 import useGoogleAuth from "hooks/useGoogleAuth";
-import { USER_COOKIE_KEYS } from "services/auth";
+
 export default function Home() {
   const router = useRouter();
   const googleBtnRef = useRef<HTMLDivElement>(null);
   useGoogleAuth({
     googleBtnRef,
     isUserLoggedIn: false,
-    successCallback: () => router.push("/"),
-    errorCallback: () => {},
+    successCallback: () => {
+      router.push("/profile")
+      console.log("success signing in");
+    },
+    errorCallback: () => {console.log("error signing in")},
   });
 
   return (
@@ -39,17 +40,8 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
-  const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-  if (isUserLoggedIn)
-    return {
-      redirect: {
-        destination: "/dashboard",
-      },
-    };
-
-  return {
-    props: {},
-  };
-}
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   return {
+//     props: {},
+//   };
+// }

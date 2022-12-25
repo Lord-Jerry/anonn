@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useRef } from "react";
-import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 
@@ -91,10 +90,9 @@ export default function Profile(props: Props) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
   const profileService = new ProfileService();
   const { token, username: currentUserUsername } =
-    profileService.validateUserProfile(cookie);
+    profileService.validateUserProfile(ctx);
 
   const conversationService = new ConversationService(token);
   const profile = await profileService.findUserByUsername(

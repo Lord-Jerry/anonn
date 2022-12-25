@@ -1,5 +1,4 @@
 import Image from "next/image";
-import cookies from "next-cookies";
 import { GetServerSidePropsContext } from "next/types";
 
 import Button from "components/button";
@@ -58,9 +57,8 @@ export default function Profile(props: Props) {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
   const profileService = new ProfileService();
-  const { redirectionDestination, username, avatar } = profileService.validateUserProfile(cookie);
+  const { redirectionDestination, username, avatar } = profileService.validateUserProfile(ctx);
 
   if (redirectionDestination)
     return {

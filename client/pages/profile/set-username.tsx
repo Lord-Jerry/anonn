@@ -1,13 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import Input from "components/input";
-import ArrowLeft from "icon/ArrowLeft";
 import ArrowRight from "icon/ArrowRight";
-import cookies from "next-cookies";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 import { useState } from "react";
-import { USER_COOKIE_KEYS } from "services/auth";
 import ProfileService from "services/profile";
 
 export default function SetUsername() {
@@ -75,18 +72,21 @@ export default function SetUsername() {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
-  let redirectionDestination = "";
-  const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-  const isUsernameSet = cookie[USER_COOKIE_KEYS.USERNAME];
+  const profileService = new ProfileService();
+  const { redirectionDestination, username } =
+    profileService.validateUserProfile(ctx);
 
-  if (!isUserLoggedIn) redirectionDestination = "/";
-  // else if (isUsernameSet) redirectionDestination = "/profile/set-avatar";
-
-  if (redirectionDestination)
+  if (!redirectionDestination.includes("set-username"))
     return {
       redirect: {
         destination: redirectionDestination,
+      },
+    };
+
+  if (username)
+    return {
+      redirect: {
+        destination: "/profile",
       },
     };
 
