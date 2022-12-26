@@ -20,7 +20,7 @@ model users {
   providerId String   @db.VarChar(255)
   avatar    String?
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   conversations     users_conversations[]
   polls             polls[]
@@ -38,7 +38,7 @@ model conversations {
   isOpen      Boolean  @default(true)
   isGroup     Boolean  @default(false)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   users    users_conversations[]
   messages messages[]
@@ -71,7 +71,7 @@ model users_conversations {
   lastReadMessageId Int?
   hasNewMessage  Boolean @default(false)
   createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   conversations conversations @relation(fields: [conversationId], references: [id])
   users         users         @relation(fields: [userId], references: [id])
@@ -93,7 +93,7 @@ model messages {
   // for now, sushhhhhh 🤫🤫🤫
   username       String   @default("Anonymous") @db.VarChar(100)
   createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   conversations conversations @relation(fields: [conversationId], references: [id])
 }
@@ -105,7 +105,7 @@ model polls {
   question  String
   creatorId Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   poll_options poll_options[]
   votes        votes[]
@@ -118,7 +118,7 @@ model poll_options {
   pollId    Int
   option    String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   polls polls   @relation(fields: [pollId], references: [id], onDelete: Cascade)
   votes votes[]
@@ -131,7 +131,7 @@ model votes {
   optionId  Int
   userId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   polls        polls        @relation(fields: [pollId], references: [id], onDelete: Cascade)
   poll_options poll_options @relation(fields: [optionId], references: [id])
@@ -146,7 +146,7 @@ model journals {
   content   String
   username  String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   journal_reactions journal_reactions[]
   users             users               @relation(fields: [userId], references: [id])
@@ -159,7 +159,7 @@ model journal_reactions {
   userId    Int
   love      Boolean  @default(true)
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   journals journals @relation(fields: [journalId], references: [id])
   users    users    @relation(fields: [userId], references: [id])
