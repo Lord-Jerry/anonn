@@ -6,6 +6,7 @@ export class ConversationEntity {
   isGroup: boolean;
   hasNewMessage: boolean;
   conversationId: string;
+  @Exclude()
   conversationUsername: string;
   @Exclude()
   lastMessageIsMine: boolean;
