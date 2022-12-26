@@ -1,11 +1,12 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import Button from "components/button";
+import ArrowRight from "icon/ArrowRight";
+import Share from "icon/Share";
+import cookies from "next-cookies";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next/types";
-
-import Button from "components/button";
-import ArrowRight from "icon/ArrowRight";
 import ProfileService from "services/profile";
 import { USER_COOKIE_KEYS } from "services/auth";
 import { myLoader } from "utils/imageLoader";
@@ -47,6 +48,12 @@ export default function SetAvatar(props: Props) {
     onError(err) {
       console.log(err);
       setChange("");
+       router.push({
+        pathname: "/profile",
+        query: {
+          isNewUser: true,
+        },
+      });
     },
   });
 
@@ -132,19 +139,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
-  if (!redirectionDestination.includes("set-avatar"))
-    return {
-      redirect: {
-        destination: redirectionDestination,
-      },
-    };
+  // if (!redirectionDestination.includes("set-avatar"))
+  //   return {
+  //     redirect: {
+  //       destination: redirectionDestination,
+  //     },
+  //   };
 
-  if (avatar)
-    return {
-      redirect: {
-        destination: "/profile",
-      },
-    };
+  // if (avatar)
+  //   return {
+  //     redirect: {
+  //       destination: "/profile",
+  //     },
+  //   };
 
   return {
     props: {

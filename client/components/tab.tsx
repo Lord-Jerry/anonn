@@ -1,27 +1,28 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+type Props = {
+   type: string;
+   setType: (type: string) => void;
+}
 
-export default function Tab() {
-  const [tab, setTab] = useState("ongoing");
+export const Tab = ({type, setType} : Props)=> {
     const handleTabRoute=(tab: string)=>{
-     setTab(tab);
+     setType(tab);
     }
 	return (
     <div className="flex justify-around py-8 w-[400px] mx-auto">
       <p
-        className={`tab ${tab === "history" ? "selected_tab" : ""}`}
-        onClick={() => handleTabRoute("history")}
+        className={`tab ${type === "pending" ? "selected_tab" : ""}`}
+        onClick={() => handleTabRoute("pending")}
       >
         History
       </p>
       <p
-        className={`tab ${tab === "ongoing" ? "selected_tab" : ""}`}
-        onClick={() => handleTabRoute("ongoing")}
+        className={`tab ${type === "active" ? "selected_tab" : ""}`}
+        onClick={() => handleTabRoute("active")}
       >
         Ongoing
       </p>
       <p
-        className={`tab ${tab === "rejected" ? "selected_tab" : ""}`}
+        className={`tab ${type === "rejected" ? "selected_tab" : ""}`}
         onClick={() => handleTabRoute("rejected")}
       >
         Rejected
@@ -29,3 +30,5 @@ export default function Tab() {
     </div>
 	);
 }
+
+export default Tab;

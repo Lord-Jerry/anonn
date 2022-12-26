@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 
@@ -20,7 +19,6 @@ export default function Home() {
 
   return (
     <>
-      <Head> </Head>
       <Hero />
       <div className="flex justify-center py-6 px-[80px]" ref={googleBtnRef} />
       <p className="text-xs text-center opacity-50 pt-8 pb-2">
