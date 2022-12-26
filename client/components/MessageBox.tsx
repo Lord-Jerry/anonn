@@ -15,7 +15,7 @@ type Props = {
 export default function MessageBox(props: Props) {
   return (
     <>
-      <div className="border-b-[.1px] border-b-[#F8F886] flex bg-[#1E1E1E] justify-around items-center py-8 w-[400px] h-[45px] mx-auto">
+      <div className="border-b-[.1px] border-b-[#53532D] flex bg-[#1E1E1E] justify-around items-center py-8 w-[400px] h-[45px] mx-auto">
         <div className="flex">
         <div>
           <Image
