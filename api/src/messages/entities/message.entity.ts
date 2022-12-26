@@ -15,6 +15,7 @@ export class MessageEntity {
   updatedAt: Date;
   username: string;
   isMine: boolean;
+  isNewMessage: boolean;
 
   constructor(partial: Partial<MessageEntity>) {
     Object.assign(this, partial);

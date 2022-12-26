@@ -19,7 +19,14 @@ export class ConversationService {
     conversationId: string,
     supressError = false,
   ) {
-    const { id, users, status, conversations, conversation_username } =
+    const {
+      id,
+      lastReadMessageId,
+      users,
+      status,
+      conversations,
+      conversation_username,
+    } =
       (await this.db.users_conversations.findFirst({
         where: {
           conversations: {
@@ -34,6 +41,7 @@ export class ConversationService {
           users: true,
           status: true,
           conversations: true,
+          lastReadMessageId: true,
           conversation_username: true,
         },
       })) || {};
@@ -53,6 +61,7 @@ export class ConversationService {
       conversation_username,
       isGroup: conversations.isGroup,
       conversationPermissionId: id,
+      lastReadMessageId,
     };
   }
   async initPrivateConversation(

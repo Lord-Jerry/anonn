@@ -79,22 +79,28 @@ export class MessagesService {
         createdAt: 'desc',
       },
     });
-    const lastMessage = messages[messages.length - 1];
+    const latestMessage = messages[0];
 
-    if (!cursor || cursorType === 'latest') {
-      this.db.users_conversations.update({
+    if (conversationPermission.lastReadMessageId < latestMessage?.id) {
+      await this.db.users_conversations.update({
         where: {
           id: conversationPermission.conversationPermissionId,
         },
         data: {
-          lastReadMessageId: lastMessage?.id,
+          lastReadMessageId: latestMessage?.id,
           hasNewMessage: false,
         },
       });
     }
 
-    return messages.map((message) =>
-      markMessageAsBelongsToUser(conversationPermission.userId, message),
-    );
+    return messages.map((message) => ({
+      ...markMessageAsBelongsToUser(conversationPermission.userId, message),
+      // message can be considered read, when:
+      // 1. message is older than last read message
+      // 2. message is not sent by the user
+      isNewMessage:
+        message.id > conversationPermission.lastReadMessageId &&
+        message.senderId !== conversationPermission.userId,
+    }));
   }
 }
