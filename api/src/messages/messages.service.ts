@@ -79,6 +79,19 @@ export class MessagesService {
         createdAt: 'desc',
       },
     });
+    const lastMessage = messages[messages.length - 1];
+
+    if (!cursor || cursorType === 'latest') {
+      this.db.users_conversations.update({
+        where: {
+          id: conversationPermission.conversationPermissionId,
+        },
+        data: {
+          lastReadMessageId: lastMessage?.id,
+          hasNewMessage: false,
+        },
+      });
+    }
 
     return messages.map((message) =>
       markMessageAsBelongsToUser(conversationPermission.userId, message),
