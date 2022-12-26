@@ -35,6 +35,7 @@ export default class AuthService {
       platform,
     });
 
+    this.logout();
     const cookieExpiry = 60 * 60 * 24 * 30; // 30 days
     if (data.token)
       Cookies.set(USER_COOKIE_KEYS.TOKEN, data.token, {
