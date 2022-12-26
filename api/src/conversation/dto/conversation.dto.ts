@@ -51,3 +51,13 @@ export class LastConversationDto {
   @IsUUID()
   userId: string;
 }
+
+export class ApproveRejectConversationRequestDto {
+  @IsNotEmpty()
+  @IsUUID()
+  conversationId: string;
+
+  @IsNotEmpty()
+  @IsIn(['approve', 'reject'])
+  action: 'approve' | 'reject';
+}

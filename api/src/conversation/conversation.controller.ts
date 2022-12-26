@@ -18,6 +18,7 @@ import { IRequestUser } from 'src/common/types';
 
 import { ConversationService } from './conversation.service';
 import {
+  ApproveRejectConversationRequestDto,
   ConversationIdParamDto,
   ConversationTypeDto,
   FetchConversationQueryParamDto,
@@ -71,6 +72,21 @@ export class ConversationController {
 
     return conversations.map(
       (conversation) => new ConversationEntity(conversation),
+    );
+  }
+
+  @UseGuards(AtGuard)
+  @Put('/:conversationId/:action')
+  @HttpCode(HttpStatus.OK)
+  async approveRejectConversationRequest(
+    @Param() params: ApproveRejectConversationRequestDto,
+    @Request() req: IRequestUser,
+  ) {
+    const action = params.action.toUpperCase() as User_conversation_status;
+    await this.conversationService.approveRejectConversationRequest(
+      req.user.userId,
+      params.conversationId,
+      action,
     );
   }
 
