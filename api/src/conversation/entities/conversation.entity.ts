@@ -1,4 +1,5 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
+import { AVATARS } from 'src/common/constants';
 
 export class ConversationEntity {
   title: string;
@@ -18,6 +19,7 @@ export class ConversationEntity {
     createdAt: Date;
   }[];
 
+  @Transform(({ obj }) => AVATARS[obj.avatar])
   avatar?: string;
 
   createdAt: Date;
