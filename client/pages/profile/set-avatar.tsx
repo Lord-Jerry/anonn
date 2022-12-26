@@ -1,15 +1,15 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import Button from "components/button";
+import ArrowRight from "icon/ArrowRight";
+import Share from "icon/Share";
+import cookies from "next-cookies";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetServerSidePropsContext } from "next/types";
-
-import Button from "components/button";
-import ArrowRight from "icon/ArrowRight";
 import ProfileService from "services/profile";
 import { USER_COOKIE_KEYS } from "services/auth";
 import { myLoader } from "utils/imageLoader";
-import Share from "icon/Share";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -24,7 +24,6 @@ export default function SetAvatar(props: Props) {
     avatar: "",
   });
   const [change, setChange] = useState("");
-  const [stage, setStage] = useState(1);
 
   const { isLoading, data } = useQuery(
     ["avatarData"],
@@ -49,6 +48,12 @@ export default function SetAvatar(props: Props) {
     onError(err) {
       console.log(err);
       setChange("");
+       router.push({
+        pathname: "/profile",
+        query: {
+          isNewUser: true,
+        },
+      });
     },
   });
 
@@ -80,13 +85,13 @@ export default function SetAvatar(props: Props) {
           <p className="text-white font-black text-center mt-6">
             @{props?.username}
           </p>
-          {stage === 1 && 
-            <p
+          <p
             className="opacity-50 text-md text-center underline cursor-pointer"
             onClick={() => setChange("change")}
           >
             change avatar
-          </p>}
+          </p>
+
           {change === "change" && (
             <div className="grid grid-cols-4 grid-flow-row gap-3 p-8">
               {data?.map((x) => (
@@ -119,32 +124,12 @@ export default function SetAvatar(props: Props) {
           )}
         </>
       )}
-      {stage === 1 && 
-        <Button
+      <Button
         text="continue"
         icon={<ArrowRight />}
         className="mt-12 btn2"
         onClick={() => mutate()}
       />
-      }
-      {
-        stage === 2 && (
-          <>
-        <Button
-        text="Share your profile link"
-        icon={<Share />}
-        className="mt-12 btn2"
-        onClick={() => mutate()}
-      />
-        <Button
-        text="Go to Dashboard"
-        className="mt-4 btn"
-        onClick={() => router.push('/dashboard')}
-      />
-      </>
-        )
-      }
-    
     </div>
   );
 }
@@ -154,19 +139,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
-  if (!redirectionDestination.includes("set-avatar"))
-    return {
-      redirect: {
-        destination: redirectionDestination,
-      },
-    };
+  // if (!redirectionDestination.includes("set-avatar"))
+  //   return {
+  //     redirect: {
+  //       destination: redirectionDestination,
+  //     },
+  //   };
 
-  if (avatar)
-    return {
-      redirect: {
-        destination: "/profile",
-      },
-    };
+  // if (avatar)
+  //   return {
+  //     redirect: {
+  //       destination: "/profile",
+  //     },
+  //   };
 
   return {
     props: {

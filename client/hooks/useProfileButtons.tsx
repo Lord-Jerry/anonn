@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import ArrowRight from "icon/ArrowRight";
 import { Props as ButtonPropType } from "components/button";
 import AuthService from "services/auth";
@@ -36,11 +36,11 @@ export const useProfileButtons = () => {
 };
 
 export const useVisitorProfileButtons = (lastConversationId?: string | null) => {
-  // const router = useRouter();
+  const router = useRouter();
   const continueConversation = { 
     bg: "bg_yellow",
     text: "Continue last conversation",
-    onClick: () => null
+    onClick: () => router.push("/conversations")
   }
 
   return [
@@ -48,7 +48,7 @@ export const useVisitorProfileButtons = (lastConversationId?: string | null) => 
     {
       bg: "bg_black",
       text: "Start new conversation",
-      onClick: () => null,
+      onClick:  () => router.push("/conversations")
     }
   ].filter(Boolean) as ButtonPropType[];
 

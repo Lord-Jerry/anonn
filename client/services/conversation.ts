@@ -4,6 +4,7 @@ import { Axios } from "axios";
 import { USER_COOKIE_KEYS } from "./auth";
 
 import ApiService from "./api";
+
 export default class ConversationService {
   private api: Axios;
 
@@ -13,10 +14,19 @@ export default class ConversationService {
 
   async getLastConversationWithUser(userId: string) {
     try {
-      const { data } = await this.api.get<{id: string}>(`/conversation/last/${userId}`);
+      const { data } = await this.api.get<{ id: string }>(
+        `/conversation/last/${userId}`
+      );
       return data;
     } catch (error) {
       return null;
     }
+  }
+
+  async getAllConversations(type: string) {
+    const { data } = await this.api.get<{ type: string }[]>(
+      `/conversation/${type}`
+    );
+    return data;
   }
 }

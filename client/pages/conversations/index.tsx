@@ -1,19 +1,46 @@
+import { useQuery } from "@tanstack/react-query";
 import Empty from "components/Empty";
+import MessageBox from "components/MessageBox";
 import Navigation from "components/Navigation";
 import Tab from "components/tab";
 import { RequestIcon } from "icon/RequestIcon";
 import cookies from "next-cookies";
 import { GetServerSidePropsContext } from "next/types";
+import { useState } from "react";
 import { USER_COOKIE_KEYS } from "services/auth";
+import ConversationService from "services/conversation";
+import { AVATARS } from "constants/index";
+import { useRouter } from "next/router";
 
 
 export default function Dashboard() {
+  const router =  useRouter();
+  const conversationService = new ConversationService();
+  const [type, setType] = useState<string>("active");
 
+  const { isLoading, data } = useQuery(["userConversations", type], () =>
+    conversationService.getAllConversations(type)
+  );
+  console.log(data, AVATARS);
   return (
     <>
-    <Navigation />
-    <Tab />
-    <Empty text="you don’t have anything going on" link="https://copy" icon={<RequestIcon />} />
+      <Navigation text="Conversations" />
+      <Tab type={type} setType={setType} />
+      {isLoading && <p>Loading...</p>}
+      {!isLoading && data?.length === 0 && (
+        <Empty
+          text="you don’t have anything going on"
+          link="https://copy"
+          icon={<RequestIcon />}
+        />
+      )}
+      {!isLoading && data && data?.length > 0 && (
+        data?.map((x:any)=>(
+        <div key={x.type} onClick={()=>router.push(`/conversations/${x?.title}`)}>
+        <MessageBox avatar={x?.avatar} username={x?.title} time={(x?.lastMessage?.sentAt)} msg={x?.lastMessage?.content} />
+        </div>
+      )))}
+
     </>
   );
 }
@@ -37,6 +64,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 
   return {
-    props: {},
+    props: {
+      
+    },
   };
 }

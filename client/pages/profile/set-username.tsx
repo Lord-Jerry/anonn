@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import Input from "components/input";
+import Navigation from "components/Navigation";
 import ArrowLeft from "icon/ArrowLeft";
 import ArrowRight from "icon/ArrowRight";
 import { useRouter } from "next/router";
@@ -37,6 +38,7 @@ export default function SetUsername() {
   });
 
   return (
+    <Navigation text="Profile setup">
     <div className="mx-auto py-16 px-12 w-[400px]">
       <h1 className="font-black text-3xl w-[260px] mb-16">
         Welcome to <br />
@@ -53,8 +55,8 @@ export default function SetUsername() {
         value={username}
         onChange={onInputChange}
       />
-      {data === false ? (
-        <p>Sorry, that username is already taken</p>
+      {username.length >= 3 && data === false ? (
+        <p className="text-[#f18d77]">Sorry, that username is already taken</p>
       ) : (
         <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
           <li> Keep it Anonnn! </li>
@@ -69,6 +71,7 @@ export default function SetUsername() {
         onClick={() => data !== false && mutate()}
       />
     </div>
+    </Navigation>
   );
 }
 
@@ -77,19 +80,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username } =
     profileService.validateUserProfile(ctx);
 
-  if (!redirectionDestination.includes("set-username"))
-    return {
-      redirect: {
-        destination: redirectionDestination,
-      },
-    };
+  // if (!redirectionDestination.includes("set-username"))
+  //   return {
+  //     redirect: {
+  //       destination: redirectionDestination,
+  //     },
+  //   };
 
-  if (username)
-    return {
-      redirect: {
-        destination: "/profile",
-      },
-    };
+  // if (username)
+  //   return {
+  //     redirect: {
+  //       destination: "/profile",
+  //     },
+  //   };
 
   return {
     props: {},
