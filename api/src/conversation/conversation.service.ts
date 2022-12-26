@@ -195,6 +195,7 @@ export class ConversationService {
         title: true,
         hasNewMessage: true,
         conversation_username: true,
+        status: true,
         conversations: {
           select: {
             id: true,
@@ -242,6 +243,7 @@ export class ConversationService {
     );
 
     return conversations.map((conversation) => ({
+      status: conversation.status,
       isOpen: conversation.conversations.isOpen,
       hasNewMessage: conversation.hasNewMessage,
       isGroup: conversation.conversations.isGroup,

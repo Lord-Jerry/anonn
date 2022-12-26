@@ -24,6 +24,7 @@ export class ConversationEntity {
 
   createdAt: Date;
   updatedAt: Date;
+  status: string;
 
   @Expose()
   get lastMessage() {
