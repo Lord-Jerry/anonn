@@ -21,7 +21,6 @@ export default function Dashboard() {
   const { isLoading, data } = useQuery(["userConversations", type], () =>
     conversationService.getAllConversations(type)
   );
-  console.log(data, AVATARS);
   
   return (
     <>

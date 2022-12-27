@@ -88,7 +88,7 @@ export default function SingleConversation() {
               </div>
             ))}
           </div>
-          <div className="fixed py-8 bottom-[-40px] w-full">
+          <div className="fixed py-8 bottom-[-30px] w-full">
             <div className="relative bottom-0">
               <textarea
                 className="border-0"
