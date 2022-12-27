@@ -7,6 +7,7 @@ import ConversationService from "services/conversation";
 import Navigation from "components/Navigation";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import useAutosizeTextArea from "utils/useAutosizeTextArea";
+import SendIcon from "icon/SendIcon";
 
 type messageDataProps = {
   id: string;
@@ -73,14 +74,14 @@ export default function SingleConversation() {
               <div key={msg?.id}>
                 {msg?.isMine && (
                   <div className="bg-[url('/images/mymessage.svg')] bg-no-repeat bg-right ml-auto w-[290px]">
-                    <p className="py-4 text-white bg-[##1E1E1E] mr-5 my-4 px-4 border-2 border-[#f8f886] rounded-lg">
+                    <p className="break-words py-4 text-white bg-[##1E1E1E] mr-5 my-4 px-4 border-2 border-[#f8f886] rounded-lg">
                       {msg?.content}
                     </p>
                   </div>
                 )}
                 {!msg?.isMine && (
                   <div className="bg-[url('/images/theirmessage.svg')] bg-no-repeat bg-left w-[290px]">
-                    <p className="py-4 text-black bg-[#f8f886] ml-4 my-4 px-4 rounded-lg">
+                    <p className="break-words py-4 text-black bg-[#f8f886] ml-4 my-4 px-4 rounded-lg">
                       {msg?.content}
                     </p>
                   </div>
@@ -88,18 +89,18 @@ export default function SingleConversation() {
               </div>
             ))}
           </div>
-          <div className="fixed bottom-0">
+          <div className="fixed h-[80px] py-8 bottom-0 w-full">
             <div className="relative bottom-0">
               <textarea
-                id="review-text"
+                className="border-0"
                 onChange={handleChange}
                 placeholder="type something, durh"
                 ref={textAreaRef}
                 rows={1}
                 value={content}
               />
-              <button className="absolute h-[100%]" onClick={() => mutate(daaa)}>
-                Send
+              <button className="absolute right-4 h-[100%]" onClick={() => mutate(daaa)}>
+                <SendIcon />
               </button>
             </div>
           </div>

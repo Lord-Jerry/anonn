@@ -27,14 +27,12 @@ textarea {
 }
 
 textarea:hover {
-  /* border-color: #c6c6c6; */
   border: none;
   outline: none;
 }
 
 textarea:focus {
   outline: none;
-  /* border-color: #c6c6c6; */
   border: none;
 }
 
