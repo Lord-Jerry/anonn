@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import Router from "next/router";
-import { useQuery } from "@tanstack/react-query";
-import { GetServerSidePropsContext } from "next/types";
+import { uniqBy } from 'lodash';
+import { useEffect, useState } from 'react';
+import Router from 'next/router';
+import { useQuery } from '@tanstack/react-query';
+import { GetServerSidePropsContext } from 'next/types';
 
-import Tab from "components/tab";
-import Empty from "components/Empty";
-import MessageBox from "components/ConversationBox";
-import Navigation from "components/Navigation";
-import { RequestIcon } from "icon/RequestIcon";
+import Tab from 'components/tab';
+import Empty from 'components/Empty';
+import MessageBox from 'components/ConversationBox';
+import Navigation from 'components/Navigation';
+import { RequestIcon } from 'icon/RequestIcon';
 
 import ConversationService, { ConversationType } from 'services/conversation';
 import ProfileService from 'services/profile';
@@ -62,18 +63,16 @@ const Conversations = (props: ConversationsProps) => {
 };
 
 export default function Dashboard(props: Props) {
-  // conversation shouldn't contain more than 20 items at a time
-  // for every x amount of newly added data, we should remove X amount of data from the end
+  const [scrollLoading, setScrollLoading] = useState(false);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [tabs, setTabs] = useState(
     markTabAsSelected(conversationTabs, (props?.tab as string) || undefined)
   );
   const selectedTab = tabs.find((x) => x.selected) || tabs[1];
   const conversationService = new ConversationService();
-  const { ref } = useScroll((pos) => pos);
 
   const { isLoading } = useQuery(
-    ["userConversations", selectedTab.id],
+    ['userConversations', selectedTab.id],
     () => conversationService.getAllConversations(selectedTab.id),
     {
       onSuccess: (data) => setConversations(data),
@@ -98,6 +97,24 @@ export default function Dashboard(props: Props) {
     );
   };
 
+  const handleScrollfetch = async (scrolltype?: string) => {
+    if (isLoading || scrollLoading) return;
+
+    const latestConversations = conversations[conversations.length - 1];
+    if (scrolltype === 'up' || !latestConversations) return;
+
+    setScrollLoading(true);
+    const oldConversations = await conversationService.getAllConversations(
+      selectedTab.id,
+      latestConversations.updatedAt
+    );
+
+    setConversations((prev) => {
+      return uniqBy([...prev, ...oldConversations], 'conversationId');
+    });
+    setScrollLoading(false);
+  };
+
   const handleConversationClick = (id: string) => {
     Router.push({
       pathname: `/conversations/${id}`,
@@ -105,30 +122,24 @@ export default function Dashboard(props: Props) {
     });
   };
 
+  const { ref } = useScroll((pos) => handleScrollfetch(pos));
+
   useEffect(() => {
     if (isLoading) return;
-    const intervalId = setInterval(() => {
+    const intervalId = setInterval(async () => {
       const latestConversations = conversations[0];
       if (!latestConversations) return;
-      conversationService
-        .getAllConversations(
-          selectedTab.id,
-          latestConversations.updatedAt,
-          "latest"
-        )
-        .then((data) => {
-          setConversations((prev) => {
-            const maxConversations = 20;
-            const numberOfConversationToRemove = data.length;
-            // find better solution that doesn't involve mutating the array
-            prev.splice(
-              maxConversations - numberOfConversationToRemove,
-              numberOfConversationToRemove
-            );
-            return [...data, ...prev];
-          });
-        });
-    }, 10000);
+
+      const newConversations = await conversationService.getAllConversations(
+        selectedTab.id,
+        latestConversations.updatedAt,
+        'latest'
+      );
+
+      setConversations((prev) => {
+        return uniqBy([...newConversations, ...prev], 'conversationId');
+      });
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, [conversations]);
@@ -145,6 +156,9 @@ export default function Dashboard(props: Props) {
           conversations={conversations || []}
           onSelect={handleConversationClick}
         />
+        <div className="flex justify-center items-center pt-2">
+          {scrollLoading ? 'loading' : null}
+        </div>
       </div>
     </>
   );
