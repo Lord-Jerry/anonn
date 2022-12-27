@@ -5,6 +5,10 @@ import { USER_COOKIE_KEYS } from "./auth";
 
 import ApiService from "./api";
 
+export type messageData = {
+  id: string;
+  content: string;
+};
 export default class ConversationService {
   private api: Axios;
 
@@ -27,6 +31,18 @@ export default class ConversationService {
     const { data } = await this.api.get<{ type: string }[]>(
       `/conversation/${type}`
     );
+    return data;
+  }
+
+  async getSingleConversation(id: string) {
+    const { data } = await this.api.get(`/messages/${id}`);
+    return data;
+  }
+
+  async sendMessage({ id, content }: messageData) {
+    const { data } = await this.api.post(`/messages/send/${id}`, {
+      content: content,
+    });
     return data;
   }
 }

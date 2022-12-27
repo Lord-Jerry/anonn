@@ -14,6 +14,32 @@ body {
 * {
   box-sizing: border-box;
 }
+textarea {
+  background: #000;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #fff;
+  padding: 12px;
+  resize: none;
+  font-size: 11px;
+  transition: border-color 150ms ease;
+  width: 100%;
+}
+
+textarea:hover {
+  border: none;
+  outline: none;
+}
+
+textarea:focus {
+  outline: none;
+  border: none;
+}
+
+textarea::placeholder {
+  color: #c6c6c6;
+  font-size: 11px;
+}
 
 .tab {
   @apply text-[#F8F886] font-normal text-xs py-1 px-4 w-20;
@@ -34,6 +60,6 @@ body {
   }
   body {
     color: white;
-    background: #16160E;
+    background: #16160e;
   }
 }
