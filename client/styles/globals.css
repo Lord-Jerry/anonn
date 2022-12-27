@@ -19,14 +19,14 @@ textarea {
   border-radius: 0;
   border: none;
   border-bottom: 1px solid #fff;
-  padding: 12px;
+  /* padding: 12px; */
   resize: none;
   font-size: 11px;
   transition: border-color 150ms ease;
-  width: 100%;
+  width: 400px;
 }
 
-textarea:hover {
+/* textarea:hover {
   border: none;
   outline: none;
 }
@@ -34,7 +34,7 @@ textarea:hover {
 textarea:focus {
   outline: none;
   border: none;
-}
+} */
 
 textarea::placeholder {
   color: #c6c6c6;

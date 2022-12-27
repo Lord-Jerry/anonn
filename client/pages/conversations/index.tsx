@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import Router from 'next/router';
-import { useQuery } from '@tanstack/react-query';
-import { GetServerSidePropsContext } from 'next/types';
+import { useEffect, useState } from "react";
+import Router from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { GetServerSidePropsContext } from "next/types";
 
-import Tab from 'components/tab';
-import Empty from 'components/Empty';
-import MessageBox from 'components/ConversationBox';
-import Navigation from 'components/Navigation';
-import { RequestIcon } from 'icon/RequestIcon';
+import Tab from "components/tab";
+import Empty from "components/Empty";
+import MessageBox from "components/ConversationBox";
+import Navigation from "components/Navigation";
+import { RequestIcon } from "icon/RequestIcon";
 
-import ConversationService, { ConversationType } from 'services/conversation';
-import ProfileService from 'services/profile';
-import { conversationTabs } from 'constants/tabs';
+import ConversationService, { ConversationType } from "services/conversation";
+import ProfileService from "services/profile";
+import { conversationTabs } from "constants/tabs";
 
 type ConversationsProps = {
   isLoading: boolean;
@@ -20,7 +20,11 @@ type ConversationsProps = {
 };
 const Conversations = (props: ConversationsProps) => {
   if (props.isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-[600px]">
+        Fetching data...
+      </div>
+    );
   }
 
   if (props.conversations.length === 0) {
@@ -59,7 +63,7 @@ export default function Dashboard() {
   const conversationService = new ConversationService();
 
   const { isLoading } = useQuery(
-    ['userConversations', selectedTab.id],
+    ["userConversations", selectedTab.id],
     () => conversationService.getAllConversations(selectedTab.id),
     {
       onSuccess: (data) => setConversations(data),
@@ -99,14 +103,17 @@ export default function Dashboard() {
         .getAllConversations(
           selectedTab.id,
           latestConversations.updatedAt,
-          'latest'
+          "latest"
         )
         .then((data) => {
           setConversations((prev) => {
             const maxConversations = 20;
             const numberOfConversationToRemove = data.length;
             // find better solution that doesn't involve mutating the array
-            prev.splice(maxConversations - numberOfConversationToRemove, numberOfConversationToRemove)
+            prev.splice(
+              maxConversations - numberOfConversationToRemove,
+              numberOfConversationToRemove
+            );
             return [...data, ...prev];
           });
         });

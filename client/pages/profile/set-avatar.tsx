@@ -48,7 +48,7 @@ export default function SetAvatar(props: Props) {
     onError(err) {
       console.log(err);
       setChange("");
-       router.push({
+      router.push({
         pathname: "/profile",
         query: {
           isNewUser: true,
@@ -68,7 +68,11 @@ export default function SetAvatar(props: Props) {
           continue.
         </h1>
       </>
-      {isLoading && <p>Loading...</p>}
+      {isLoading && (
+        <div className="flex justify-center items-center h-[600px]">
+          Fetching data...
+        </div>
+      )}
       {!isLoading && data && (
         <>
           <Image

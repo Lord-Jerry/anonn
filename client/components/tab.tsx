@@ -12,6 +12,7 @@ export const Tab = ({ tabs, onSelect }: Props) => {
     <div className="flex justify-around py-8 w-[400px] mx-auto">
       {tabs.map((tab) => (
         <p
+          key={tab.id}
           className={`tab ${tab.selected ? 'selected_tab' : ''}`}
           onClick={() => onSelect(tab.id)}
         >
