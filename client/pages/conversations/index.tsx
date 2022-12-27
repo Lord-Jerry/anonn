@@ -63,6 +63,7 @@ const Conversations = (props: ConversationsProps) => {
 };
 
 export default function Dashboard(props: Props) {
+  const [scrollLoading, setScrollLoading] = useState(false);
   const [conversations, setConversations] = useState<ConversationType[]>([]);
   const [tabs, setTabs] = useState(
     markTabAsSelected(conversationTabs, (props?.tab as string) || undefined)
@@ -97,10 +98,12 @@ export default function Dashboard(props: Props) {
   };
 
   const handleScrollfetch = async (scrolltype?: string) => {
-    if (isLoading) return;
+    if (isLoading || scrollLoading) return;
+
     const latestConversations = conversations[conversations.length - 1];
-    console.log({ latestConversations, conversations });
     if (scrolltype === 'up' || !latestConversations) return;
+
+    setScrollLoading(true);
     const oldConversations = await conversationService.getAllConversations(
       selectedTab.id,
       latestConversations.updatedAt
@@ -109,6 +112,7 @@ export default function Dashboard(props: Props) {
     setConversations((prev) => {
       return uniqBy([...prev, ...oldConversations], 'conversationId');
     });
+    setScrollLoading(false);
   };
 
   const handleConversationClick = (id: string) => {
@@ -135,7 +139,7 @@ export default function Dashboard(props: Props) {
       setConversations((prev) => {
         return uniqBy([...newConversations, ...prev], 'conversationId');
       });
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, [conversations]);
@@ -152,6 +156,9 @@ export default function Dashboard(props: Props) {
           conversations={conversations || []}
           onSelect={handleConversationClick}
         />
+        <div className="flex justify-center items-center pt-2">
+          {scrollLoading ? 'loading' : null}
+        </div>
       </div>
     </>
   );
