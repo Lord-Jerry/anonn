@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import Button from "components/button";
 import { myLoader } from "utils/imageLoader";
 import ConversationService from "services/conversation";
 import Navigation from "components/Navigation";
@@ -17,7 +16,7 @@ interface userDataObj {
 export default function SingleConversation() {
   const queryClient = useQueryClient();
   const [content, setContent] = useState<string>("");
-
+  const messagesEndRef = useRef<any>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useAutosizeTextArea(textAreaRef.current, content);
@@ -29,11 +28,14 @@ export default function SingleConversation() {
   const conversationService = new ConversationService();
   const router = useRouter();
 
-  const userData : userDataObj | any = router?.query;
+  const userData: userDataObj | any = router?.query;
 
-  const contentData: {id: string, content: string} = {
+  const contentData: { id: string; content: string } = {
     id: userData?.id,
     content: content,
+  };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const { isLoading, data } = useQuery(
@@ -46,12 +48,13 @@ export default function SingleConversation() {
   );
 
   const { isLoading: sendingMessage, mutate } = useMutation(
-    ()=> conversationService.sendMessage(contentData),
+    () => conversationService.sendMessage(contentData),
     {
       onSuccess(data) {
         console.log(data);
         queryClient.invalidateQueries(["singleConversations"]);
         setContent("");
+        textAreaRef.current?.focus();
       },
       onError(data) {
         console.log(data);
@@ -59,6 +62,12 @@ export default function SingleConversation() {
     }
   );
   const sortedData = data?.sort(timeSort);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [sortedData]);
+
+  // console.log(sortedData[0]?.isNewMessage)
   return (
     <>
       {isLoading && (
@@ -67,7 +76,10 @@ export default function SingleConversation() {
         </div>
       )}
       {!isLoading && data && (
-        <Navigation text={`Anonn chat with ${userData?.username}`}>
+        <Navigation
+          text={`Anonn chat with ${userData?.username}`}
+          src="https://api"
+        >
           <div className="py-16 px-2 w-[400px]">
             {sortedData?.map((msg: any) => (
               <div key={msg?.id}>
@@ -87,6 +99,10 @@ export default function SingleConversation() {
                 )}
               </div>
             ))}
+               {/* {sortedData[0]?.isNewMessage && (
+            <p className="text-center">You have some new messages</p>
+            )} */}
+            <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
           </div>
           <div className="fixed py-8 bottom-[-30px] w-full">
             <div className="relative bottom-0">
@@ -98,7 +114,11 @@ export default function SingleConversation() {
                 rows={1}
                 value={content}
               />
-              <button className="absolute right-2 h-[100%]" onClick={() => mutate()}>
+              <button
+                className="absolute right-2 h-[100%]"
+                disabled={sendingMessage}
+                onClick={() => mutate()}
+              >
                 <SendIcon />
               </button>
             </div>

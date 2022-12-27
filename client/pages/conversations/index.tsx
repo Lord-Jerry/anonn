@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import Router from 'next/router';
-import { useQuery } from '@tanstack/react-query';
-import { GetServerSidePropsContext } from 'next/types';
+import { useEffect, useState } from "react";
+import Router from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { GetServerSidePropsContext } from "next/types";
 
-import Tab from 'components/tab';
-import Empty from 'components/Empty';
-import MessageBox from 'components/ConversationBox';
-import Navigation from 'components/Navigation';
-import { RequestIcon } from 'icon/RequestIcon';
+import Tab from "components/tab";
+import Empty from "components/Empty";
+import MessageBox from "components/ConversationBox";
+import Navigation from "components/Navigation";
+import { RequestIcon } from "icon/RequestIcon";
 
 import ConversationService, { ConversationType } from 'services/conversation';
 import ProfileService from 'services/profile';
@@ -27,7 +27,11 @@ type ConversationsProps = {
 };
 const Conversations = (props: ConversationsProps) => {
   if (props.isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-[600px]">
+        Fetching data...
+      </div>
+    );
   }
 
   if (props.conversations.length === 0) {
@@ -69,7 +73,7 @@ export default function Dashboard(props: Props) {
   const { ref } = useScroll((pos) => alert(pos));
 
   const { isLoading } = useQuery(
-    ['userConversations', selectedTab.id],
+    ["userConversations", selectedTab.id],
     () => conversationService.getAllConversations(selectedTab.id),
     {
       onSuccess: (data) => setConversations(data),
@@ -110,7 +114,7 @@ export default function Dashboard(props: Props) {
         .getAllConversations(
           selectedTab.id,
           latestConversations.updatedAt,
-          'latest'
+          "latest"
         )
         .then((data) => {
           setConversations((prev) => {
