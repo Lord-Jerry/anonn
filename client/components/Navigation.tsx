@@ -21,7 +21,7 @@ export default function Navigation(props: Props) {
               width={45}
               height={45}
               className="rounded-lg mx-auto"
-            /> :  <ArrowLeft />
+            /> :  <Link href="/conversations" className="p-4 text-2xl"><ArrowLeft /></Link>
           }
         <p>{props.text}</p>
         {props.src ?  <Link href="/conversations" className="p-4 text-2xl">x</Link> : <Dots /> }
