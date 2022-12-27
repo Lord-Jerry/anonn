@@ -70,7 +70,7 @@ export default function Dashboard(props: Props) {
   );
   const selectedTab = tabs.find((x) => x.selected) || tabs[1];
   const conversationService = new ConversationService();
-  const { ref } = useScroll((pos) => alert(pos));
+  const { ref } = useScroll((pos) => pos);
 
   const { isLoading } = useQuery(
     ["userConversations", selectedTab.id],

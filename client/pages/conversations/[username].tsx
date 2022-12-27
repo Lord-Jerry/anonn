@@ -1,7 +1,5 @@
-import Image from "next/image";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { myLoader } from "utils/imageLoader";
 import ConversationService from "services/conversation";
 import Navigation from "components/Navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -77,18 +75,18 @@ export default function SingleConversation() {
           text={`Anonn chat with ${userData?.username}`}
           src="https://api"
         >
-          <div className="py-16 px-2 w-[400px]">
+          <div className="py-16 px-2 max-w-[400px] mx-auto">
             {sortedData?.map((msg: any) => (
               <div key={msg?.id}>
                 {msg?.isMine && (
-                  <div className="bg-[url('/images/mymessage.svg')] bg-no-repeat bg-right ml-auto w-[290px]">
+                  <div className="bg-[url('/images/mymessage.svg')] bg-no-repeat bg-right ml-auto max-w-[290px]">
                     <p className="break-words py-4 text-white bg-[##1E1E1E] mr-5 my-4 px-4 border-2 border-[#f8f886] rounded-lg">
                       {msg?.content}
                     </p>
                   </div>
                 )}
                 {!msg?.isMine && (
-                  <div className="bg-[url('/images/theirmessage.svg')] bg-no-repeat bg-left w-[290px]">
+                  <div className="bg-[url('/images/theirmessage.svg')] bg-no-repeat bg-left max-w-[290px]">
                     <p className="break-words py-4 text-black bg-[#f8f886] ml-4 my-4 px-4 rounded-lg">
                       {msg?.content}
                     </p>
@@ -96,12 +94,12 @@ export default function SingleConversation() {
                 )}
               </div>
             ))}
-               {/* {sortedData[0]?.isNewMessage && (
+            {/* {sortedData[0]?.isNewMessage && (
             <p className="text-center">You have some new messages</p>
             )} */}
             <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
           </div>
-          <div className="fixed py-8 bottom-[-30px] w-full">
+          <div className="fixed py-8 bottom-[-40px] max-w-[400px] flex justify-center">
             <div className="relative bottom-0">
               <textarea
                 className="border-0"
@@ -111,18 +109,19 @@ export default function SingleConversation() {
                 rows={1}
                 value={content}
               />
-              {content.length > 0 && <button
-                className="absolute right-2 h-[100%]"
-                disabled={sendingMessage}
-                onClick={
-                  () => {
-                    mutate()
+              {content.length > 0 && (
+                <button
+                  className="absolute right-4 h-[100%]"
+                  disabled={sendingMessage}
+                  onClick={() => {
+                    mutate();
                     setContent("");
+                    scrollToBottom();
                   }}
-              >
-                <SendIcon />
-              </button>
-              }
+                >
+                  <SendIcon />
+                </button>
+              )}
             </div>
           </div>
         </Navigation>
