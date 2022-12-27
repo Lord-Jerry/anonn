@@ -67,7 +67,7 @@ export default function SingleConversation() {
     scrollToBottom();
   }, [sortedData]);
 
-  console.log(sortedData[0]?.isNewMessage)
+  // console.log(sortedData[0]?.isNewMessage)
   return (
     <>
       {isLoading && (
@@ -99,9 +99,9 @@ export default function SingleConversation() {
                 )}
               </div>
             ))}
-               {sortedData[0]?.isNewMessage && (
+               {/* {sortedData[0]?.isNewMessage && (
             <p className="text-center">You have some new messages</p>
-            )}
+            )} */}
             <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
           </div>
           <div className="fixed py-8 bottom-[-30px] w-full">
