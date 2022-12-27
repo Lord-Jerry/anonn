@@ -5,7 +5,7 @@ import Button from "components/button";
 import { myLoader } from "utils/imageLoader";
 import ConversationService from "services/conversation";
 import Navigation from "components/Navigation";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAutosizeTextArea from "utils/useAutosizeTextArea";
 import SendIcon from "icon/SendIcon";
 import { timeSort } from "utils/timeSort";
@@ -15,7 +15,7 @@ interface userDataObj {
 }
 
 export default function SingleConversation() {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [content, setContent] = useState<string>("");
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
