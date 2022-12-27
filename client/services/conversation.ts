@@ -1,13 +1,29 @@
-import Cookies from "js-cookie";
-import { Axios } from "axios";
+import Cookies from 'js-cookie';
+import { Axios } from 'axios';
 
-import { USER_COOKIE_KEYS } from "./auth";
+import { USER_COOKIE_KEYS } from './auth';
 
-import ApiService from "./api";
+import ApiService from './api';
 
 export type messageData = {
   id: string;
   content: string;
+};
+
+export type ConversationType = {
+  avatar: string;
+  conversationId: string;
+  hasNewMessages: boolean;
+  isGroup: boolean;
+  isOpen: boolean;
+  status: 'PENDING' | 'ACTIVE' | 'REJECTED';
+  title: string;
+  updatedAt: Date;
+  lastMessage: {
+    content: string;
+    isMine: boolean;
+    sentAt: Date;
+  };
 };
 export default class ConversationService {
   private api: Axios;
@@ -27,9 +43,15 @@ export default class ConversationService {
     }
   }
 
-  async getAllConversations(type: string) {
-    const { data } = await this.api.get<{ type: string }[]>(
-      `/conversation/${type}`
+  async getAllConversations(type: string, cursor?: Date, cursorType?: 'latest' ) {
+    const { data } = await this.api.get<ConversationType[]>(
+      `/conversation/${type}`,
+      {
+        params: {
+          cursor,
+          cursor_type: cursorType,
+        },
+      }
     );
     return data;
   }
