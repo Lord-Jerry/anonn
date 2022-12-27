@@ -29,7 +29,7 @@ export default function MessageBox(props: Props) {
           </div>
         <div className="p-2 w-[130px]">
           <p className="text-[10px]">@{props.username}</p>
-          <p className="text-[10px]">{props.msg}</p>
+          <p className="text-[10px] max-w-[150px] text-ellipsi whitespace-nowrap overflow-hidden">{props.msg}</p>
         </div>
         </div>
           <div>

@@ -16,7 +16,7 @@ export default function Profile(props: Props) {
   const profileButtons = useProfileButtons();
   return (
     <Navigation text="Profile">
-      <div className="mx-auto py-4 px-12 w-[400px]">
+      <div className="mx-auto pt-24 px-12 w-[400px]">
         {props?.isNewUser ? (
           <div className="mb-8">
             <h1 className="text-[32px] font-black text-left leading-tight">

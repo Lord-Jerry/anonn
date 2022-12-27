@@ -8,11 +8,12 @@ import Navigation from "components/Navigation";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import useAutosizeTextArea from "utils/useAutosizeTextArea";
 import SendIcon from "icon/SendIcon";
-
-type messageDataProps = {
+import { timeSort } from "utils/timeSort";
+interface userDataObj {
   id: string;
   content: string;
 }
+
 export default function SingleConversation() {
   const queryClient = new QueryClient();
   const [content, setContent] = useState<string>("");
@@ -28,9 +29,9 @@ export default function SingleConversation() {
   const conversationService = new ConversationService();
   const router = useRouter();
 
-  const userData = router?.query;
+  const userData : userDataObj | any = router?.query;
 
-  const daaa = {
+  const contentData: {id: string, content: string} = {
     id: userData?.id,
     content: content,
   };
@@ -45,7 +46,7 @@ export default function SingleConversation() {
   );
 
   const { isLoading: sendingMessage, mutate } = useMutation(
-    ()=> conversationService.sendMessage(daaa),
+    ()=> conversationService.sendMessage(contentData),
     {
       onSuccess(data) {
         console.log(data);
@@ -57,9 +58,7 @@ export default function SingleConversation() {
       },
     }
   );
-  const sortedData = data?.sort(function (a: { updatedAt: string | number | Date; }, b: { updatedAt: string | number | Date; }) {
-    return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
-  });
+  const sortedData = data?.sort(timeSort);
   return (
     <>
       {isLoading && (
@@ -89,7 +88,7 @@ export default function SingleConversation() {
               </div>
             ))}
           </div>
-          <div className="fixed h-[80px] py-8 bottom-0 w-full">
+          <div className="fixed py-8 bottom-[-40px] w-full">
             <div className="relative bottom-0">
               <textarea
                 className="border-0"
@@ -99,7 +98,7 @@ export default function SingleConversation() {
                 rows={1}
                 value={content}
               />
-              <button className="absolute right-4 h-[100%]" onClick={() => mutate(daaa)}>
+              <button className="absolute right-2 h-[100%]" onClick={() => mutate()}>
                 <SendIcon />
               </button>
             </div>

@@ -22,10 +22,13 @@ export default function Dashboard() {
     conversationService.getAllConversations(type)
   );
   console.log(data, AVATARS);
+  
   return (
     <>
       <Navigation text="Conversations" />
+      <div className="pt-12">
       <Tab type={type} setType={setType} />
+      </div>
       {isLoading && <p>Loading...</p>}
       {!isLoading && data?.length === 0 && (
         <Empty
