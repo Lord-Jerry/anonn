@@ -53,7 +53,6 @@ export default function SingleConversation() {
       onSuccess(data) {
         console.log(data);
         queryClient.invalidateQueries(["singleConversations"]);
-        setContent("");
         textAreaRef.current?.focus();
       },
       onError(data) {
@@ -114,13 +113,18 @@ export default function SingleConversation() {
                 rows={1}
                 value={content}
               />
-              <button
+              {content.length > 0 && <button
                 className="absolute right-2 h-[100%]"
                 disabled={sendingMessage}
-                onClick={() => mutate()}
+                onClick={
+                  () => {
+                    mutate()
+                    setContent("");
+                  }}
               >
                 <SendIcon />
               </button>
+              }
             </div>
           </div>
         </Navigation>
