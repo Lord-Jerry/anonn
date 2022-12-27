@@ -37,6 +37,16 @@ export class MessagesService {
           },
           data: {
             hasNewMessage: true,
+            updatedAt: new Date(),
+          },
+        }),
+        tx.users_conversations.updateMany({
+          where: {
+            conversationId: conversationPermission.conversationId,
+            userId: conversationPermission.userId,
+          },
+          data: {
+            updatedAt: new Date(),
           },
         }),
       ]);
