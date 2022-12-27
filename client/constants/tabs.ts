@@ -1,4 +1,6 @@
-export const conversationTabs = [
+import { Tab } from "types/tab";
+
+export const conversationTabs: Tab[] = [
   {
     id: 'rejected',
     name: 'History',
