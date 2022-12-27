@@ -18,6 +18,7 @@ import { IRequestUser } from 'src/common/types';
 
 import { ConversationService } from './conversation.service';
 import {
+  ApproveRejectConversationRequestDto,
   ConversationIdParamDto,
   ConversationTypeDto,
   FetchConversationQueryParamDto,
@@ -75,6 +76,21 @@ export class ConversationController {
   }
 
   @UseGuards(AtGuard)
+  @Put('/:conversationId/:action')
+  @HttpCode(HttpStatus.OK)
+  async approveRejectConversationRequest(
+    @Param() params: ApproveRejectConversationRequestDto,
+    @Request() req: IRequestUser,
+  ) {
+    const action = params.action.toUpperCase() as User_conversation_status;
+    await this.conversationService.approveRejectConversationRequest(
+      req.user.userId,
+      params.conversationId,
+      action,
+    );
+  }
+
+  @UseGuards(AtGuard)
   @Get('/last/:userId')
   @HttpCode(HttpStatus.OK)
   async getLastConversationWithUser(
@@ -90,38 +106,6 @@ export class ConversationController {
     return {
       id: conversations?.pId,
     };
-  }
-
-  @UseGuards(AtGuard)
-  @Post('send-message/:conversationId')
-  @HttpCode(HttpStatus.CREATED)
-  async sendMessage(
-    @Request() req: IRequestUser,
-    @Param() param: ConversationIdParamDto,
-    @Body() dto: SendMessageDto,
-  ) {
-    return this.conversationService.sendMessage(
-      req.user.userId,
-      param.conversationId,
-      dto.content,
-    );
-  }
-
-  @UseGuards(AtGuard)
-  @Get(':conversationId/messages')
-  @HttpCode(HttpStatus.OK)
-  async getMessages(
-    @Request() req: IRequestUser,
-    @Param() param: ConversationIdParamDto,
-    @Query() query: { cursor: string },
-  ) {
-    const messages = await this.conversationService.getConversationMessages(
-      req.user.userId,
-      param.conversationId,
-      query.cursor,
-    );
-
-    return messages.map((message) => new MessageEntity(message));
   }
 
   @UseGuards(AtGuard)
