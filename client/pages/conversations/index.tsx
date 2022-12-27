@@ -14,6 +14,8 @@ import ProfileService from 'services/profile';
 import { conversationTabs } from 'constants/tabs';
 import { markTabAsSelected } from 'utils/tabs';
 
+import useScroll from 'hooks/useScroll';
+
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
@@ -64,6 +66,7 @@ export default function Dashboard(props: Props) {
   );
   const selectedTab = tabs.find((x) => x.selected) || tabs[1];
   const conversationService = new ConversationService();
+  const { ref } = useScroll((pos) => alert(pos));
 
   const { isLoading } = useQuery(
     ['userConversations', selectedTab.id],
@@ -132,11 +135,13 @@ export default function Dashboard(props: Props) {
       <div className="pt-12">
         <Tab tabs={tabs} onSelect={handleTabClick} />
       </div>
-      <Conversations
-        isLoading={isLoading}
-        conversations={conversations || []}
-        onSelect={handleConversationClick}
-      />
+      <div ref={ref}>
+        <Conversations
+          isLoading={isLoading}
+          conversations={conversations || []}
+          onSelect={handleConversationClick}
+        />
+      </div>
     </>
   );
 }
