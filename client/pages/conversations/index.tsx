@@ -10,11 +10,11 @@ import { useState } from "react";
 import { USER_COOKIE_KEYS } from "services/auth";
 import ConversationService from "services/conversation";
 import { AVATARS } from "constants/index";
-import { useRouter } from "next/router";
+import  Router  from "next/router";
 
 
 export default function Dashboard() {
-  const router =  useRouter();
+  // const router =  useRouter();
   const conversationService = new ConversationService();
   const [type, setType] = useState<string>("active");
 
@@ -36,7 +36,10 @@ export default function Dashboard() {
       )}
       {!isLoading && data && data?.length > 0 && (
         data?.map((x:any)=>(
-        <div key={x.type} onClick={()=>router.push(`/conversations/${x?.title}`)}>
+        <div key={x.type} onClick={()=> Router.push({
+          pathname: `/conversations/${x?.title}`,
+          query: { id: x?.conversationId}
+        })}>
         <MessageBox avatar={x?.avatar} username={x?.title} time={(x?.lastMessage?.sentAt)} msg={x?.lastMessage?.content} />
         </div>
       )))}

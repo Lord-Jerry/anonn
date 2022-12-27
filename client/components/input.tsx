@@ -18,8 +18,9 @@ export default function Input(props: Props) {
           value={props.value}
           autoComplete={"false"}
           onChange={props.onChange}
-          placeholder={props.placeholder}
-          className="block w-full border-0 border-b border-transparent bg-gray-50 text-black focus:border-indigo-600 focus:ring-0 sm:text-sm"
+          placeholder={props.placeholder} 
+          role="textbox"
+          className="input block w-full border-0 border-b border-transparent bg-gray-50 text-black focus:border-indigo-600 focus:ring-0 sm:text-sm"
         />
       </div>
     </div>

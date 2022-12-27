@@ -9,7 +9,7 @@ type Props = {
 export default function Navigation(props: Props) {
   return (
     <>
-      <div className=" bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 w-[400px] h-[56px] mx-auto">
+      <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 w-[400px] h-[56px] mx-auto">
         <ArrowLeft />
         <p>{props.text}</p>
         <Dots />
