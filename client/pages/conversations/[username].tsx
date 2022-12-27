@@ -65,8 +65,6 @@ export default function SingleConversation() {
   useEffect(() => {
     scrollToBottom();
   }, [sortedData]);
-
-  // console.log(sortedData[0]?.isNewMessage)
   return (
     <>
       {isLoading && (
