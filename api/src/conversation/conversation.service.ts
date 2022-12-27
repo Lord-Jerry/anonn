@@ -176,9 +176,6 @@ export class ConversationService {
       take: 20,
       orderBy: [
         {
-          hasNewMessage: 'desc',
-        },
-        {
           updatedAt: 'desc',
         },
       ],
