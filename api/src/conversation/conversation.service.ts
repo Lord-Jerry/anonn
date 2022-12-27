@@ -250,6 +250,7 @@ export class ConversationService {
       messages: conversation.conversations.messages,
       conversationId: conversation.conversations.pId,
       conversationUsername: conversation.conversation_username,
+      updatedAt: conversation.conversations.updatedAt,
       lastMessageIsMine:
         conversation.conversations.messages[0]?.senderId === user.id,
       title: conversation.conversations.isGroup

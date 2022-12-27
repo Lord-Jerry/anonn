@@ -1,65 +1,138 @@
-import { useQuery } from "@tanstack/react-query";
-import Empty from "components/Empty";
-import MessageBox from "components/MessageBox";
-import Navigation from "components/Navigation";
-import Tab from "components/tab";
-import { RequestIcon } from "icon/RequestIcon";
-import cookies from "next-cookies";
-import { GetServerSidePropsContext } from "next/types";
-import { useState } from "react";
-import { USER_COOKIE_KEYS } from "services/auth";
-import ConversationService from "services/conversation";
-import { AVATARS } from "constants/index";
-import  Router  from "next/router";
+import { useEffect, useState } from 'react';
+import Router from 'next/router';
+import { useQuery } from '@tanstack/react-query';
+import { GetServerSidePropsContext } from 'next/types';
 
+import Tab from 'components/tab';
+import Empty from 'components/Empty';
+import MessageBox from 'components/ConversationBox';
+import Navigation from 'components/Navigation';
+import { RequestIcon } from 'icon/RequestIcon';
+
+import ConversationService, { ConversationType } from 'services/conversation';
+import ProfileService from 'services/profile';
+import { conversationTabs } from 'constants/tabs';
+
+type ConversationsProps = {
+  isLoading: boolean;
+  conversations: ConversationType[];
+  onSelect: (id: string) => void;
+};
+const Conversations = (props: ConversationsProps) => {
+  if (props.isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (props.conversations.length === 0) {
+    return (
+      <Empty
+        text="you don’t have anything going on"
+        link="https://copy"
+        icon={<RequestIcon />}
+      />
+    );
+  }
+
+  return (
+    <>
+      {props.conversations.map((conversation) => (
+        <MessageBox
+          onSelect={props.onSelect}
+          avatar={conversation.avatar}
+          username={conversation.title}
+          id={conversation.conversationId}
+          key={conversation.conversationId}
+          msg={conversation.lastMessage.content}
+          time={conversation.lastMessage.sentAt}
+        />
+      ))}
+    </>
+  );
+};
 
 export default function Dashboard() {
-  // const router =  useRouter();
+  const [tabs, setTabs] = useState(conversationTabs);
+  // conversation shouldn't contain more than 20 items at a time
+  // for every x amount of newly added data, we should remove X amount of data from the end
+  const [conversations, setConversations] = useState<ConversationType[]>([]);
+  const selectedTab = tabs.find((x) => x.selected) || tabs[1];
   const conversationService = new ConversationService();
-  const [type, setType] = useState<string>("active");
 
-  const { isLoading, data } = useQuery(["userConversations", type], () =>
-    conversationService.getAllConversations(type)
+  const { isLoading } = useQuery(
+    ['userConversations', selectedTab.id],
+    () => conversationService.getAllConversations(selectedTab.id),
+    {
+      onSuccess: (data) => setConversations(data),
+    }
   );
-  
+
+  const handleTabClick = (id: string) => {
+    setTabs((prev) =>
+      prev.map((x) => {
+        if (x.id === id) {
+          return {
+            ...x,
+            selected: true,
+          };
+        }
+        return {
+          ...x,
+          selected: false,
+        };
+      })
+    );
+  };
+
+  const handleConversationClick = (id: string) => {
+    Router.push({
+      pathname: `/conversations/${id}`,
+      query: { id },
+    });
+  };
+
+  useEffect(() => {
+    if (isLoading) return;
+    const intervalId = setInterval(() => {
+      const latestConversations = conversations[0];
+      if (!latestConversations) return;
+      conversationService
+        .getAllConversations(
+          selectedTab.id,
+          latestConversations.updatedAt,
+          'latest'
+        )
+        .then((data) => {
+          setConversations((prev) => {
+            const maxConversations = 20;
+            const numberOfConversationToRemove = data.length;
+            // find better solution that doesn't involve mutating the array
+            prev.splice(maxConversations - numberOfConversationToRemove, numberOfConversationToRemove)
+            return [...data, ...prev];
+          });
+        });
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [conversations]);
+
   return (
     <>
       <Navigation text="Conversations" />
       <div className="pt-12">
-      <Tab type={type} setType={setType} />
+        <Tab tabs={tabs} onSelect={handleTabClick} />
       </div>
-      {isLoading && <p>Loading...</p>}
-      {!isLoading && data?.length === 0 && (
-        <Empty
-          text="you don’t have anything going on"
-          link="https://copy"
-          icon={<RequestIcon />}
-        />
-      )}
-      {!isLoading && data && data?.length > 0 && (
-        data?.map((x:any)=>(
-        <div key={x.type} onClick={()=> Router.push({
-          pathname: `/conversations/${x?.title}`,
-          query: { id: x?.conversationId}
-        })}>
-        <MessageBox avatar={x?.avatar} username={x?.title} time={(x?.lastMessage?.sentAt)} msg={x?.lastMessage?.content} />
-        </div>
-      )))}
-
+      <Conversations
+        isLoading={isLoading}
+        conversations={conversations || []}
+        onSelect={handleConversationClick}
+      />
     </>
   );
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const cookie = cookies(ctx);
-  let redirectionDestination = "";
-  const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-  const isUsernameSet = cookie[USER_COOKIE_KEYS.USERNAME];
-  const isAvatarSet = cookie[USER_COOKIE_KEYS.AVATAR];
-
-  if (!isUserLoggedIn) redirectionDestination = "/";
-  else if (!isUsernameSet) redirectionDestination = "/profile/set-username";
-  else if (!isAvatarSet) redirectionDestination = "/profile/set-avatar";
+  const profileService = new ProfileService();
+  const { redirectionDestination } = profileService.validateUserProfile(ctx);
 
   if (redirectionDestination)
     return {
@@ -69,8 +142,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 
   return {
-    props: {
-      
-    },
+    props: {},
   };
 }

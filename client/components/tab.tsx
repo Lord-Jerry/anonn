@@ -1,34 +1,25 @@
 type Props = {
-   type: string;
-   setType: (type: string) => void;
-}
+  tabs: {
+    id: string;
+    name: string;
+    selected: boolean;
+  }[];
+  onSelect: (id: string) => void;
+};
 
-export const Tab = ({type, setType} : Props)=> {
-    const handleTabRoute=(tab: string)=>{
-     setType(tab);
-    }
-	return (
+export const Tab = ({ tabs, onSelect }: Props) => {
+  return (
     <div className="flex justify-around py-8 w-[400px] mx-auto">
-      <p
-        className={`tab ${type === "pending" ? "selected_tab" : ""}`}
-        onClick={() => handleTabRoute("pending")}
-      >
-        History
-      </p>
-      <p
-        className={`tab ${type === "active" ? "selected_tab" : ""}`}
-        onClick={() => handleTabRoute("active")}
-      >
-        Ongoing
-      </p>
-      <p
-        className={`tab ${type === "rejected" ? "selected_tab" : ""}`}
-        onClick={() => handleTabRoute("rejected")}
-      >
-        Rejected
-      </p>
+      {tabs.map((tab) => (
+        <p
+          className={`tab ${tab.selected ? 'selected_tab' : ''}`}
+          onClick={() => onSelect(tab.id)}
+        >
+          {tab.name}
+        </p>
+      ))}
     </div>
-	);
-}
+  );
+};
 
 export default Tab;
