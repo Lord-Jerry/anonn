@@ -13,6 +13,7 @@ type Props = {
 export default function Navigation(props: Props) {
   return (
     <>
+    <div className="flex justify-center">
       <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 w-[400px] h-[56px] mx-auto text-center">
         {props.src ? (
           <Image
@@ -36,6 +37,7 @@ export default function Navigation(props: Props) {
         ) : (
           <Dots />
         )}
+      </div>
       </div>
       {props.children}
     </>

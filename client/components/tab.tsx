@@ -9,7 +9,7 @@ type Props = {
 
 export const Tab = ({ tabs, onSelect }: Props) => {
   return (
-    <div className="flex justify-around py-8 w-[400px] mx-auto">
+    <div className="flex justify-around py-8 max-w-[400px] mx-auto">
       {tabs.map((tab) => (
         <p
           key={tab.id}
