@@ -9,10 +9,17 @@ import MessageBox from "components/ConversationBox";
 import Navigation from "components/Navigation";
 import { RequestIcon } from "icon/RequestIcon";
 
-import ConversationService, { ConversationType } from "services/conversation";
-import ProfileService from "services/profile";
-import { conversationTabs } from "constants/tabs";
+import ConversationService, { ConversationType } from 'services/conversation';
+import ProfileService from 'services/profile';
+import { conversationTabs } from 'constants/tabs';
+import { markTabAsSelected } from 'utils/tabs';
 
+import useScroll from 'hooks/useScroll';
+
+type GetServerSidePropsReturnType = Awaited<
+  ReturnType<typeof getServerSideProps>
+>;
+type Props = GetServerSidePropsReturnType['props'];
 type ConversationsProps = {
   isLoading: boolean;
   conversations: ConversationType[];
@@ -54,36 +61,40 @@ const Conversations = (props: ConversationsProps) => {
   );
 };
 
-export default function Dashboard() {
-  const [tabs, setTabs] = useState(conversationTabs);
+export default function Dashboard(props: Props) {
   // conversation shouldn't contain more than 20 items at a time
   // for every x amount of newly added data, we should remove X amount of data from the end
   const [conversations, setConversations] = useState<ConversationType[]>([]);
+  const [tabs, setTabs] = useState(
+    markTabAsSelected(conversationTabs, (props?.tab as string) || undefined)
+  );
   const selectedTab = tabs.find((x) => x.selected) || tabs[1];
   const conversationService = new ConversationService();
+  const { ref } = useScroll((pos) => alert(pos));
 
   const { isLoading } = useQuery(
     ["userConversations", selectedTab.id],
     () => conversationService.getAllConversations(selectedTab.id),
     {
       onSuccess: (data) => setConversations(data),
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      retryDelay: 3000,
     }
   );
 
   const handleTabClick = (id: string) => {
-    setTabs((prev) =>
-      prev.map((x) => {
-        if (x.id === id) {
-          return {
-            ...x,
-            selected: true,
-          };
-        }
-        return {
-          ...x,
-          selected: false,
-        };
-      })
+    setTabs((prev) => markTabAsSelected(prev, id));
+    Router.push(
+      {
+        query: {
+          tab: id,
+        },
+      },
+      undefined,
+      {
+        shallow: true,
+      }
     );
   };
 
@@ -128,11 +139,13 @@ export default function Dashboard() {
       <div className="pt-12">
         <Tab tabs={tabs} onSelect={handleTabClick} />
       </div>
-      <Conversations
-        isLoading={isLoading}
-        conversations={conversations || []}
-        onSelect={handleConversationClick}
-      />
+      <div ref={ref}>
+        <Conversations
+          isLoading={isLoading}
+          conversations={conversations || []}
+          onSelect={handleConversationClick}
+        />
+      </div>
     </>
   );
 }
@@ -149,6 +162,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 
   return {
-    props: {},
+    props: {
+      tab: ctx.query.tab || null,
+    },
   };
 }
