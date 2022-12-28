@@ -1,32 +1,32 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Button from "components/button";
-import ArrowRight from "icon/ArrowRight";
-import Share from "icon/Share";
-import cookies from "next-cookies";
-import { useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
-import ProfileService from "services/profile";
-import { USER_COOKIE_KEYS } from "services/auth";
-import { myLoader } from "utils/imageLoader";
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Button from 'components/button';
+import ArrowRight from 'icon/ArrowRight';
+import Share from 'icon/Share';
+import cookies from 'next-cookies';
+import { useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
+import ProfileService from 'services/profile';
+import { USER_COOKIE_KEYS } from 'services/auth';
+import { myLoader } from 'utils/imageLoader';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType["props"];
+type Props = GetServerSidePropsReturnType['props'];
 
 export default function SetAvatar(props: Props) {
   const router = useRouter();
   const profileService = new ProfileService();
   const [avatar, setAvatar] = useState({
-    key: "",
-    avatar: "",
+    key: '',
+    avatar: '',
   });
-  const [change, setChange] = useState("");
+  const [change, setChange] = useState('');
 
   const { isLoading, data } = useQuery(
-    ["avatarData"],
+    ['avatarData'],
     () => profileService.getAvatars(),
     {
       onSuccess(data) {
@@ -39,7 +39,7 @@ export default function SetAvatar(props: Props) {
   const { mutate } = useMutation(() => profileService.setAvatar(avatar.key), {
     onSuccess() {
       router.push({
-        pathname: "/profile",
+        pathname: '/profile',
         query: {
           isNewUser: true,
         },
@@ -47,9 +47,9 @@ export default function SetAvatar(props: Props) {
     },
     onError(err) {
       console.log(err);
-      setChange("");
+      setChange('');
       router.push({
-        pathname: "/profile",
+        pathname: '/profile',
         query: {
           isNewUser: true,
         },
@@ -91,12 +91,12 @@ export default function SetAvatar(props: Props) {
           </p>
           <p
             className="opacity-50 text-md text-center underline cursor-pointer"
-            onClick={() => setChange("change")}
+            onClick={() => setChange('change')}
           >
             change avatar
           </p>
 
-          {change === "change" && (
+          {change === 'change' && (
             <div className="grid grid-cols-4 grid-flow-row gap-3 p-8">
               {data?.map((x) => (
                 <div
@@ -104,7 +104,7 @@ export default function SetAvatar(props: Props) {
                   className={
                     avatar.key === x.key
                       ? `border-2 border-[#F8F886] rounded-3xl`
-                      : ""
+                      : ''
                   }
                   onClick={() =>
                     setAvatar({
@@ -143,7 +143,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
-  if (redirectionDestination.includes("set-avatar"))
+  // if redirection destination is not set-avatar, redirect to it
+  if (!redirectionDestination.includes('set-avatar'))
     return {
       redirect: {
         destination: redirectionDestination,
@@ -153,7 +154,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (avatar)
     return {
       redirect: {
-        destination: "/profile",
+        destination: '/profile',
       },
     };
 
