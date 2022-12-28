@@ -6,6 +6,7 @@ import Hero from 'components/hero';
 import useGoogleAuth from 'hooks/useGoogleAuth';
 import Button from 'components/button';
 import Link from 'next/link';
+import Head from 'next/head';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -29,6 +30,19 @@ export default function Home(props: Props) {
 
   return (
     <>
+      <Head>
+        <title>Anonn</title>
+        <meta property="title" content="Anonn" />
+        <meta property="og:title" content="Anonn" />
+        <meta
+          property="description"
+          content="Chat as Anonn. Nobody would know. Share polls and vote anonymously. Share with mask on. Censored"
+        />
+        <meta
+          property="og:description"
+          content="Chat as Anonn. Nobody would know. Share polls and vote anonymously. Share with mask on. Censored"
+        />
+      </Head>
       <Hero />
       {!props.isloggedIn && (
         <div
