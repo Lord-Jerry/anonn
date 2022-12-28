@@ -37,13 +37,11 @@ export default function SingleConversation({
     if (newMessageRef.current)
       newMessageRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest',
         inline: 'start',
       });
     else
       messagesEndRef.current?.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest',
         inline: 'start',
       });
   };
