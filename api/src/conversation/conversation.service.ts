@@ -259,6 +259,75 @@ export class ConversationService {
     }));
   }
 
+  async getSingleConversation(userId: string, conversationId: string) {
+    const user = await this.userService.findUserById(userId);
+
+    const [conversation, messageParticipantAvatar] = await Promise.all([
+      this.db.users_conversations.findFirst({
+        where: {
+          userId: user.id,
+          conversations: {
+            pId: conversationId,
+          },
+        },
+        select: {
+          title: true,
+          hasNewMessage: true,
+          conversation_username: true,
+          status: true,
+          conversations: {
+            select: {
+              id: true,
+              pId: true,
+              isOpen: true,
+              isGroup: true,
+              name: true,
+              description: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+      }),
+      this.db.users_conversations.findFirst({
+        where: {
+          conversations: {
+            pId: conversationId,
+          },
+          // get avatar of the second user in the conversation
+          NOT: {
+            userId: user.id,
+          },
+        },
+        select: {
+          users: {
+            select: {
+              avatar: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    if (!conversation) {
+      throw new NotFoundException('conversation not found');
+    }
+
+    return {
+      status: conversation.status,
+      isOpen: conversation.conversations.isOpen,
+      hasNewMessage: conversation.hasNewMessage,
+      isGroup: conversation.conversations.isGroup,
+      conversationId: conversation.conversations.pId,
+      conversationUsername: conversation.conversation_username,
+      updatedAt: conversation.conversations.updatedAt,
+      title: conversation.conversations.isGroup
+        ? conversation.conversations.name
+        : conversation.title,
+      avatar: messageParticipantAvatar?.users.avatar,
+    };
+  }
+
   async getLastConversationWithUser(
     conversationInitiatorId: string,
     conversationParticipantId: string,
