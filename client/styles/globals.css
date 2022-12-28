@@ -23,7 +23,6 @@ textarea {
   resize: none;
   font-size: 11px;
   transition: border-color 150ms ease;
-  width: 400px;
 }
 
 textarea::placeholder {

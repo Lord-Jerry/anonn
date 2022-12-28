@@ -44,7 +44,7 @@ export default function Profile(props: Props) {
   });
   return (
     <Navigation text="Profile">
-      <div className="mx-auto pt-24 px-12 w-[400px]">
+      <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-[412px]">
         <div className="mb-6">
           <Image
             loader={myLoader}
