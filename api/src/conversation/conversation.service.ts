@@ -146,7 +146,7 @@ export class ConversationService {
       );
     }
 
-    await this.db.users_conversations.update({
+    const uc = await this.db.users_conversations.update({
       where: {
         id: users_conversation.conversationPermissionId,
       },
@@ -154,6 +154,7 @@ export class ConversationService {
         status: User_conversation_status[status],
       },
     });
+    console.log({ uc })
 
     return 
   }
