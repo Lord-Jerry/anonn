@@ -14,7 +14,7 @@ type Props = {
   onSelect: (id: string) => void;
 };
 
-export default function MessageBox(props: Props) {
+export default function ConversationBox(props: Props) {
   return (
     <>
       <div

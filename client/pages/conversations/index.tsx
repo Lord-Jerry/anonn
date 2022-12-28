@@ -6,7 +6,7 @@ import { GetServerSidePropsContext } from 'next/types';
 
 import Tab from 'components/tab';
 import Empty from 'components/Empty';
-import MessageBox from 'components/ConversationBox';
+import ConversationBox from 'components/ConversationBox';
 import Navigation from 'components/Navigation';
 import { RequestIcon } from 'icon/RequestIcon';
 
@@ -48,7 +48,7 @@ const Conversations = (props: ConversationsProps) => {
   return (
     <>
       {props.conversations.map((conversation) => (
-        <MessageBox
+        <ConversationBox
           onSelect={props.onSelect}
           avatar={conversation.avatar}
           username={conversation.title}

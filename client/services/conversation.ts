@@ -1,9 +1,10 @@
-import Cookies from "js-cookie";
-import { Axios } from "axios";
+import Cookies from 'js-cookie';
+import { Axios } from 'axios';
 
-import { USER_COOKIE_KEYS } from "./auth";
+import { USER_COOKIE_KEYS } from './auth';
 
-import ApiService from "./api";
+import ApiService from './api';
+import { Message } from 'types/message';
 
 export type messageData = {
   id: string;
@@ -16,7 +17,7 @@ export type ConversationType = {
   hasNewMessages: boolean;
   isGroup: boolean;
   isOpen: boolean;
-  status: "PENDING" | "ACTIVE" | "REJECTED";
+  status: 'PENDING' | 'ACTIVE' | 'REJECTED';
   title: string;
   updatedAt: Date;
   lastMessage: {
@@ -46,29 +47,78 @@ export default class ConversationService {
   async getAllConversations(
     type: string,
     cursor?: Date,
-    cursorType?: "latest"
+    cursorType?: 'latest'
   ) {
-    const { data } = await this.api.get<ConversationType[]>(
-      `/conversation/${type}`,
-      {
-        params: {
-          cursor,
-          cursor_type: cursorType,
-        },
-      }
-    );
-    return data;
+    try {
+      const { data } = await this.api.get<ConversationType[]>(
+        `/conversation/${type}`,
+        {
+          params: {
+            cursor,
+            cursor_type: cursorType,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      return [];
+    }
   }
 
   async getSingleConversation(id: string) {
-    const { data } = await this.api.get(`/messages/${id}`);
-    return data;
+    try {
+      const { data } = await this.api.get<ConversationType>(
+        `/conversation/${id}/get`
+      );
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async getConversationMessages(
+    conversationId: string,
+    cursor?: Date,
+    cursorType?: 'latest'
+  ) {
+    try {
+      const { data } = await this.api.get<Message[]>(
+        `/messages/${conversationId}`,
+        {
+          params: {
+            cursor,
+            cursor_type: cursorType,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      return [];
+    }
   }
 
   async sendMessage({ id, content }: messageData) {
-    const { data } = await this.api.post(`/messages/send/${id}`, {
-      content: content,
-    });
-    return data;
+    try {
+      const { data } = await this.api.post(`/messages/send/${id}`, {
+        content: content,
+      });
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async updateConversationStatus({
+    conversationId,
+    action,
+  }: {
+    conversationId: string;
+    action: 'approve' | 'reject';
+  }) {
+    try {
+      await this.api.put(`/conversation/${conversationId}/${action}`);
+    } catch (error) {
+      return null;
+    }
   }
 }
