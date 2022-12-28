@@ -87,12 +87,13 @@ export default function SingleConversation({
           })}
           <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
         </div>
-        <div className="fixed py-8 bottom-[-40px] max-w-[400px] flex justify-center">
-          <div className="relative bottom-0">
+        <div className="flex justify-center focus:outline-0">
+   <div className="fixed py-8 bottom-[-40px] max-w-[400px] flex mx-auto text-center justify-center focus:outline-0">
+          <div className="relative bottom-0 focus:outline-0">
             {conversation?.status && (
               <>
                 <textarea
-                  className="border-0"
+                  className="border-0 pl-8 pr-16 focus:outline-0"
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="type something, durh"
                   ref={textAreaRef}
@@ -134,6 +135,8 @@ export default function SingleConversation({
             )} */}
           </div>
         </div>
+        </div>
+     
       </Navigation>
     </>
   );
