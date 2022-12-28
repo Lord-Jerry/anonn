@@ -1,22 +1,23 @@
-import Image from "next/image";
-import { useRef } from "react";
-import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
+import Image from 'next/image';
+import { useRef } from 'react';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
 
-import Button from "components/button";
-import { myLoader } from "utils/imageLoader";
-import ProfileService from "services/profile";
+import Button from 'components/button';
+import { myLoader } from 'utils/imageLoader';
+import ProfileService from 'services/profile';
 import useGoogleAuth, {
   AuthenticateFunctionReturnType,
-} from "hooks/useGoogleAuth";
-import { useVisitorProfileButtons } from "hooks/useProfileButtons";
-import ConversationService from "services/conversation";
-import Navigation from "components/Navigation";
+} from 'hooks/useGoogleAuth';
+import { useVisitorProfileButtons } from 'hooks/useProfileButtons';
+import ConversationService from 'services/conversation';
+import Navigation from 'components/Navigation';
+import Head from 'next/head';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType["props"];
+type Props = GetServerSidePropsReturnType['props'];
 
 export default function Profile(props: Props) {
   const router = useRouter();
@@ -28,12 +29,12 @@ export default function Profile(props: Props) {
     successCallback: (user: AuthenticateFunctionReturnType) => {
       if (!user.username) {
         router.push({
-          pathname: "/profile/set-username",
+          pathname: '/profile/set-username',
           query: { callback: router.asPath },
         });
       } else if (!user.avatar) {
         router.push({
-          pathname: "/profile/set-avatar",
+          pathname: '/profile/set-avatar',
           query: { callback: router.asPath },
         });
       } else {
@@ -43,52 +44,79 @@ export default function Profile(props: Props) {
     errorCallback: () => {},
   });
   return (
-    <Navigation text="Profile">
-      <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
-        <div className="mb-6">
-          <Image
-            loader={myLoader}
-            src={props?.avatar || ""}
-            alt="Profile pic"
-            width={100}
-            height={100}
-            className="rounded-lg mx-auto"
-          />
-          <p className="text-white text-[20px] font-black text-center mt-6">
-            @{props?.username} wants to have an anonymous chat with you
-          </p>
-        </div>
+    <>
+      <Head>
+        <title>{`Chat anonymously with ${props?.username} - Anonn`}</title>
+        <meta name="robots" content="noindex" />
+        <meta
+          property="og:url"
+          content={`https://anonn.xyz/profile/${props?.username}`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="title"
+          content={`Chat anonymously with ${props?.username} - Anonn`}
+        />
+        <meta
+          property="og:title"
+          content={`Chat anonymously with ${props?.username} - Anonn`}
+        />
+        <meta
+          property="description"
+          content={`${props?.username} wants to have an anonymous chat with you`}
+        />
+        <meta
+          property="og:description"
+          content={`${props?.username} wants to have an anonymous chat with you`}
+        />
+      </Head>
+      <Navigation text="Profile">
+        <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
+          <div className="mb-6">
+            <Image
+              loader={myLoader}
+              src={props?.avatar || ''}
+              alt="Profile pic"
+              width={100}
+              height={100}
+              className="rounded-lg mx-auto"
+            />
+            <p className="text-white text-[20px] font-black text-center mt-6">
+              @{props?.username} wants to have an anonymous chat with you
+            </p>
+          </div>
 
-        <div>
-          {!props?.isloggedIn ? (
-            <>
-              <p className="text-white text-[16px] text-center  mb-10">
-                Pleaseeee sign in to chat.
-              </p>
-              <div
-                className="flex justify-center py-6 px-[80px]"
-                ref={googleBtnRef}
-              />
-            </>
-          ) : (
-            <>
-              {profileButtons.map((button, index) => {
-                return (
-                  <Button
-                    key={index}
-                    text={button.text}
-                    bg={index === 0 ? "bg_yellow" : "bg_black"}
-                    // icon={button.icon}
-                    className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
-                    onClick={button.onClick}
-                  />
-                );
-              })}
-            </>
-          )}
+          <div>
+            {!props?.isloggedIn ? (
+              <>
+                <p className="text-white text-[16px] text-center  mb-10">
+                  Pleaseeee sign in to chat.
+                </p>
+                <div
+                  className="flex justify-center py-6 px-[80px]"
+                  ref={googleBtnRef}
+                />
+              </>
+            ) : (
+              <>
+                {profileButtons.map((button, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      text={button.text}
+                      bg={index === 0 ? 'bg_yellow' : 'bg_black'}
+                      // icon={button.icon}
+                      className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
+                      onClick={button.onClick}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </Navigation>
+      </Navigation>
+    </>
   );
 }
 
@@ -104,14 +132,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!profile) {
     return {
       redirect: {
-        destination: "/404",
+        destination: '/404',
       },
     };
   }
   if (currentUserUsername === profile.username) {
     return {
       redirect: {
-        destination: "/profile",
+        destination: '/profile',
       },
     };
   }
