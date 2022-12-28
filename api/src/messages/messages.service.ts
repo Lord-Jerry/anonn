@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { ConversationService } from 'src/conversation/conversation.service';
 import { DatabaseService } from 'src/providers/database/database.service';
@@ -75,20 +76,45 @@ export class MessagesService {
         conversationId,
       );
 
-    const messages = await this.db.messages.findMany({
-      take: 20,
-      where: {
-        conversationId: conversationPermission.conversationId,
-        createdAt: cursor
-          ? {
-              [cursorType === 'latest' ? 'gt' : 'lt']: cursor,
-            }
-          : undefined,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const getReadMessages = cursor
+      ? () => []
+      : () =>
+          this.db.messages.findMany({
+            take: 10,
+            where: {
+              id: {
+                lte: conversationPermission.lastReadMessageId || undefined,
+              },
+              conversationId: conversationPermission.conversationId,
+            },
+          });
+
+    // if request doesn't have cursor, that means its a first request
+    // so we need to return 10 read messages, if any with 20 unread messages if any
+    const [readMessages, unreadMessages] = await Promise.all([
+      getReadMessages(),
+      this.db.messages.findMany({
+        take: 20,
+        where: {
+          id: {
+            gt: cursor
+              ? conversationPermission.lastReadMessageId || undefined
+              : undefined,
+          },
+          conversationId: conversationPermission.conversationId,
+          createdAt: cursor
+            ? {
+                [cursorType === 'latest' ? 'gt' : 'lt']: cursor,
+              }
+            : undefined,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+    ]);
+
+    const messages = uniqBy([...readMessages, ...unreadMessages], 'id');
     const latestMessage = messages[0];
 
     if (conversationPermission.lastReadMessageId < latestMessage?.id) {
