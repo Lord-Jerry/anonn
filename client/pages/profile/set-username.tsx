@@ -1,25 +1,25 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Button from "components/button";
-import Input from "components/input";
-import Navigation from "components/Navigation";
-import ArrowLeft from "icon/ArrowLeft";
-import ArrowRight from "icon/ArrowRight";
-import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
-import { useState } from "react";
-import ProfileService from "services/profile";
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Button from 'components/button';
+import Input from 'components/input';
+import Navigation from 'components/Navigation';
+import ArrowLeft from 'icon/ArrowLeft';
+import ArrowRight from 'icon/ArrowRight';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
+import { useState } from 'react';
+import ProfileService from 'services/profile';
 
 export default function SetUsername() {
   const router = useRouter();
   const profileService = new ProfileService();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState('');
 
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
   const { isLoading, data } = useQuery(
-    ["usernameData", username],
+    ['usernameData', username],
     () =>
       username.length >= 3 &&
       profileService.checkUsernameAvailability(username),
@@ -30,7 +30,7 @@ export default function SetUsername() {
 
   const { mutate } = useMutation(() => profileService.setUsername(username), {
     onSuccess(data) {
-      router.push("/profile/set-avatar");
+      router.push('/profile/set-avatar');
     },
     onError(err) {
       console.log(err);
@@ -45,7 +45,7 @@ export default function SetUsername() {
           Anonn, <span className="font-light">Stranger</span>
         </h1>
         <p className="text-sm font-normal mb-12">
-          Quick one, please type in a username{" "}
+          Quick one, please type in a username{' '}
         </p>
         <Input
           id="username"
@@ -84,7 +84,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username } =
     profileService.validateUserProfile(ctx);
 
-  if (redirectionDestination.includes("set-username"))
+  // if redirection destination is not set-username, redirect to it
+  if (!redirectionDestination.includes('set-username'))
     return {
       redirect: {
         destination: redirectionDestination,
@@ -94,7 +95,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (username)
     return {
       redirect: {
-        destination: "/profile",
+        destination: '/profile',
       },
     };
 
