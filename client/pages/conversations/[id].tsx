@@ -66,7 +66,7 @@ export default function SingleConversation({
         text={`Anonn chat with ${conversation?.title}`}
         src="https://api"
       >
-        <div ref={scrollRef} className="py-16 px-2 max-w-[400px] mx-auto">
+        <div ref={scrollRef} className="py-16 px-2 min-[600px]:w-[600px] w-[412px] mx-auto">
           {messages?.map((msg) => {
             if (msg.id === 'newMessageLabel') {
               return (
@@ -88,12 +88,12 @@ export default function SingleConversation({
           <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
         </div>
         <div className="flex justify-center focus:outline-0">
-   <div className="fixed py-8 bottom-[-40px] max-w-[400px] flex mx-auto text-center justify-center focus:outline-0">
+        <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[412px] flex mx-auto text-center justify-center focus:outline-0">
           <div className="relative bottom-0 focus:outline-0">
             {conversation?.status && (
               <>
                 <textarea
-                  className="border-0 pl-8 pr-16 focus:outline-0"
+                  className="border-0 pl-8 pr-16 focus:outline-0 min-[600px]:w-[600px] w-[412px]"
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="type something, durh"
                   ref={textAreaRef}

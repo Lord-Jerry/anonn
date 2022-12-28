@@ -14,7 +14,7 @@ export default function Navigation(props: Props) {
   return (
     <>
     <div className="flex justify-center">
-      <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 w-[400px] h-[56px] mx-auto text-center">
+      <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 min-[600px]:w-[600px] w-[412px] h-[56px] mx-auto text-center">
         {props.src ? (
           <Image
             loader={myLoader}
