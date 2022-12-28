@@ -89,7 +89,7 @@ export default function SingleConversation({
         </div>
         <div className="fixed py-8 bottom-[-40px] max-w-[400px] flex justify-center">
           <div className="relative bottom-0">
-            {conversation?.status === 'ACTIVE' && (
+            {conversation?.status && (
               <>
                 <textarea
                   className="border-0"
@@ -115,7 +115,7 @@ export default function SingleConversation({
               </>
             )}
 
-            {conversation?.status === 'PENDING' && (
+            {/* {conversation?.status === 'PENDING' && (
               <div className="flex mx-auto justify-evenly items-center">
                 <Button
                   text="Accept"
@@ -131,7 +131,7 @@ export default function SingleConversation({
                   onClick={() => updateConversationStatus('reject')}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </Navigation>
