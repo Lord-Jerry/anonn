@@ -22,7 +22,7 @@ export default function Navigation(props: Props) {
             alt="avatar"
             width={45}
             height={45}
-            className="rounded-lg mx-auto"
+            className="rounded-lg"
           />
         ) : (
           <Link href="/conversations" className="p-4 text-2xl">

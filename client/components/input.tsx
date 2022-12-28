@@ -10,7 +10,7 @@ type Props = {
 export default function Input(props: Props) {
   return (
     <div>
-      <div className="mt-1 border-b border-gray-300 focus-within:border-indigo-600">
+      <div className="mt-1 border-b border-gray-30">
         <input
           id={props.id}
           type={props.type}
@@ -20,7 +20,7 @@ export default function Input(props: Props) {
           onChange={props.onChange}
           placeholder={props.placeholder} 
           role="textbox"
-          className="input block w-full border-0 border-b border-transparent bg-gray-50 text-black focus:border-indigo-600 focus:ring-0 sm:text-sm"
+          className="input block w-full border-0 border-b border-transparent bg-gray-50 text-black sm:text-sm"
         />
       </div>
     </div>
