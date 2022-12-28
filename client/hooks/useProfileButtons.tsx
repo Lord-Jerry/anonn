@@ -1,7 +1,7 @@
-import Router, { useRouter } from "next/router";
-import ArrowRight from "icon/ArrowRight";
+import { useRouter } from "next/router";
 import { Props as ButtonPropType } from "components/button";
 import AuthService from "services/auth";
+import Share from "icon/Share";
 
 export const useProfileButtons = () => {
   const router = useRouter();
@@ -10,7 +10,7 @@ export const useProfileButtons = () => {
     {
       bg: "bg_yellow",
       text: "Share your profile link",
-      icon: <ArrowRight />,
+      icon: <Share />,
       onClick: () => null,
     },
     {

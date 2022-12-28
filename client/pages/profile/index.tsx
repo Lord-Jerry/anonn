@@ -49,7 +49,7 @@ export default function Profile(props: Props) {
               text={button.text}
               bg={button.bg}
               icon={button.icon}
-              className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
+              className="mt-12 flex justify-center items-center p-4 w-full rounded-lg hover:text-black"
               onClick={button.onClick}
             />
           );
