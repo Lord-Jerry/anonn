@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 import ProfileService from "services/profile";
-import ConversationService from "services/conversation";
 import Hero from "components/hero";
 import useGoogleAuth from "hooks/useGoogleAuth";
 import Button from "components/button";
