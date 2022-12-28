@@ -143,19 +143,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
-  // if (!redirectionDestination.includes("set-avatar"))
-  //   return {
-  //     redirect: {
-  //       destination: redirectionDestination,
-  //     },
-  //   };
+  if (!redirectionDestination.includes("set-avatar"))
+    return {
+      redirect: {
+        destination: redirectionDestination,
+      },
+    };
 
-  // if (avatar)
-  //   return {
-  //     redirect: {
-  //       destination: "/profile",
-  //     },
-  //   };
+  if (avatar)
+    return {
+      redirect: {
+        destination: "/profile",
+      },
+    };
 
   return {
     props: {
