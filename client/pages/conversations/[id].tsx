@@ -55,7 +55,7 @@ export default function SingleConversation({
   if (messagesLoading) {
     return (
       <div className="flex justify-center items-center h-[600px]">
-        Fetching data...
+        Loading...
       </div>
     );
   }
@@ -90,10 +90,10 @@ export default function SingleConversation({
         <div className="flex justify-center focus:outline-0">
         <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
           <div className="relative bottom-0 focus:outline-0">
-            {conversation?.status && (
+            {conversation?.status === "ACTIVE" && (
               <>
                 <textarea
-                  className="border-0 pl-8 pr-16 focus:outline-0 min-[600px]:w-[600px] w-[100vw] h-[48px]"
+                  className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6"
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="type something, durh"
                   ref={textAreaRef}
@@ -116,7 +116,7 @@ export default function SingleConversation({
               </>
             )}
 
-            {/* {conversation?.status === 'PENDING' && (
+            {conversation?.status === 'PENDING' && (
               <div className="flex mx-auto justify-evenly items-center">
                 <Button
                   text="Accept"
@@ -132,7 +132,7 @@ export default function SingleConversation({
                   onClick={() => updateConversationStatus('reject')}
                 />
               </div>
-            )} */}
+            )}
           </div>
         </div>
         </div>

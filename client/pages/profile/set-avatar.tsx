@@ -70,7 +70,7 @@ export default function SetAvatar(props: Props) {
       </>
       {isLoading && (
         <div className="flex justify-center items-center h-[600px]">
-          Fetching data...
+          Loading...
         </div>
       )}
       {!isLoading && data && (

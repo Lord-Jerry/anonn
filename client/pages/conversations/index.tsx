@@ -30,7 +30,7 @@ const Conversations = (props: ConversationsProps) => {
   if (props.isLoading) {
     return (
       <div className="flex justify-center items-center h-[600px]">
-        Fetching data...
+        Loading...
       </div>
     );
   }
