@@ -143,7 +143,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
-  if (!redirectionDestination.includes("set-avatar"))
+  if (redirectionDestination.includes("set-avatar"))
     return {
       redirect: {
         destination: redirectionDestination,

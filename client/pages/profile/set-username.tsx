@@ -84,7 +84,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username } =
     profileService.validateUserProfile(ctx);
 
-  if (!redirectionDestination.includes("set-username"))
+  if (redirectionDestination.includes("set-username"))
     return {
       redirect: {
         destination: redirectionDestination,
