@@ -58,7 +58,7 @@ export default function SetAvatar(props: Props) {
   });
 
   return (
-    <div className="mx-auto py-4 px-12 min-[600px]:w-[600px] w-[412px]">
+    <div className="mx-auto py-4 px-12 min-[600px]:w-[600px] w-full">
       <>
         <p className="text-sm text-center">One last step</p>
         <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
