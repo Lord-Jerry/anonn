@@ -138,7 +138,10 @@ export class ConversationService {
     conversationId,
     status: User_conversation_status,
   ) {
-    const users_conversation = await this.checkConversationPermissions(userId, conversationId)
+    const users_conversation = await this.checkConversationPermissions(
+      userId,
+      conversationId,
+    );
 
     if (users_conversation.status !== User_conversation_status.PENDING) {
       throw new BadRequestException(
@@ -146,7 +149,7 @@ export class ConversationService {
       );
     }
 
-    const uc = await this.db.users_conversations.update({
+    return this.db.users_conversations.update({
       where: {
         id: users_conversation.conversationPermissionId,
       },
@@ -154,9 +157,6 @@ export class ConversationService {
         status: User_conversation_status[status],
       },
     });
-    console.log({ uc })
-
-    return 
   }
 
   async getConversationsByStatus({
