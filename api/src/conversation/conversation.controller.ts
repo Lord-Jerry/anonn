@@ -53,6 +53,21 @@ export class ConversationController {
   }
 
   @UseGuards(AtGuard)
+  @Get('/:conversationId/get')
+  @HttpCode(HttpStatus.OK)
+  async getConversation(
+    @Request() req: IRequestUser,
+    @Param() param: ConversationIdParamDto,
+  ) {
+    const conversation = await this.conversationService.getSingleConversation(
+      req.user.userId,
+      param.conversationId,
+    );
+
+    return new ConversationEntity(conversation);
+  }
+
+  @UseGuards(AtGuard)
   @Get('/:type')
   @HttpCode(HttpStatus.OK)
   async getPendingConversations(
