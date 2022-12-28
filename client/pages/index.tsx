@@ -54,7 +54,7 @@ export default function Home(props: Props) {
       {props.isloggedIn && (
         <div className="min-[600px]:w-[400px] mx-auto">
           <>
-            <p className="text-center font-extrabold text-xl">
+            <p className="text-center font-extrabold text-xl pt-8">
               Welcome back, @{props?.username}
             </p>
             <Link href={'/profile'}>
