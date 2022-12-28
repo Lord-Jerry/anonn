@@ -138,10 +138,7 @@ export class ConversationService {
     conversationId,
     status: User_conversation_status,
   ) {
-    const [user, users_conversation] = await Promise.all([
-      this.userService.findUserById(userId),
-      this.checkConversationPermissions(userId, conversationId),
-    ]);
+    const users_conversation = await this.checkConversationPermissions(userId, conversationId)
 
     if (users_conversation.status !== User_conversation_status.PENDING) {
       throw new BadRequestException(
@@ -149,15 +146,17 @@ export class ConversationService {
       );
     }
 
-    return this.db.users_conversations.updateMany({
+    const uc = await this.db.users_conversations.update({
       where: {
-        conversationId: users_conversation.conversationId,
-        userId: user.id,
+        id: users_conversation.conversationPermissionId,
       },
       data: {
         status: User_conversation_status[status],
       },
     });
+    console.log({ uc })
+
+    return 
   }
 
   async getConversationsByStatus({

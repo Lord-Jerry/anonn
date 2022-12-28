@@ -1,41 +1,27 @@
-import { AVATARS } from "constants/index";
-import dayjs from "dayjs";
-import ArrowLeft from "icon/ArrowLeft";
-import Dots from "icon/Dots";
-import Image from "next/image";
-import { myLoader } from "utils/imageLoader";
-
 type Props = {
-  username: string;
-  msg?: string;
-  time?: string;
-  avatar: string;
+  id: string;
+  isMine: boolean;
+  message: string;
+};
+
+const messageTypes = {
+  mine: {
+    bg: "bg-[url('/images/mymessage.svg')] bg-no-repeat bg-right ml-auto max-w-[290px]",
+    content:
+      'break-words py-4 text-white bg-[##1E1E1E] mr-5 my-4 px-4 border-2 border-[#f8f886] rounded-lg',
+  },
+  theirs: {
+    bg: "bg-[url('/images/theirmessage.svg')] bg-no-repeat bg-left max-w-[290px]",
+    content:
+      'break-words py-4 text-black bg-[#f8f886] ml-4 my-4 px-4 rounded-lg',
+  },
 };
 
 export default function MessageBox(props: Props) {
+  const { bg, content } = messageTypes[props.isMine ? 'mine' : 'theirs'];
   return (
-    <>
-      <div className="border-b-[.1px] border-b-[#53532D] flex bg-[#1E1E1E] justify-around items-center py-8 w-[400px] h-[45px] mx-auto">
-        <div className="flex">
-        <div>
-          <Image
-            loader={myLoader}
-            src={props?.avatar}
-            alt="Picture of the author"
-            width={45}
-            height={45}
-            className="rounded-lg mx-auto"
-          />
-          </div>
-        <div className="p-2 w-[130px]">
-          <p className="text-[10px]">@{props.username}</p>
-          <p className="text-[10px] max-w-[150px] text-ellipsi whitespace-nowrap overflow-hidden">{props.msg}</p>
-        </div>
-        </div>
-          <div>
-          <p className="text-[10px]">{dayjs(props.time).format('hh:mm:a')}</p>
-        </div>
-      </div>
-    </>
+    <div accessKey={props.id} className={bg}>
+      <p className={content}>{props.message}</p>
+    </div>
   );
 }
