@@ -52,7 +52,7 @@ export default function Home(props: Props) {
       )}
 
       {props.isloggedIn && (
-        <div className="min-[600px]:w-[400px] mx-auto pt-8">
+        <div className="min-[600px]:w-[400px] mx-auto pt-2">
           <>
             <p className="text-center font-extrabold text-xl">
               Welcome back, @{props?.username}
@@ -61,7 +61,7 @@ export default function Home(props: Props) {
               <Button
                 text="Go to profile"
                 bg="bg_yellow"
-                className="mt-12 flex justify-center items-center p-4 w-[400px] mx-auto rounded-lg"
+                className="mt-12 flex justify-center items-center px-8 min-[600px]:w-[400px] p-4 w-full rounded-lg"
                 onClick={() => 'reject'}
               />
             </Link>
