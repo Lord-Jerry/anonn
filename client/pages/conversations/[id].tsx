@@ -69,7 +69,7 @@ export default function SingleConversation({
     <>
       <Navigation
         text={`Anonn chat with ${conversation?.title}`}
-        src="https://api"
+        src={conversation?.avatar}
       >
         <div
           ref={scrollRef}

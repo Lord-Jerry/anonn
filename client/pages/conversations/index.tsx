@@ -22,6 +22,7 @@ type GetServerSidePropsReturnType = Awaited<
 >;
 type Props = GetServerSidePropsReturnType['props'];
 type ConversationsProps = {
+  username?: string;
   isLoading: boolean;
   conversations: ConversationType[];
   onSelect: (id: string) => void;
@@ -36,10 +37,11 @@ const Conversations = (props: ConversationsProps) => {
   }
 
   if (props.conversations.length === 0) {
+    console.log(props.username)
     return (
       <Empty
         text="you don’t have anything going on"
-        link="https://copy"
+        link={`https://anonn.xyz/profile/${props?.username}`}
         icon={<RequestIcon />}
       />
     );
@@ -166,7 +168,7 @@ export default function Dashboard(props: Props) {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const profileService = new ProfileService();
-  const { redirectionDestination } = profileService.validateUserProfile(ctx);
+  const { redirectionDestination, username } = profileService.validateUserProfile(ctx);
 
   if (redirectionDestination)
     return {
@@ -177,6 +179,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
   return {
     props: {
+      username,
       tab: ctx.query.tab || null,
     },
   };

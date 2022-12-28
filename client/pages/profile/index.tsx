@@ -6,6 +6,7 @@ import { myLoader } from "utils/imageLoader";
 import { useProfileButtons } from "hooks/useProfileButtons";
 import ProfileService from "services/profile";
 import Navigation from "components/Navigation";
+import { ShareBtn } from "components/ShareBtn";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -44,6 +45,9 @@ export default function Profile(props: Props) {
 
         {profileButtons.map((button, index) => {
           return (
+            <>
+            {button.text === "Share your profile link" ?
+            <ShareBtn urlLink={`https://anonn.xyz/profile/${props?.username}`} /> : 
             <Button
               key={index}
               text={button.text}
@@ -52,6 +56,8 @@ export default function Profile(props: Props) {
               className="mt-12 flex justify-center items-center p-4 w-full rounded-lg hover:text-black"
               onClick={button.onClick}
             />
+            }
+            </>
           );
         })}
       </div>
