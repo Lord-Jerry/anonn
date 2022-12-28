@@ -39,38 +39,42 @@ export default function SetUsername() {
 
   return (
     <Navigation text="Profile setup">
-    <div className="mx-auto py-16 px-12 w-[400px]">
-      <h1 className="font-black text-3xl w-[260px] mb-16">
-        Welcome to <br />
-        Anonn, <span className="font-light">Stranger</span>
-      </h1>
-      <p className="text-sm font-normal mb-12">
-        Quick one, please type in a username{" "}
-      </p>
-      <Input
-        id="username"
-        name="username"
-        type="text"
-        placeholder="@sillyjumper"
-        value={username}
-        onChange={onInputChange}
-      />
-      {username.length >= 3 && data === false ? (
-        <p className="text-[#f18d77]">Sorry, that username is already taken</p>
-      ) : (
-        <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
-          <li> Keep it Anonnn! </li>
-          <li> You can add letters or numbers </li>
-          <li>You cannot change your username</li>
-        </ul>
-      )}
-      <Button
-        text="Continue"
-        icon={<ArrowRight />}
-        className="mt-4 btn2"
-        onClick={() => data !== false && mutate()}
-      />
-    </div>
+      <div className="mx-auto pt-24 px-12 w-[400px]">
+        <h1 className="font-black text-3xl w-[260px] mb-16">
+          Welcome to <br />
+          Anonn, <span className="font-light">Stranger</span>
+        </h1>
+        <p className="text-sm font-normal mb-12">
+          Quick one, please type in a username{" "}
+        </p>
+        <Input
+          id="username"
+          name="username"
+          type="text"
+          placeholder="@sillyjumper"
+          value={username}
+          onChange={onInputChange}
+        />
+        {username.length >= 3 && data === false ? (
+          <p className="text-[#f18d77]">
+            Sorry, that username is already taken
+          </p>
+        ) : username?.length >= 3 && data === true ? (
+          <p className="text-[#16E5AB]">cool username, good to go!</p>
+        ) : (
+          <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
+            <li> Keep it Anonnn! </li>
+            <li> You can add letters or numbers </li>
+            <li>You cannot change your username</li>
+          </ul>
+        )}
+        <Button
+          text="Continue"
+          icon={<ArrowRight />}
+          className="mt-4 btn2"
+          onClick={() => data !== false && mutate()}
+        />
+      </div>
     </Navigation>
   );
 }
