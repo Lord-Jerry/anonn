@@ -97,15 +97,15 @@ export class ConversationController {
     @Param() params: ApproveRejectConversationRequestDto,
     @Request() req: IRequestUser,
   ) {
-    const action = params.action.toUpperCase() as User_conversation_status;
     const actionMapper = {
       approve: User_conversation_status.ACTIVE,
       reject: User_conversation_status.REJECTED,
-    }
+    };
+
     await this.conversationService.approveRejectConversationRequest(
       req.user.userId,
       params.conversationId,
-      actionMapper[action],
+      actionMapper[params.action],
     );
   }
 
