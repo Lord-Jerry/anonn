@@ -32,7 +32,7 @@ export default function Navigation(props: Props) {
         <p>{props.text}</p>
         {props.src ? (
           <Link href="/conversations" className="p-4 text-2xl">
-            x
+            &times;
           </Link>
         ) : (
           <Dots />
