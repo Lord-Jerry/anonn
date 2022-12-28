@@ -16,18 +16,23 @@ body {
 }
 textarea {
   background: #000;
-  border-radius: 0;
-  border: none;
   border-bottom: 1px solid #fff;
-  padding: 12px;
   resize: none;
-  font-size: 11px;
+  height: 72px;
+  border-radius: 0;
+  margin-bottom: 2px;
+  font-size: 16px;
   transition: border-color 150ms ease;
+}
+
+textarea:focus {
+  box-shadow: none !important;
+  border-bottom: 2px solid #fff;
 }
 
 textarea::placeholder {
   color: #c6c6c6;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .tab {
