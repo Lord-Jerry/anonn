@@ -16,14 +16,19 @@ export default function Navigation(props: Props) {
     <div className="flex justify-center">
       <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 min-[600px]:w-[600px] w-full h-[56px] mx-auto text-center">
         {props.src ? (
+          <>
+            <Link href="/conversations" className="p-4 text-2xl">
+            <ArrowLeft />
+          </Link>
           <Image
             loader={myLoader}
             src={props?.src}
             alt="avatar"
-            width={45}
-            height={45}
+            width={30}
+            height={30}
             className="rounded-lg"
           />
+          </>
         ) : (
           <Link href="/conversations" className="p-4 text-2xl">
             <ArrowLeft />
