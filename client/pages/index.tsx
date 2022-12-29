@@ -72,8 +72,9 @@ export default function Home(props: Props) {
         By signing in you agree to our
       </p>
       <p className="text-sm text-center text-[#F8F886] pb-8">
-        Terms of Service, Privacy policy, <span className="opacity-50">&</span>{" "}
-        Cookie policy
+        <Link href='/pages/terms'> Terms of Service</Link>, 
+        <Link href='/pages/privacy'> Privacy policy</Link>,
+        <span className="opacity-50"> &</span> Cookie policy
       </p>
     </>
   );
