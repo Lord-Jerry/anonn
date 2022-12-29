@@ -40,8 +40,6 @@ export default (callback: (direction?: string) => void) => {
       };
     }
 
-    const topMostItem = ref.current.children[0].getBoundingClientRect();
-    console.log(topMostItem);
     // if (
     //   inRange(scrollTop, 100, 200) &&
     //   scrollState.current.lastUpScrollPosition !== topMostItem &&
@@ -57,24 +55,8 @@ export default (callback: (direction?: string) => void) => {
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        console.log('intersect', entries);
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1,
-      }
-    );
-
-    if (ref.current) observer.observe(ref.current as Element);
-
-    return () => {
-      if (ref.current) observer.unobserve(ref.current as Element);
-    };
-    // document.addEventListener('scroll', handleScroll);
-    // return () => document.removeEventListener('scroll', handleScroll);
+    document.addEventListener('scroll', handleScroll);
+    return () => document.removeEventListener('scroll', handleScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref]);
 
