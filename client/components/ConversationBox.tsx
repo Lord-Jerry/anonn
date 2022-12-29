@@ -1,7 +1,7 @@
 import { AVATARS } from 'constants/index';
 import dayjs from 'dayjs';
 import ArrowLeft from 'icon/ArrowLeft';
-import Dots from 'icon/Dots';
+import Dots from 'icon/DotsIcon';
 import Image from 'next/image';
 import { myLoader } from 'utils/imageLoader';
 
