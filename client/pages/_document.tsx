@@ -4,11 +4,6 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, shrink-to-fit=no"
-        />
         <link href="https://fonts.cdnfonts.com/css/br-firma" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

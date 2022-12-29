@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 
-import Button from "components/button";
-import { myLoader } from "utils/imageLoader";
-import ProfileService from "services/profile";
+import Button from 'components/button';
+import { myLoader } from 'utils/imageLoader';
+import ProfileService from 'services/profile';
 import useGoogleAuth, {
   AuthenticateFunctionReturnType,
 } from "hooks/useGoogleAuth";
@@ -15,6 +15,7 @@ import Navigation from "components/Navigation";
 import SendIcon from "icon/SendIcon";
 import useMessage from "hooks/useMessage";
 import useAutosizeTextArea from "utils/useAutosizeTextArea";
+import Head from "next/head";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -35,12 +36,12 @@ export default function Profile(props: Props) {
     successCallback: (user: AuthenticateFunctionReturnType) => {
       if (!user.username) {
         router.push({
-          pathname: "/profile/set-username",
+          pathname: '/profile/set-username',
           query: { callback: router.asPath },
         });
       } else if (!user.avatar) {
         router.push({
-          pathname: "/profile/set-avatar",
+          pathname: '/profile/set-avatar',
           query: { callback: router.asPath },
         });
       } else {
@@ -60,21 +61,47 @@ export default function Profile(props: Props) {
   };
 
   return (
-    <Navigation text="Profile">
-      <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
-        <div className="mb-6">
-          <Image
-            loader={myLoader}
-            src={props?.avatar || ""}
-            alt="Profile pic"
-            width={100}
-            height={100}
-            className="rounded-lg mx-auto"
-          />
-          <p className="text-white text-[20px] font-black text-center mt-6">
-            @{props?.username} wants to have an anonymous chat with you
-          </p>
-        </div>
+    <>
+      <Head>
+        <title>{`Chat anonymously with ${props?.username} - Anonn`}</title>
+        <meta name="robots" content="noindex" />
+        <meta
+          property="og:url"
+          content={`https://anonn.xyz/profile/${props?.username}`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="title"
+          content={`Chat anonymously with ${props?.username} - Anonn`}
+        />
+        <meta
+          property="og:title"
+          content={`Chat anonymously with ${props?.username} - Anonn`}
+        />
+        <meta
+          property="description"
+          content={`${props?.username} wants to have an anonymous chat with you`}
+        />
+        <meta
+          property="og:description"
+          content={`${props?.username} wants to have an anonymous chat with you`}
+        />
+      </Head>
+      <Navigation text="Profile">
+        <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
+          <div className="mb-6">
+            <Image
+              loader={myLoader}
+              src={props?.avatar || ''}
+              alt="Profile pic"
+              width={100}
+              height={100}
+              className="rounded-lg mx-auto"
+            />
+            <p className="text-white text-[20px] font-black text-center mt-6">
+              @{props?.username} wants to have an anonymous chat with you
+            </p>
+          </div>
 
         <div>
           {!props?.isloggedIn ? (
@@ -141,8 +168,9 @@ export default function Profile(props: Props) {
             </>
           )}
         </div>
-      </div>
-    </Navigation>
+        </div>
+      </Navigation>
+    </>
   );
 }
 
@@ -159,14 +187,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!profile) {
     return {
       redirect: {
-        destination: "/404",
+        destination: '/404',
       },
     };
   }
   if (currentUserUsername === profile.username) {
     return {
       redirect: {
-        destination: "/profile",
+        destination: '/profile',
       },
     };
   }

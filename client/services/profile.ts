@@ -30,10 +30,10 @@ export default class ProfileService {
   }
 
   async setUsername(username: string) {
-    const { data } = await this.api.put<UserResponse>("/user/set-username", {
+    await this.api.put<UserResponse>("/user/set-username", {
       username,
     });
-    if (data.username) Cookies.set(USER_COOKIE_KEYS.USERNAME, data.username);
+    Cookies.set(USER_COOKIE_KEYS.USERNAME, username);
     return true;
   }
 
@@ -45,7 +45,7 @@ export default class ProfileService {
   }
 
   async setAvatar(avatarId: string) {
-    const { data } = await this.api.put("/user/set-avatar", {
+    await this.api.put("/user/set-avatar", {
       avatarId,
     });
     Cookies.set(USER_COOKIE_KEYS.AVATAR, avatarId);
