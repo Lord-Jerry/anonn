@@ -1,3 +1,5 @@
+import React from "react";
+
 type Props = {
   tabs: {
     id: string;
@@ -11,11 +13,11 @@ type Props = {
 export const Tab = ({ tabs, onSelect }: Props) => {
   return (
     <div className="flex justify-around py-8 min-[600px]:w-[600px] w-full mx-auto">
-      {tabs.map((tab) => {
+      {tabs.map((tab, index) => {
         const showNotification = !tab.selected && tab.hasNewMessage;
         const isSelected = tab.selected ? 'selected_tab' : '';
         return (
-          <>
+          <React.Fragment key={index}>
             <p
               key={tab.id}
               className={`tab ${isSelected} cursor-pointer inline-flex`}
@@ -26,7 +28,7 @@ export const Tab = ({ tabs, onSelect }: Props) => {
                 <span className="bg-[#F8F886] w-[6.86px] h-[6px] rounded-full ml-2 mt-1" />
               )}
             </p>
-          </>
+          </React.Fragment>
         );
       })}
     </div>

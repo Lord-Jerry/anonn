@@ -11,6 +11,7 @@ type Props = {
   msg: string;
   time: Date;
   avatar: string;
+  hasNewMessage: boolean;
   onSelect: (id: string) => void;
 };
 
@@ -39,8 +40,15 @@ export default function ConversationBox(props: Props) {
             </p>
           </div>
         </div>
-        <div>
-          <p className="text-[10px]">{dayjs(props.time).format('hh:mm:a')}</p>
+        <div className="flex flex-col">
+          <p
+            className={`text-[10px] ${props.hasNewMessage && 'text-[#007AFF]'}`}
+          >
+            {dayjs(props.time).format('hh:mm:a')}
+          </p>
+          {props.hasNewMessage && (
+            <span className="bg-[#007AFF] text-center w-[6.86px] h-[6px] rounded-full ml-4 mt-2" />
+          )}
         </div>
       </div>
     </>

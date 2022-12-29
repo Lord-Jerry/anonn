@@ -58,6 +58,7 @@ const Conversations = (props: ConversationsProps) => {
           key={conversation.conversationId}
           msg={conversation.lastMessage.content}
           time={conversation.lastMessage.sentAt}
+          hasNewMessage={conversation.hasNewMessage}
         />
       ))}
     </>
