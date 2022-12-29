@@ -22,7 +22,7 @@ type GetServerSidePropsReturnType = Awaited<
 >;
 type Props = GetServerSidePropsReturnType['props'];
 type ConversationsProps = {
-  username?: string;
+  username: string;
   isLoading: boolean;
   conversations: ConversationType[];
   onSelect: (id: string) => void;
@@ -37,7 +37,6 @@ const Conversations = (props: ConversationsProps) => {
   }
 
   if (props.conversations.length === 0) {
-    console.log(props.username)
     return (
       <Empty
         text="you don’t have anything going on"
@@ -155,6 +154,7 @@ export default function Dashboard(props: Props) {
       <div ref={ref}>
         <Conversations
           isLoading={isLoading}
+          username={props?.username || 'anonymous'}
           conversations={conversations || []}
           onSelect={handleConversationClick}
         />

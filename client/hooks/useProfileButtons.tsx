@@ -40,7 +40,6 @@ export const useVisitorProfileButtons = (lastConversationId?: string | null) => 
   const continueConversation = { 
     bg: "bg_yellow",
     text: "Continue last conversation",
-    onClick: () => router.push("/conversations")
   }
 
   return [
@@ -48,7 +47,6 @@ export const useVisitorProfileButtons = (lastConversationId?: string | null) => 
     {
       bg: "bg_black",
       text: "Start new conversation",
-      onClick:  () => router.push("/conversations")
     }
   ].filter(Boolean) as ButtonPropType[];
 

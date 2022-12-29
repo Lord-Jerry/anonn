@@ -1,15 +1,16 @@
-import { uniqBy, groupBy } from 'lodash';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { uniqBy, groupBy } from "lodash";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-import ConversationService from 'services/conversation';
-import { Message } from 'types/message';
-import { dateSort } from 'utils/timeSort';
-import useScroll from './useScroll';
+import ConversationService from "services/conversation";
+import { Message } from "types/message";
+import { dateSort } from "utils/timeSort";
+import useScroll from "./useScroll";
+import { useRouter } from "next/router";
 
 const addNewMessageLabel = (messages: Message[]) => {
   const groupedMessages = groupBy(messages, (msg) =>
-    msg.isNewMessage ? 'new' : 'old'
+    msg.isNewMessage ? "new" : "old"
   );
   const { old: oldMessages = [], new: newMessages = [] } = groupedMessages;
   const lastOldMessage = oldMessages[0];
@@ -18,7 +19,7 @@ const addNewMessageLabel = (messages: Message[]) => {
     ? [
         {
           ...lastOldMessage,
-          id: 'newMessageLabel',
+          id: "newMessageLabel",
           updatedAt: new Date(
             new Date(lastOldMessage.updatedAt).getTime() + 1000
           ),
@@ -40,21 +41,21 @@ export default function useMessage(
   const queryClient = useQueryClient();
   const [msg, setMsg] = useState<Message[]>([]);
   const [scrollLoading, setScrollLoading] = useState(false);
-
+  const router = useRouter();
   const conversationService = new ConversationService();
   const { isLoading: conversationLoading, data: conversation } = useQuery(
-    ['conversation', conversationId],
+    ["conversation", conversationId],
     () => conversationService.getSingleConversation(conversationId)
   );
 
   const { isLoading: messagesLoading, data: messages } = useQuery(
-    ['conversationMessages', conversationId],
+    ["conversationMessages", conversationId],
     () => conversationService.getConversationMessages(conversationId)
   );
 
   const { isLoading: conversationUpdateLoading, mutate: mutateConversation } =
     useMutation(
-      (action: 'approve' | 'reject') =>
+      (action: "approve" | "reject") =>
         conversationService.updateConversationStatus({
           conversationId,
           action,
@@ -62,7 +63,7 @@ export default function useMessage(
       {
         onSuccess(data) {
           console.log(data);
-          queryClient.invalidateQueries(['conversation']);
+          queryClient.invalidateQueries(["conversation"]);
         },
       }
     );
@@ -73,8 +74,23 @@ export default function useMessage(
     {
       onSuccess(data) {
         console.log(data);
-        queryClient.invalidateQueries(['conversationMessages']);
+        queryClient.invalidateQueries(["conversationMessages"]);
         onSentMessageSuccessCallback && onSentMessageSuccessCallback();
+      },
+      onError(data) {
+        console.log(data);
+      },
+    }
+  );
+  const { isLoading: initMessage, mutate: firstMessage } = useMutation(
+    (content: string) =>
+      conversationService.startConversation({ id: conversationId, content }),
+    {
+      onSuccess(data) {
+        console.log(data);
+        queryClient.invalidateQueries(["conversationMessages"]);
+        onSentMessageSuccessCallback && onSentMessageSuccessCallback();
+        router.push("/conversations");
       },
       onError(data) {
         console.log(data);
@@ -86,7 +102,7 @@ export default function useMessage(
     if (messagesLoading || conversationLoading || sendingMessage) return;
 
     const oldestMessage = messages && messages[messages.length - 1];
-    if (scrolltype === 'down' || !oldestMessage) return;
+    if (scrolltype === "down" || !oldestMessage) return;
 
     setScrollLoading(true);
     const oldMessages = await conversationService.getConversationMessages(
@@ -95,7 +111,7 @@ export default function useMessage(
     );
 
     setMsg((prev) => {
-      return uniqBy([...oldMessages, ...prev], 'id');
+      return uniqBy([...oldMessages, ...prev], "id");
     });
     setScrollLoading(false);
   };
@@ -110,7 +126,7 @@ export default function useMessage(
       const newMessages = await conversationService.getConversationMessages(
         conversationId,
         lastMessage.updatedAt,
-        'latest'
+        "latest"
       );
 
       setMsg((prev = []) => {
@@ -132,7 +148,9 @@ export default function useMessage(
     messagesLoading,
     conversationLoading,
     sendMessage: mutate,
-    messages: uniqBy(addNewMessageLabel([...(messages || []), ...msg]), 'id'),
+    firstMessage: firstMessage,
+    initMessage,
+    messages: uniqBy(addNewMessageLabel([...(messages || []), ...msg]), "id"),
     updateConversationStatus: mutateConversation,
     conversationUpdateLoading,
   };
