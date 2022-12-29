@@ -87,7 +87,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {  
       isloggedIn: !!token,
-      username: currentUserUsername
+      username: currentUserUsername || '',
     },
   };
 }
