@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 
@@ -12,13 +12,20 @@ import useGoogleAuth, {
 import { useVisitorProfileButtons } from "hooks/useProfileButtons";
 import ConversationService from "services/conversation";
 import Navigation from "components/Navigation";
+import SendIcon from "icon/SendIcon";
+import useMessage from "hooks/useMessage";
+import useAutosizeTextArea from "utils/useAutosizeTextArea";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
 type Props = GetServerSidePropsReturnType["props"];
-
 export default function Profile(props: Props) {
+  const [stage, setStage] = useState(1);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [content, setContent] = useState<string>("");
+  const conversationId: any = props?.userId;
+  const { firstMessage, initMessage } = useMessage(conversationId);
   const router = useRouter();
   const googleBtnRef = useRef<HTMLDivElement>(null);
   const profileButtons = useVisitorProfileButtons(props?.lastConversationId);
@@ -42,6 +49,16 @@ export default function Profile(props: Props) {
     },
     errorCallback: () => {},
   });
+
+  useAutosizeTextArea(textAreaRef.current, content);
+  const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.shiftKey && event.key === "Enter") return;
+    if (event.key === "Enter") {
+      // sendMessage(content);
+      setContent("");
+    }
+  };
+
   return (
     <Navigation text="Profile">
       <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
@@ -72,18 +89,55 @@ export default function Profile(props: Props) {
             </>
           ) : (
             <>
-              {profileButtons.map((button, index) => {
-                return (
-                  <Button
-                    key={index}
-                    text={button.text}
-                    bg={index === 0 ? "bg_yellow" : "bg_black"}
-                    // icon={button.icon}
-                    className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
-                    onClick={button.onClick}
-                  />
-                );
-              })}
+              {stage === 1 &&
+                profileButtons.map((button, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      text={button.text}
+                      bg={index === 0 ? "bg_yellow" : "bg_black"}
+                      // icon={button.icon}
+                      className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
+                      onClick={() =>
+                        button?.text === "Start new conversation"
+                          ? setStage(2)
+                          : router.push("/conversations")
+                      }
+                    />
+                  );
+                })}
+              {stage === 2 && (
+                <div className="flex justify-center focus:outline-0">
+                  <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
+                  <div className="relative bottom-10 focus:outline-0">
+                    
+                    <>
+                      <textarea
+                        className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6"
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="type something, durh"
+                        ref={textAreaRef}
+                        onKeyUp={(e) => handleEnter(e)}
+                        rows={6}
+                        value={content}
+                      />
+                      {content.length > 0 && (
+                        <button
+                          className="absolute right-4 h-[100%]"
+                          disabled={initMessage}
+                          onClick={() => {
+                            firstMessage(content);
+                            setContent("");
+                          }}
+                        >
+                          <SendIcon />
+                        </button>
+                      )}
+                    </>
+                  </div>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
@@ -94,6 +148,7 @@ export default function Profile(props: Props) {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const profileService = new ProfileService();
+
   const { token, username: currentUserUsername } =
     profileService.validateUserProfile(ctx);
 
