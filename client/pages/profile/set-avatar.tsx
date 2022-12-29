@@ -10,6 +10,7 @@ import { GetServerSidePropsContext } from 'next/types';
 import ProfileService from 'services/profile';
 import { USER_COOKIE_KEYS } from 'services/auth';
 import { myLoader } from 'utils/imageLoader';
+import Loader from 'components/Loader';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -69,8 +70,8 @@ export default function SetAvatar(props: Props) {
         </h1>
       </>
       {isLoading && (
-        <div className="flex justify-center items-center h-[600px]">
-          Loading...
+        <div className="flex justify-center items-center h-[400px]">
+          <Loader />
         </div>
       )}
       {!isLoading && data && (
