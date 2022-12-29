@@ -36,8 +36,14 @@ textarea::placeholder {
 }
 
 .tab {
-  @apply text-[#F8F886] font-normal text-xs py-1 px-4 w-20;
+  @apply text-[#F8F886] font-normal justify-center text-xs py-1 px-4 w-[50%];
 }
+
+/* .tab.has-new-message {
+  @apply text-[#F8F886] font-normal text-xs py-1 px-2;
+} */
+
+
 .selected_tab {
   @apply border-b-2 border-[#F8F886];
 }
