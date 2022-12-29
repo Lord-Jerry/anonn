@@ -15,11 +15,11 @@ const addNewMessageLabel = (messages: Message[]) => {
 
   const newMessages = sortedMessages.slice(hasNewMessage);
   const oldMessages = sortedMessages.slice(0, hasNewMessage);
-  const lastOldMessage = oldMessages[oldMessages.length - 1];
+  const lastOldMessage = oldMessages[oldMessages.length - 1] || {};
   const newMessageLabel = {
     ...lastOldMessage,
     id: 'newMessageLabel',
-    updatedAt: new Date(new Date(lastOldMessage.updatedAt).getTime() + 1000),
+    updatedAt: new Date(new Date(lastOldMessage?.updatedAt).getTime() + 1000),
   };
 
   return [...oldMessages, newMessageLabel, ...newMessages];

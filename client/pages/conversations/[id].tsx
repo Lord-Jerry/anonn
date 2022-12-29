@@ -37,6 +37,8 @@ export default function SingleConversation({
     if (newMessageRef?.current && !newMessage) {
       newMessageRef.current?.scrollIntoView({
         behavior: 'auto',
+        block: 'end',
+        inline: 'nearest',
       });
     } else if (messagesEndRef?.current) {
       messagesEndRef.current?.scrollIntoView({
