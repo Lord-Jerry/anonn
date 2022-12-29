@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import Navigation from 'components/Navigation';
 import useAutosizeTextArea from 'utils/useAutosizeTextArea';
@@ -14,6 +15,7 @@ export default function SingleConversation({
 }: {
   conversationId: string;
 }) {
+  const router = useRouter();
   const newMessageRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<any>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -72,8 +74,12 @@ export default function SingleConversation({
   return (
     <>
       <Navigation
-        text={`Anonn chat with ${conversation?.title}`}
-        src={conversation?.avatar}
+        title={`Anonn chat with ${conversation?.title}`}
+        imgSrc={conversation?.avatar}
+        backButton={{
+          disable: false,
+          onClick: () => router.back(),
+        }}
       >
         <div
           ref={scrollRef}

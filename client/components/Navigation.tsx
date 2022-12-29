@@ -1,48 +1,52 @@
-import ArrowLeft from "icon/ArrowLeft";
-import Dots from "icon/Dots";
-import Image from "next/image";
-import Link from "next/link";
-import { myLoader } from "utils/imageLoader";
+import ArrowLeft from 'icon/ArrowLeft';
+import Dots from 'icon/Dots';
+import Image from 'next/image';
+import Link from 'next/link';
+import { myLoader } from 'utils/imageLoader';
 
 type Props = {
+  title: string;
+  imgSrc?: string;
+  showDropdown?: boolean;
+  backButton?: {
+    onClick: () => void;
+    disable: boolean;
+  };
+  backButtonLink?: string;
   children?: React.ReactNode;
-  text: string;
-  src?: string;
 };
 
 export default function Navigation(props: Props) {
   return (
     <>
-    <div className="flex justify-center">
-      <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 min-[600px]:w-[600px] w-full h-[56px] mx-auto text-center">
-        {props.src ? (
+      <div className="flex justify-center">
+        <div className="fixed bg-[#1E1E1E] flex justify-around items-center py-8 mb-4 min-[600px]:w-[600px] w-full h-[56px] mx-auto text-center">
           <>
-            <Link href="/conversations" className="p-4 text-2xl">
-            <ArrowLeft />
-          </Link>
-          <Image
-            loader={myLoader}
-            src={props?.src}
-            alt="avatar"
-            width={30}
-            height={30}
-            className="rounded-lg"
-          />
+            <Link
+              href=""
+              className="p-4 text-2xl"
+              onClick={(e) => {
+                e.preventDefault();
+                if (props?.backButton?.disable) return;
+                props?.backButton?.onClick();
+              }}
+            >
+              <ArrowLeft />
+            </Link>
+            {props.imgSrc && (
+              <Image
+                loader={myLoader}
+                src={props?.imgSrc}
+                alt="avatar"
+                width={30}
+                height={30}
+                className="rounded-lg"
+              />
+            )}
           </>
-        ) : (
-          <Link href="/conversations" className="p-4 text-2xl">
-            <ArrowLeft />
-          </Link>
-        )}
-        <p>{props.text}</p>
-        {props.src ? (
-          <Link href="/conversations" className="p-4 text-2xl">
-            &times;
-          </Link>
-        ) : (
+          <p className="text-center">{props.title}</p>
           <Dots />
-        )}
-      </div>
+        </div>
       </div>
       {props.children}
     </>

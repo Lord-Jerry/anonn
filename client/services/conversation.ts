@@ -1,10 +1,10 @@
-import Cookies from "js-cookie";
-import { Axios } from "axios";
+import Cookies from 'js-cookie';
+import { Axios } from 'axios';
 
-import { USER_COOKIE_KEYS } from "./auth";
+import { USER_COOKIE_KEYS } from './auth';
 
-import ApiService from "./api";
-import { Message } from "types/message";
+import ApiService from './api';
+import { Message } from 'types/message';
 
 export type messageData = {
   id: string;
@@ -17,7 +17,7 @@ export type ConversationType = {
   hasNewMessages: boolean;
   isGroup: boolean;
   isOpen: boolean;
-  status: "PENDING" | "ACTIVE" | "REJECTED";
+  status: 'PENDING' | 'ACTIVE' | 'REJECTED';
   title: string;
   updatedAt: Date;
   lastMessage: {
@@ -47,7 +47,7 @@ export default class ConversationService {
   async getAllConversations(
     type: string,
     cursor?: Date,
-    cursorType?: "latest"
+    cursorType?: 'latest'
   ) {
     try {
       const { data } = await this.api.get<ConversationType[]>(
@@ -79,7 +79,7 @@ export default class ConversationService {
   async getConversationMessages(
     conversationId: string,
     cursor?: Date,
-    cursorType?: "latest"
+    cursorType?: 'latest'
   ) {
     try {
       const { data } = await this.api.get<Message[]>(
@@ -127,10 +127,21 @@ export default class ConversationService {
     action,
   }: {
     conversationId: string;
-    action: "approve" | "reject";
+    action: 'approve' | 'reject';
   }) {
     try {
       await this.api.put(`/conversation/${conversationId}/${action}`);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async checkUserHasNewConversation() {
+    try {
+      const { data } = await this.api.get<{ status: 'PENDING' | 'ACTIVE' }[]>(
+        '/conversation/has-new'
+      );
+      return data;
     } catch (error) {
       return null;
     }
