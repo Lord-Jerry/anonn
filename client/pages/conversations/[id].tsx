@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import Navigation from "components/Navigation";
-import useAutosizeTextArea from "utils/useAutosizeTextArea";
-import SendIcon from "icon/SendIcon";
+import { useEffect, useRef, useState } from 'react';
+import Navigation from 'components/Navigation';
+import useAutosizeTextArea from 'utils/useAutosizeTextArea';
+import SendIcon from 'icon/SendIcon';
 
-import MessageBox from "components/MessageBox";
-import { GetServerSidePropsContext } from "next";
-import ProfileService from "services/profile";
-import useMessage from "hooks/useMessage";
-import Button from "components/button";
+import MessageBox from 'components/MessageBox';
+import { GetServerSidePropsContext } from 'next';
+import ProfileService from 'services/profile';
+import useMessage from 'hooks/useMessage';
+import Button from 'components/button';
 
 export default function SingleConversation({
   conversationId,
@@ -18,7 +18,7 @@ export default function SingleConversation({
   const messagesEndRef = useRef<any>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>('');
 
   const {
     messages,
@@ -33,20 +33,21 @@ export default function SingleConversation({
 
   useAutosizeTextArea(textAreaRef.current, content);
 
-  const scrollToBottom = () => {
-    if (newMessageRef?.current) {
+  const scrollToBottom = (newMessage = false) => {
+    if (newMessageRef?.current && !newMessage) {
       newMessageRef.current?.scrollIntoView({
-        behavior: "auto",
+        behavior: 'auto',
       });
-    }else if (messagesEndRef?.current) {
+    } else if (messagesEndRef?.current) {
       messagesEndRef.current?.scrollIntoView({
-        behavior: "auto",
+        behavior: 'auto',
       });
     }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // refs don't seem to be available when the useEffect is called
+    setTimeout(() => scrollToBottom(), 500);
   }, [messages[0]]);
 
   if (messagesLoading) {
@@ -58,11 +59,11 @@ export default function SingleConversation({
   }
 
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.shiftKey && event.key === "Enter") return;
-    if (event.key === "Enter") {
+    if (event.shiftKey && event.key === 'Enter') return;
+    if (event.key === 'Enter') {
+      setContent('');
       sendMessage(content);
-      setContent("");
-      scrollToBottom();
+      scrollToBottom(true);
     }
   };
 
@@ -77,7 +78,7 @@ export default function SingleConversation({
           className="py-16 px-2 min-[600px]:w-[600px] w-full mx-auto"
         >
           {messages?.map((msg) => {
-            if (msg.id === "newMessageLabel") {
+            if (msg.id === 'newMessageLabel') {
               return (
                 <div ref={newMessageRef} className="text-center">
                   You have some new messages
@@ -96,7 +97,7 @@ export default function SingleConversation({
             );
           })}
           <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
-          {conversation?.status === "PENDING" && (
+          {conversation?.status === 'PENDING' && (
             <div className="mx-auto h-[300px] bg-red-400 p-12 w-full">
               <p>
                 This is your first conversation with anonn user, please accept
@@ -107,14 +108,14 @@ export default function SingleConversation({
                   text="Accept"
                   bg="bg_yellow"
                   className="mt-12 flex justify-center items-center p-4 w-full rounded-lg mx-2"
-                  onClick={() => updateConversationStatus("approve")}
+                  onClick={() => updateConversationStatus('approve')}
                 />
 
                 <Button
                   text="Nayy"
                   bg="bg_black"
                   className="mt-12 flex justify-center items-center p-4 w-full rounded-lg mx-2"
-                  onClick={() => updateConversationStatus("reject")}
+                  onClick={() => updateConversationStatus('reject')}
                 />
               </div>
             </div>
@@ -123,7 +124,7 @@ export default function SingleConversation({
         <div className="flex justify-center focus:outline-0">
           <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
             <div className="relative bottom-0 focus:outline-0">
-              {conversation?.status === "ACTIVE" && (
+              {conversation?.status === 'ACTIVE' && (
                 <>
                   <textarea
                     className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6"
@@ -139,9 +140,9 @@ export default function SingleConversation({
                       className="absolute right-4 h-[100%]"
                       disabled={sendingMessage}
                       onClick={() => {
+                        setContent('');
                         sendMessage(content);
-                        setContent("");
-                        scrollToBottom();
+                        scrollToBottom(true);
                       }}
                     >
                       <SendIcon />
