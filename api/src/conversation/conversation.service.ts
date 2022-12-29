@@ -359,6 +359,17 @@ export class ConversationService {
     });
   }
 
+  async checkUserHasNewConversation(userId: string) {
+    const user = await this.userService.findUserById(userId);
+    return this.db.users_conversations.groupBy({
+      by: ['status'],
+      where: {
+        userId: user.id,
+        hasNewMessage: true,
+      },
+    });
+  }
+
   async initGroupConversation(
     userId: string,
     name: string,

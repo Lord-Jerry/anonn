@@ -29,6 +29,7 @@ import {
 } from './dto';
 import { ConversationEntity, MessageEntity } from './entities/';
 import { User_conversation_status } from '@prisma/client';
+import { userInfo } from 'os';
 
 @Controller('conversation')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -88,6 +89,19 @@ export class ConversationController {
     return conversations.map(
       (conversation) => new ConversationEntity(conversation),
     );
+  }
+
+  @UseGuards(AtGuard)
+  @Get('/has-new-conversation')
+  @HttpCode(HttpStatus.OK)
+  async checkUserHasNewConversation(
+    @Request() req: IRequestUser,
+  ) {
+    const conversation = await this.conversationService.checkUserHasNewConversation(
+      req.user.userId,
+    );
+
+   return conversation;
   }
 
   @UseGuards(AtGuard)
