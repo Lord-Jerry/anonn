@@ -24,8 +24,7 @@ export default function useGoogleAuth({
     const authService = new AuthService();
     const res = await authService.authenticate(
       payload.credential,
-      "google",
-      true
+      "google"
     );
 
     return res ? successCallback(res) : errorCallback(res);
