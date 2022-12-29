@@ -70,7 +70,6 @@ export default function SingleConversation({
       scrollToBottom(true);
     }
   };
-
   return (
     <>
       <Navigation
