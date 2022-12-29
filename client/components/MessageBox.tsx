@@ -1,7 +1,10 @@
+import dayjs from "dayjs";
+
 type Props = {
   id: string;
   isMine: boolean;
   message: string;
+  time: Date;
 };
 
 const messageTypes = {
@@ -21,7 +24,9 @@ export default function MessageBox(props: Props) {
   const { bg, content } = messageTypes[props.isMine ? 'mine' : 'theirs'];
   return (
     <div accessKey={props.id} className={bg}>
-      <p className={content}>{props.message}</p>
+      <p className={content}>{props.message}
+      <span className="block text-right text-xs">{dayjs(props.time).format('hh:mm:a')}</span>
+      </p>
     </div>
   );
 }

@@ -34,14 +34,15 @@ export default function SingleConversation({
   useAutosizeTextArea(textAreaRef.current, content);
 
   const scrollToBottom = () => {
-    if (newMessageRef.current)
-      newMessageRef.current.scrollIntoView({
+    if (newMessageRef?.current) {
+      newMessageRef.current?.scrollIntoView({
         behavior: "auto",
       });
-    else
+    }else if (messagesEndRef?.current) {
       messagesEndRef.current?.scrollIntoView({
         behavior: "auto",
       });
+    }
   };
 
   useEffect(() => {
@@ -90,6 +91,7 @@ export default function SingleConversation({
                 key={msg.id}
                 isMine={msg.isMine}
                 message={msg.content}
+                time={msg.updatedAt}
               />
             );
           })}
