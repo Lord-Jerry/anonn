@@ -19,7 +19,7 @@ interface shareBtnProps {
       >
       <Button
         onClick={() => (console.log(urlLink))}
-        className="mt-12 mx-auto flex justify-center items-center bg-[#F8F886] text-black p-4 min-[600px]:w-[600px] w-[350px] rounded-lg"
+        className="mt-12 mx-auto flex justify-center items-center bg-[#F8F886] text-black p-4 w-full rounded-lg"
         text="Share your profile link"
         icon={<Share />}
       />

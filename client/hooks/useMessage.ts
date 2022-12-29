@@ -90,7 +90,7 @@ export default function useMessage(
         console.log(data);
         queryClient.invalidateQueries(["conversationMessages"]);
         onSentMessageSuccessCallback && onSentMessageSuccessCallback();
-        router.push("/conversations");
+        router.push(`/conversations/${data?.conversationId}`);
       },
       onError(data) {
         console.log(data);

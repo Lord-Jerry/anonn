@@ -1,30 +1,30 @@
-import Image from 'next/image';
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/router';
-import { GetServerSidePropsContext } from 'next/types';
+import Image from "next/image";
+import { useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next/types";
 
 import Button from 'components/button';
 import { myLoader } from 'utils/imageLoader';
 import ProfileService from 'services/profile';
 import useGoogleAuth, {
   AuthenticateFunctionReturnType,
-} from 'hooks/useGoogleAuth';
-import { useVisitorProfileButtons } from 'hooks/useProfileButtons';
-import ConversationService from 'services/conversation';
-import Navigation from 'components/Navigation';
-import SendIcon from 'icon/SendIcon';
-import useMessage from 'hooks/useMessage';
-import useAutosizeTextArea from 'utils/useAutosizeTextArea';
-import Head from 'next/head';
+} from "hooks/useGoogleAuth";
+import { useVisitorProfileButtons } from "hooks/useProfileButtons";
+import ConversationService from "services/conversation";
+import Navigation from "components/Navigation";
+import SendIcon from "icon/SendIcon";
+import useMessage from "hooks/useMessage";
+import useAutosizeTextArea from "utils/useAutosizeTextArea";
+import Head from "next/head";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType['props'];
+type Props = GetServerSidePropsReturnType["props"];
 export default function Profile(props: Props) {
   const [stage, setStage] = useState(1);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>("");
   const conversationId: any = props?.userId;
   const { firstMessage, initMessage } = useMessage(conversationId);
   const router = useRouter();
@@ -53,10 +53,10 @@ export default function Profile(props: Props) {
 
   useAutosizeTextArea(textAreaRef.current, content);
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.shiftKey && event.key === 'Enter') return;
-    if (event.key === 'Enter') {
-      // sendMessage(content);
-      setContent('');
+    if (event.shiftKey && event.key === "Enter") return;
+    if (event.key === "Enter") {
+      firstMessage(content);
+      setContent("");
     }
   };
 
@@ -103,73 +103,71 @@ export default function Profile(props: Props) {
             </p>
           </div>
 
-          <div>
-            {!props?.isloggedIn ? (
-              <>
-                <p className="text-white text-[16px] text-center  mb-10">
-                  Pleaseeee sign in to chat.
-                </p>
-                <div
-                  className="flex justify-center py-6 px-[80px]"
-                  ref={googleBtnRef}
-                />
-              </>
-            ) : (
-              <>
-                {stage === 1 &&
-                  profileButtons.map((button, index) => {
-                    return (
-                      <Button
-                        key={index}
-                        text={button.text}
-                        bg={index === 0 ? 'bg_yellow' : 'bg_black'}
-                        // icon={button.icon}
-                        className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
-                        onClick={() => {
-                          console.log('button clicked', button.onclick);
-                          if (button.onclick) {
-                            button.onclick();
-                          } else {
-                            setStage(2);
-                          }
-                        }}
+        <div>
+          {!props?.isloggedIn ? (
+            <>
+              <p className="text-white text-[16px] text-center  mb-10">
+                Pleaseeee sign in to chat.
+              </p>
+              <div
+                className="flex justify-center py-6 px-[80px]"
+                ref={googleBtnRef}
+              />
+            </>
+          ) : (
+            <>
+              {stage === 1 &&
+                profileButtons.map((button, index) => {
+                  return (
+                    <Button
+                      key={index}
+                      text={button.text}
+                      bg={index === 0 ? "bg_yellow" : "bg_black"}
+                      // icon={button.icon}
+                      className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
+                      onClick={() =>
+                        button?.text === "Start new conversation"
+                          ? setStage(2)
+                          : router.push(`/conversations/${props.lastConversationId}`)
+                      }
+                    />
+                  );
+                })}
+              {stage === 2 && (
+                <div className="flex justify-center focus:outline-0">
+                  <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
+                  <div className="relative bottom-10 focus:outline-0">
+                    
+                    <>
+                      <textarea
+                        className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6"
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="type something, durh"
+                        ref={textAreaRef}
+                        onKeyUp={(e) => handleEnter(e)}
+                        rows={6}
+                        value={content}
                       />
-                    );
-                  })}
-                {stage === 2 && (
-                  <div className="flex justify-center focus:outline-0">
-                    <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
-                      <div className="relative bottom-10 focus:outline-0">
-                        <>
-                          <textarea
-                            className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6"
-                            onChange={(e) => setContent(e.target.value)}
-                            placeholder="type something, durh"
-                            ref={textAreaRef}
-                            onKeyUp={(e) => handleEnter(e)}
-                            rows={6}
-                            value={content}
-                          />
-                          {content.length > 0 && (
-                            <button
-                              className="absolute right-4 h-[100%]"
-                              disabled={initMessage}
-                              onClick={() => {
-                                firstMessage(content);
-                                setContent('');
-                              }}
-                            >
-                              <SendIcon />
-                            </button>
-                          )}
-                        </>
-                      </div>
-                    </div>
+                      {content.length > 0 && (
+                        <button
+                          className="absolute right-4 h-[100%]"
+                          disabled={initMessage}
+                          onClick={() => {
+                            firstMessage(content);
+                            setContent("");
+                          }}
+                        >
+                          <SendIcon />
+                        </button>
+                      )}
+                    </>
                   </div>
-                )}
-              </>
-            )}
-          </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
         </div>
       </Navigation>
     </>
