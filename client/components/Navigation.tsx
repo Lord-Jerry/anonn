@@ -1,8 +1,9 @@
 import ArrowLeft from 'icon/ArrowLeft';
-import Dots from 'icon/Dots';
+// import Dots from 'icon/Dots';
 import Image from 'next/image';
 import Link from 'next/link';
 import { myLoader } from 'utils/imageLoader';
+import Dots from './Dots';
 
 type Props = {
   title: string;

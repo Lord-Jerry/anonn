@@ -14,6 +14,13 @@ body {
 * {
   box-sizing: border-box;
 }
+.dropdown:hover .dropdown-menu {
+  display: block;
+  border-radius: 3px;
+}
+.dropdown-menuc > li:hover {
+  color: #f8f886;
+}
 textarea {
   background: #000;
   border-bottom: 1px solid #fff;
@@ -42,7 +49,6 @@ textarea::placeholder {
 /* .tab.has-new-message {
   @apply text-[#F8F886] font-normal text-xs py-1 px-2;
 } */
-
 
 .selected_tab {
   @apply border-b-2 border-[#F8F886];
