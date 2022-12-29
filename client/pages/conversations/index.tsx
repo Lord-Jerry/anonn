@@ -16,6 +16,7 @@ import { conversationTabs } from 'constants/tabs';
 import { markTabAsSelected } from 'utils/tabs';
 
 import useScroll from 'hooks/useScroll';
+import Loader from 'components/Loader';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -30,8 +31,8 @@ type ConversationsProps = {
 const Conversations = (props: ConversationsProps) => {
   if (props.isLoading) {
     return (
-      <div className="flex justify-center items-center h-[600px]">
-        Loading...
+      <div className="flex justify-center items-center h-[400px]">
+        <Loader />
       </div>
     );
   }

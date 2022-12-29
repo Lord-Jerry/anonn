@@ -9,6 +9,7 @@ import { GetServerSidePropsContext } from 'next';
 import ProfileService from 'services/profile';
 import useMessage from 'hooks/useMessage';
 import Button from 'components/button';
+import Loader from 'components/Loader';
 
 export default function SingleConversation({
   conversationId,
@@ -56,8 +57,8 @@ export default function SingleConversation({
 
   if (messagesLoading) {
     return (
-      <div className="flex justify-center items-center h-[600px]">
-        Loading...
+      <div className="flex justify-center items-center h-[400px]">
+        <Loader />
       </div>
     );
   }
