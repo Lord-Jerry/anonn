@@ -38,7 +38,7 @@ export default function SetUsername() {
   });
 
   return (
-    <Navigation text="Profile setup">
+    <Navigation title="Profile setup">
       <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
         <h1 className="font-black text-3xl w-[260px] mb-16">
           Welcome to <br />
