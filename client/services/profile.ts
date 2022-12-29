@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { Axios } from "axios";
 
 import ApiService from "./api";
-import { USER_COOKIE_KEYS, UserResponse } from "./auth";
+import AuthService, { USER_COOKIE_KEYS, UserResponse } from "./auth";
 import { AVATARS } from "constants/index";
 import { GetServerSidePropsContext } from "next";
 
@@ -14,9 +14,11 @@ type AvatarsType = {
 
 export default class ProfileService {
   private api: Axios;
+  private authService: AuthService;
 
   constructor(token?: string) {
     this.api = ApiService(token || Cookies.get(USER_COOKIE_KEYS.TOKEN));
+    this.authService = new AuthService(token);
   }
 
   async checkUsernameAvailability(username: string) {
@@ -33,7 +35,7 @@ export default class ProfileService {
     await this.api.put<UserResponse>("/user/set-username", {
       username,
     });
-    Cookies.set(USER_COOKIE_KEYS.USERNAME, username);
+    this.authService.setUsernameToCookie(username);
     return true;
   }
 
@@ -48,7 +50,7 @@ export default class ProfileService {
     await this.api.put("/user/set-avatar", {
       avatarId,
     });
-    Cookies.set(USER_COOKIE_KEYS.AVATAR, avatarId);
+    this.authService.setAvatarToCookie(avatarId);
     return true;
   }
 
