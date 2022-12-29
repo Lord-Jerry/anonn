@@ -70,6 +70,19 @@ export default function SingleConversation({
       scrollToBottom(true);
     }
   };
+
+  const handleBackButton = () => {
+    if (conversation?.status === 'PENDING') {
+       router.push('/conversations?tab=pending');
+    } else if (conversation?.status === 'ACTIVE') {
+      router.push('/conversations?tab=active');
+    } else if (conversation?.status === 'REJECTED') {
+      router.push('/conversations?tab=pending');
+    } else {
+      router.push('/conversations');
+    }
+  }
+
   return (
     <>
       <Navigation
@@ -77,7 +90,7 @@ export default function SingleConversation({
         imgSrc={conversation?.avatar}
         backButton={{
           disable: false,
-          onClick: () => router.back(),
+          onClick: handleBackButton,
         }}
       >
         <div
