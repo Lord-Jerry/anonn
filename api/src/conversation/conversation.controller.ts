@@ -92,7 +92,7 @@ export class ConversationController {
   }
 
   @UseGuards(AtGuard)
-  @Get('/has-new-conversation')
+  @Get('/has-new')
   @HttpCode(HttpStatus.OK)
   async checkUserHasNewConversation(
     @Request() req: IRequestUser,
