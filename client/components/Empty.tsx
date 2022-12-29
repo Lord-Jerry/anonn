@@ -9,7 +9,7 @@ interface EmptyProps {
 }
 const Empty:FC<EmptyProps> =({icon, text, link})=> {
   return (
-    <div className="mt-24 mx-auto text-center">
+    <div className="mt-24 mx-auto text-center min-[600px]:w-[600px] w-[350px]">
       <p className="mx-auto">{icon}</p>
       <p className="mx-auto py-2 text-[20px] w-[232px] font-semibold">{text}</p>
       <ShareBtn urlLink={link}/>

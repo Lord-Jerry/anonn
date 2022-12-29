@@ -119,7 +119,6 @@ export default function Dashboard(props: Props) {
   const handleConversationClick = (id: string) => {
     Router.push({
       pathname: `/conversations/${id}`,
-      query: { id },
     });
   };
 

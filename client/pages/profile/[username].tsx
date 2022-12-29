@@ -55,7 +55,7 @@ export default function Profile(props: Props) {
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.shiftKey && event.key === "Enter") return;
     if (event.key === "Enter") {
-      // sendMessage(content);
+      firstMessage(content);
       setContent("");
     }
   };
