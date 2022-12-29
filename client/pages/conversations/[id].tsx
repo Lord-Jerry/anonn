@@ -74,7 +74,7 @@ export default function SingleConversation({
   };
 
   const handleBackButton = () => {
-    const status = conversationStatus.current;
+    const status = conversationStatus.current || conversation?.status;
     if (status === 'PENDING') {
       router.push('/conversations?tab=pending');
     } else if (status === 'ACTIVE') {
