@@ -83,19 +83,21 @@ export default function Dashboard(props: Props) {
     }
   );
 
+  const { data: hasNewMessage } = useQuery(
+    ['userHasNewConversations', selectedTab.id],
+    () => conversationService.checkUserHasNewConversation(),
+    {
+      refetchInterval: 10000,
+    }
+  );
+
   const handleTabClick = (id: string) => {
     setTabs((prev) => markTabAsSelected(prev, id));
-    Router.push(
-      {
-        query: {
-          tab: id,
-        },
+    Router.push({
+      query: {
+        tab: id,
       },
-      undefined,
-      {
-        shallow: true,
-      }
-    );
+    });
   };
 
   const handleScrollfetch = async (scrolltype?: string) => {
@@ -146,9 +148,26 @@ export default function Dashboard(props: Props) {
 
   return (
     <>
-      <Navigation text="Conversations" />
+      <Navigation
+        backButton={{
+          disable: false,
+          onClick: () => Router.push('/profile'),
+        }}
+        title="Conversations"
+      />
       <div className="pt-12">
-        <Tab tabs={tabs} onSelect={handleTabClick} />
+        <Tab
+          tabs={tabs.map((tab) => {
+            const newMessge = hasNewMessage?.find(
+              (x) => x.status.toLocaleLowerCase() === tab.id
+            );
+            return {
+              ...tab,
+              hasNewMessage: !!newMessge,
+            };
+          })}
+          onSelect={handleTabClick}
+        />
       </div>
       <div ref={ref}>
         <Conversations
@@ -167,7 +186,8 @@ export default function Dashboard(props: Props) {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const profileService = new ProfileService();
-  const { redirectionDestination, username } = profileService.validateUserProfile(ctx);
+  const { redirectionDestination, username } =
+    profileService.validateUserProfile(ctx);
 
   if (redirectionDestination)
     return {

@@ -87,7 +87,7 @@ export default function Profile(props: Props) {
           content={`${props?.username} wants to have an anonymous chat with you`}
         />
       </Head>
-      <Navigation text="Profile">
+      <Navigation title="Profile">
         <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
           <div className="mb-6">
             <Image

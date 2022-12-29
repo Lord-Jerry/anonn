@@ -16,7 +16,7 @@ type Props = GetServerSidePropsReturnType["props"];
 export default function Profile(props: Props) {
   const profileButtons = useProfileButtons();
   return (
-    <Navigation text="Profile">
+    <Navigation title="Profile">
       <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
         {props?.isNewUser ? (
           <div className="mb-8">
