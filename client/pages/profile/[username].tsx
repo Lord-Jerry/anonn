@@ -128,7 +128,7 @@ export default function Profile(props: Props) {
                       onClick={() =>
                         button?.text === "Start new conversation"
                           ? setStage(2)
-                          : router.push("/conversations")
+                          : router.push(`/conversations/${props.lastConversationId}`)
                       }
                     />
                   );
