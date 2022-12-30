@@ -66,7 +66,12 @@ export default function SingleConversation({
 
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.shiftKey && event.key === 'Enter') return;
+    if (content.trim() === '') {
+      return;
+    }
+
     if (event.key === 'Enter') {
+      event.preventDefault();
       setContent('');
       sendMessage(content);
       scrollToBottom(true);
