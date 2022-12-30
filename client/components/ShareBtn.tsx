@@ -11,7 +11,7 @@ interface shareBtnProps {
         <>
         <RWebShare
         data={{
-          text: "Chat with me on Anonn, masks on!",
+          text: `${urlLink} \n Chat with me on Anonn, masks on! \n`,
           url: urlLink,
           title: "Anonn"
         }}

@@ -89,6 +89,7 @@ export default function Profile(props: Props) {
           property="og:description"
           content={`${props?.username} wants to have an anonymous chat with you`}
         />
+        <meta property="og:image" content='/images/preview.png' />
       </Head>
       <Navigation title="Profile">
         <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
