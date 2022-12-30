@@ -17,7 +17,7 @@ export default function SetUsername() {
   const debouncedSearch = useDebounce(username, 500);
 
   function isAlphaNumeric(str: string) {
-    let regex = new RegExp(/^(?=.*[a-zA-Z])[A-Za-z0-9]+$/);
+    let regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
     return regex.test(str);
   }
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ export default function SetUsername() {
           <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
             <li> Keep it Anonnn! </li>
             <li> Your username should start with a letter</li>
-            <li> Your username should be letters and numbers only</li>
+            <li> Your username should be letters, numbers and undescores only</li>
             <li>You cannot change your username</li>
           </ul>
         )}
