@@ -16,7 +16,7 @@ export default function Input(props: Props) {
           type={props.type}
           name={props.name}
           value={props.value}
-          autoComplete={"false"}
+          autoComplete="off"
           onChange={props.onChange}
           placeholder={props.placeholder} 
           role="textbox"

@@ -22,7 +22,7 @@ export default class ProfileService {
   }
 
   async checkUsernameAvailability(username: string) {
-    const { data } = await this.api.get<boolean>(
+    const { data } = await this.api.get<any>(
       "/user/check-username-availability",
       {
         params: { username },
@@ -72,9 +72,13 @@ export default class ProfileService {
 
     if (!isUserLoggedIn) {
       redirectionDestination = "/";
-      Object.values(USER_COOKIE_KEYS).forEach((key) => ctx.res?.setHeader("Set-Cookie", `${key}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`));
-    }
-    else if (!username) redirectionDestination = "/profile/set-username";
+      Object.values(USER_COOKIE_KEYS).forEach((key) =>
+        ctx.res?.setHeader(
+          "Set-Cookie",
+          `${key}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`
+        )
+      );
+    } else if (!username) redirectionDestination = "/profile/set-username";
     else if (!isAvatarSet) redirectionDestination = "/profile/set-avatar";
 
     return {

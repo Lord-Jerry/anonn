@@ -34,7 +34,7 @@ export default function Privacy(props: Props) {
           onClick: () => router.push('/'),
         }}
       >
-        <div className="min-[600px]:w-[400px] mx-auto text-sm font-normal mx-[37px] my-14 px-auto leading-normal pt-4 overflow-scroll">
+        <div className="min-[600px]:w-[600px] w-full mx-auto text-sm font-normal py-24 px-12 text-justify leading-normal overflow-scroll">
           <Logo />
           <h2 className="font-bold py-8">{title}</h2>
           {content}

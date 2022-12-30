@@ -6,11 +6,11 @@ export default function Loader() {
   <defs>
     <linearGradient id="Gradient" x1="50%" y1="0%" x2="50%" y2="100%" >
       <stop offset="0%" stopColor="#D3FF56">
-        <animate attributeName="stop-color" values="#D3FF56; #00AFAA; #D3FF56" dur="4s" repeatCount="indefinite"></animate>
+        <animate attributeName="stopColor" values="#D3FF56; #00AFAA; #D3FF56" dur="4s" repeatCount="indefinite"></animate>
       </stop>
 
-      <stop offset="100%" stop-color="#00AFAA">
-        <animate attributeName="stop-color" values="#00AFAA; #D3FF56; #00AFAA" dur="4s" repeatCount="indefinite"></animate>
+      <stop offset="100%" stopColor="#00AFAA">
+        <animate attributeName="stopColor" values="#00AFAA; #D3FF56; #00AFAA" dur="4s" repeatCount="indefinite"></animate>
       </stop>
     </linearGradient>
   </defs>
@@ -18,6 +18,8 @@ export default function Loader() {
 </svg>
   )
 }
+
+
 
 
 
