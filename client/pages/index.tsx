@@ -55,7 +55,7 @@ export default function Home(props: Props) {
       {props.isloggedIn && (
         <div className="min-[600px]:w-[400px] mx-auto pt-4">
           <>
-            <p className="text-center font-bold text-4xl">Welcome back,</p>
+            <p className="text-center font-bold text-4xl">Welcome back</p>
             <p className="text-center text-base pt-2">@{props?.username}</p>
             <Link href={'/profile'}>
               <Button
