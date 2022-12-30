@@ -17,7 +17,7 @@ export class DatabaseService
           url,
         },
       },
-      log: ['query', 'info', 'warn'],
+      // log: ['query', 'info', 'warn'],
     });
   }
 
