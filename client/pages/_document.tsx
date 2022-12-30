@@ -15,6 +15,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="shortcut icon" href="/images/favicon.png" />
       </Head>
       <body className="bg-[#000] text-white">
         <Main />
