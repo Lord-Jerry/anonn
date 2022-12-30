@@ -36,7 +36,7 @@ export default function Profile(props: Props) {
     successCallback: (user: AuthenticateFunctionReturnType) => {
       const profileService = new ProfileService();
       profileService.setReferer(props?.username as string);
-      
+
       if (!user.username) {
         router.push({
           pathname: '/profile/set-username',
@@ -103,6 +103,14 @@ export default function Profile(props: Props) {
             />
             <p className="text-white text-[20px] font-black text-center mt-6">
               @{props?.username} wants to have an anonymous chat with you
+            </p>
+            <p className="mt-8 text-sm leading-normal tracking-tight">
+              Welcome to our anonymous chat app! <br />
+              We want to ensure your privacy <br />
+              and security, so every time you start a new conversation,<br />
+              we will automatically generate a random username for you. <br />
+              This means that you can chat freely without revealing your personal identity.<br />
+              Have fun and stay safe!
             </p>
           </div>
 
