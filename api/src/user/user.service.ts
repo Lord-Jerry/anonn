@@ -15,6 +15,7 @@ import { AVATARS } from 'src/common/constants';
 
 @Injectable()
 export class UserService {
+  private cache = new Map<string, string>();
   constructor(private db: DatabaseService) {}
 
   async findUserById(userId: string) {
@@ -66,6 +67,10 @@ export class UserService {
   }
 
   async findUserByUsername(username: string) {
+    const cachedUser = this.cache.get(username);
+    if (cachedUser) {
+      return JSON.parse(cachedUser);
+    }
     const user = await this.db.users.findFirst({
       where: {
         username,
@@ -76,6 +81,7 @@ export class UserService {
       throw new NotFoundException(`username ${username} not found`);
     }
 
+    this.cache.set(username, JSON.stringify(user));
     return user;
   }
 
