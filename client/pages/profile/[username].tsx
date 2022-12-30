@@ -16,6 +16,7 @@ import SendIcon from 'icon/SendIcon';
 import useMessage from 'hooks/useMessage';
 import useAutosizeTextArea from 'utils/useAutosizeTextArea';
 import Head from 'next/head';
+import Footer from 'components/Footer';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -125,6 +126,7 @@ export default function Profile(props: Props) {
                   className="flex justify-center py-6 px-[80px]"
                   ref={googleBtnRef}
                 />
+                <Footer />
               </>
             ) : (
               <>
