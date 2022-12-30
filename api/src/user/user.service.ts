@@ -95,6 +95,26 @@ export class UserService {
     });
   }
 
+  async setReferrer(userId: string, referrerUsername: string) {
+    const [user, referrer] = await Promise.all([
+      this.findUserById(userId),
+      this.findUserByUsername(referrerUsername),
+    ]);
+
+    if (user.referrerId) {
+      return;
+    }
+
+    return this.db.users.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        referrerId: referrer.id,
+      },
+    });
+  }
+
   generateRandomUsername() {
     return uniqueNamesGenerator({
       dictionaries: [adjectives, animals, colors],
