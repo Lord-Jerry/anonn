@@ -70,14 +70,6 @@ textarea::placeholder {
   }
 }
 
-/* body {
-  background-color: #1c2147;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-} */
-
 .circle {
   animation: 8s loader ease infinite alternate, 2s loader2 linear infinite;
   stroke: url(#Gradient);

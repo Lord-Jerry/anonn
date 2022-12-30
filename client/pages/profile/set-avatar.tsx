@@ -1,33 +1,34 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import Button from 'components/button';
-import ArrowRight from 'icon/ArrowRight';
-import Share from 'icon/Share';
-import cookies from 'next-cookies';
-import { useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { GetServerSidePropsContext } from 'next/types';
-import ProfileService from 'services/profile';
-import { USER_COOKIE_KEYS } from 'services/auth';
-import { myLoader } from 'utils/imageLoader';
-import Loader from 'components/Loader';
+import { useMutation, useQuery } from "@tanstack/react-query";
+import Button from "components/button";
+import ArrowRight from "icon/ArrowRight";
+import Share from "icon/Share";
+import cookies from "next-cookies";
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next/types";
+import ProfileService from "services/profile";
+import { USER_COOKIE_KEYS } from "services/auth";
+import { myLoader } from "utils/imageLoader";
+import Loader from "components/Loader";
+import { Logo } from "icon/logo";
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType['props'];
+type Props = GetServerSidePropsReturnType["props"];
 
 export default function SetAvatar(props: Props) {
   const router = useRouter();
   const profileService = new ProfileService();
   const [avatar, setAvatar] = useState({
-    key: '',
-    avatar: '',
+    key: "",
+    avatar: "",
   });
-  const [change, setChange] = useState('');
+  const [change, setChange] = useState("");
 
   const { isLoading, data } = useQuery(
-    ['avatarData'],
+    ["avatarData"],
     () => profileService.getAvatars(),
     {
       onSuccess(data) {
@@ -40,7 +41,7 @@ export default function SetAvatar(props: Props) {
   const { mutate } = useMutation(() => profileService.setAvatar(avatar.key), {
     onSuccess() {
       router.push({
-        pathname: '/profile',
+        pathname: "/profile",
         query: {
           isNewUser: true,
         },
@@ -48,9 +49,9 @@ export default function SetAvatar(props: Props) {
     },
     onError(err) {
       console.log(err);
-      setChange('');
+      setChange("");
       router.push({
-        pathname: '/profile',
+        pathname: "/profile",
         query: {
           isNewUser: true,
         },
@@ -61,12 +62,14 @@ export default function SetAvatar(props: Props) {
   return (
     <div className="mx-auto py-4 px-12 min-[600px]:w-[600px] w-full">
       <>
+        <div className="flex justify-center my-4">
+          <Logo />
+        </div>
         <p className="text-sm text-center">One last step</p>
-        <h1 className="text-[32px] font-black text-center mb-12 leading-tight">
-          Please select <br />
-          an avatar to
+        <h1 className="text-[32px] font-black text-center mb-10 leading-tight">
+          Please select an
           <br />
-          continue.
+          an avatar to continue.
         </h1>
       </>
       {isLoading && (
@@ -90,40 +93,36 @@ export default function SetAvatar(props: Props) {
           <p className="text-white font-black text-center mt-6">
             @{props?.username}
           </p>
-          <p
-            className="opacity-50 text-md text-center underline cursor-pointer"
-            onClick={() => setChange('change')}
-          >
-            change avatar
-          </p>
-
-          {change === 'change' && (
+          {!change && (
+            <p
+              className="opacity-50 text-md text-center underline cursor-pointer"
+              onClick={() => setChange("change")}
+            >
+              change avatar
+            </p>
+          )}
+          {change && (
             <div className="grid grid-cols-4 grid-flow-row gap-3 p-8">
               {data?.map((x) => (
-                <div
+                <Image
                   key={x.key}
-                  className={
-                    avatar.key === x.key
-                      ? `border-2 border-[#F8F886] rounded-3xl`
-                      : ''
-                  }
+                  loader={myLoader}
+                  src={x.avatar}
+                  alt="Picture of the author"
+                  width={64}
                   onClick={() =>
                     setAvatar({
                       key: x.key,
                       avatar: x.avatar,
                     })
                   }
-                >
-                  <Image
-                    key={x.key}
-                    loader={myLoader}
-                    src={x.avatar}
-                    alt="Picture of the author"
-                    width={64}
-                    height={64}
-                    className="rounded-lg"
-                  />
-                </div>
+                  height={64}
+                  className={
+                    avatar.key === x.key
+                      ? `border-2 border-[#F8F886] rounded-full`
+                      : ""
+                  }
+                />
               ))}
             </div>
           )}
