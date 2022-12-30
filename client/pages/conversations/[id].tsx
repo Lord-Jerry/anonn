@@ -35,6 +35,7 @@ export default function SingleConversation({
   } = useMessage(conversationId);
 
   useAutosizeTextArea(textAreaRef.current, content);
+  const conversationStatus = useRef(conversation?.status);
 
   const scrollToBottom = (newMessage = false) => {
     if (newMessageRef?.current && !newMessage) {
@@ -73,16 +74,17 @@ export default function SingleConversation({
   };
 
   const handleBackButton = () => {
-    if (conversation?.status === 'PENDING') {
-       router.push('/conversations?tab=pending');
-    } else if (conversation?.status === 'ACTIVE') {
+    const status = conversationStatus.current || conversation?.status;
+    if (status === 'PENDING') {
+      router.push('/conversations?tab=pending');
+    } else if (status === 'ACTIVE') {
       router.push('/conversations?tab=active');
-    } else if (conversation?.status === 'REJECTED') {
+    } else if (status === 'REJECTED') {
       router.push('/conversations?tab=pending');
     } else {
       router.push('/conversations');
     }
-  }
+  };
 
   return (
     <>
@@ -120,7 +122,7 @@ export default function SingleConversation({
           <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
           {conversation?.status === 'PENDING' && (
             <div className="mx-auto fixed bottom-0 h-[132px] bg-[#1E1E1E] px-8 min-[600px]:w-[600px] w-full">
-              <p className='text-xs opacity-70 py-3 text-white text-center'>
+              <p className="text-xs opacity-70 py-3 text-white text-center">
                 This is your first conversation with anonn user, please accept
                 to continue or reject to end this chat without replying
               </p>
@@ -129,14 +131,20 @@ export default function SingleConversation({
                   text="Yayy, continue"
                   bg="bg_yellow"
                   className="text-xs mt-2 flex justify-center items-center px-4 py-2 w-full rounded-lg mr-2"
-                  onClick={() => updateConversationStatus('approve')}
+                  onClick={() => {
+                    conversationStatus.current = conversation?.status;
+                    updateConversationStatus('approve');
+                  }}
                 />
 
                 <Button
                   text="Nayy, I’d pass"
                   bg="bg_black"
                   className="text-xs mt-2 flex justify-center items-center px-4 py-2 w-full rounded-lg ml-2 border-2 border-[#f8f886]"
-                  onClick={() => updateConversationStatus('reject')}
+                  onClick={() => {
+                    conversationStatus.current = conversation?.status;
+                    updateConversationStatus('reject');
+                  }}
                 />
               </div>
             </div>

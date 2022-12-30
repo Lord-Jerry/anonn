@@ -14,7 +14,7 @@ export type messageData = {
 export type ConversationType = {
   avatar: string;
   conversationId: string;
-  hasNewMessages: boolean;
+  hasNewMessage: boolean;
   isGroup: boolean;
   isOpen: boolean;
   status: 'PENDING' | 'ACTIVE' | 'REJECTED';
