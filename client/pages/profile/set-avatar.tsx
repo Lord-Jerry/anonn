@@ -1,14 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Button from "components/button";
 import ArrowRight from "icon/ArrowRight";
-import Share from "icon/Share";
-import cookies from "next-cookies";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next/types";
 import ProfileService from "services/profile";
-import { USER_COOKIE_KEYS } from "services/auth";
 import { myLoader } from "utils/imageLoader";
 import Loader from "components/Loader";
 import { Logo } from "icon/logo";
@@ -43,6 +40,7 @@ export default function SetAvatar(props: Props) {
       router.push({
         pathname: "/profile",
         query: {
+          ...router.query,
           isNewUser: true,
         },
       });
@@ -50,12 +48,7 @@ export default function SetAvatar(props: Props) {
     onError(err) {
       console.log(err);
       setChange("");
-      router.push({
-        pathname: "/profile",
-        query: {
-          isNewUser: true,
-        },
-      });
+      router.reload();
     },
   });
 

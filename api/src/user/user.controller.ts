@@ -1,6 +1,5 @@
 import {
 	Get,
-	Post,
 	Body,
 	Put,
 	Param,
@@ -65,5 +64,12 @@ export class UserController {
 	@UseGuards(AtGuard)
 	async setAvatar(@Request() req: IRequestUser, @Body() dto: AvatarDto) {
 		await this.userService.setAvatar(req.user.userId, dto.avatarId)
+	}
+
+	@Put('set-referrer')
+	@HttpCode(HttpStatus.OK)
+	@UseGuards(AtGuard)
+	async setReferrer(@Request() req: IRequestUser, @Body() dto: UserNameDto) {
+		await this.userService.setReferrer(req.user.userId, dto.username);
 	}
 }

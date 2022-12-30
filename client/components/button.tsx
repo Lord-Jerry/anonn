@@ -18,7 +18,7 @@ export default function Button(props: Props) {
       className={`${props.className} ${theme}`}
       onClick={props.onClick}
     >
-      {props.text}{props.icon}
+      {props.text} {props.icon && <span className="ml-8 mt-1">{props.icon}</span>}
     </button>
   );
 }

@@ -103,7 +103,7 @@ export default function SingleConversation({
           {messages?.map((msg) => {
             if (msg.id === 'newMessageLabel') {
               return (
-                <div ref={newMessageRef} className="text-center">
+                <div key={msg.id} ref={newMessageRef} className="text-center">
                   You have some new messages
                 </div>
               );

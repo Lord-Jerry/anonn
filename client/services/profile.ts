@@ -63,6 +63,13 @@ export default class ProfileService {
     }
   }
 
+  async setReferer(username: string) {
+    await this.api.put("/user/set-referrer", {
+      username,
+    });
+    return true;
+  }
+
   validateUserProfile(ctx: GetServerSidePropsContext) {
     const cookie = nextCookies(ctx);
     let redirectionDestination = "";

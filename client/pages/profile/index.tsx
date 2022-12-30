@@ -70,6 +70,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
 
+  if (ctx.query.callback) {
+    return {
+      redirect: {
+        destination: ctx.query.callback,
+        permanent: false,
+      },
+    };
+  }
+  
   if (redirectionDestination)
     return {
       redirect: {

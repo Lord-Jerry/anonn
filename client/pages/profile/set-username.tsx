@@ -16,10 +16,10 @@ export default function SetUsername() {
   const [username, setUsername] = useState('');
   const debouncedSearch = useDebounce(username, 500);
 
-function isAlphaNumeric(str:string) {
-    let regex = new RegExp(/^(?=.*[a-zA-Z])[A-Za-z0-9]+$/);
-     return regex.test(str)
-}
+  function isAlphaNumeric(str: string) {
+    let regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
+    return regex.test(str);
+  }
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
@@ -27,7 +27,8 @@ function isAlphaNumeric(str:string) {
   const { isLoading, data } = useQuery(
     ['usernameData', debouncedSearch],
     () =>
-      (username.length >= 3 && isAlphaNumeric(username)) &&
+      username.length >= 3 &&
+      isAlphaNumeric(username) &&
       profileService.checkUsernameAvailability(username),
     {
       enabled: !!username,
@@ -36,7 +37,10 @@ function isAlphaNumeric(str:string) {
 
   const { mutate } = useMutation(() => profileService.setUsername(username), {
     onSuccess(data) {
-      router.push('/profile/set-avatar');
+      router.push({
+        pathname: '/profile/set-avatar',
+        query: router.query,
+      });
     },
     onError(err) {
       console.log(err);
@@ -66,19 +70,18 @@ function isAlphaNumeric(str:string) {
             Sorry, that username is already taken
           </p>
         ) : username?.length >= 3 && data === true ? (
-          <p className="text-xs sm:text-sm text-[#16E5AB]">cool username, good to go!</p>
-        ) :
-        username?.length >= 3 && !isAlphaNumeric(username) ?
-        (
+          <p className="text-xs sm:text-sm text-[#16E5AB]">
+            cool username, good to go!
+          </p>
+        ) : username?.length >= 3 && !isAlphaNumeric(username) ? (
           <p className="text-xs sm:text-sm text-[#f18d77]">
             Invalid username, use only letters and numbers
           </p>
-        ) :
-        (
+        ) : (
           <ul className="list-disc text-sm font-thin italic mt-4 ml-4">
             <li> Keep it Anonnn! </li>
             <li> Your username should start with a letter</li>
-            <li> Your username should be letters and numbers only</li>
+            <li> Your username should be letters, numbers and undescores only</li>
             <li>You cannot change your username</li>
           </ul>
         )}
