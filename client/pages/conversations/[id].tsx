@@ -156,7 +156,7 @@ export default function SingleConversation({
               {conversation?.status === 'ACTIVE' && (
                 <>
                   <textarea
-                    className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6 opacity-70"
+                    className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6 text-opacity-70"
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="type something, durh"
                     ref={textAreaRef}
