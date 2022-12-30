@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "users" ALTER COLUMN "providerId" SET DATA TYPE VARCHAR(255);
