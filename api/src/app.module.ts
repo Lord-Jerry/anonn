@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { PollsModule } from './polls/polls.module';
 import { MessagesModule } from './messages/messages.module';
+import { HealthCheckController } from './health-check/health-check.controller';
 
 @Module({
   imports: [
@@ -23,5 +24,6 @@ import { MessagesModule } from './messages/messages.module';
     MessagesModule,
   ],
   providers: [ConfigMangerService],
+  controllers: [HealthCheckController],
 })
 export class AppModule {}
