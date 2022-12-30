@@ -64,6 +64,15 @@ export default function SingleConversation({
     );
   }
 
+  const handleSendMessage = () => {
+    const trimmedMessage = content.trim();
+    if (!trimmedMessage) return;
+
+    setContent('');
+    sendMessage(content);
+    scrollToBottom(true);
+  };
+
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.shiftKey && event.key === 'Enter') return;
     if (content.trim() === '') {
@@ -72,9 +81,7 @@ export default function SingleConversation({
 
     if (event.key === 'Enter') {
       event.preventDefault();
-      setContent('');
-      sendMessage(content);
-      scrollToBottom(true);
+      handleSendMessage();
     }
   };
 
@@ -173,11 +180,7 @@ export default function SingleConversation({
                     <button
                       className="absolute right-4 h-[100%]"
                       disabled={sendingMessage}
-                      onClick={() => {
-                        setContent('');
-                        sendMessage(content);
-                        scrollToBottom(true);
-                      }}
+                      onClick={handleSendMessage}
                     >
                       <SendIcon />
                     </button>
