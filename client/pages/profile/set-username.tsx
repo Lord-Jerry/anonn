@@ -99,12 +99,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     profileService.validateUserProfile(ctx);
 
   // if redirection destination is not set-username, redirect to it
-  if (!redirectionDestination.includes('set-username'))
-    return {
-      redirect: {
-        destination: redirectionDestination,
-      },
-    };
+  // if (!redirectionDestination.includes('set-username'))
+  //   return {
+  //     redirect: {
+  //       destination: redirectionDestination,
+  //     },
+  //   };
 
   if (username)
     return {

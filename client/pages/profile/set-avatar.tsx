@@ -59,6 +59,7 @@ export default function SetAvatar(props: Props) {
     },
   });
 
+
   return (
     <div className="mx-auto py-4 px-12 min-[600px]:w-[600px] w-full">
       <>
@@ -142,14 +143,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const profileService = new ProfileService();
   const { redirectionDestination, username, avatar } =
     profileService.validateUserProfile(ctx);
-
   // if redirection destination is not set-avatar, redirect to it
-  if (!redirectionDestination.includes('set-avatar'))
-    return {
-      redirect: {
-        destination: redirectionDestination,
-      },
-    };
+  // if (!redirectionDestination.includes('set-avatar'))
+  //   return {
+  //     redirect: {
+  //       destination: redirectionDestination,
+  //     },
+  //   };
 
   if (avatar)
     return {
