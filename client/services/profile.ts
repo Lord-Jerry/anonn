@@ -59,6 +59,7 @@ export default class ProfileService {
       const { data } = await this.api.get<UserResponse>(`/user/${username}`);
       return { ...data, avatar: AVATARS[data.avatar as keyof typeof AVATARS] };
     } catch (error) {
+      console.log({ error });
       return null;
     }
   }
