@@ -14,7 +14,7 @@ import ConversationService from 'services/conversation';
 import Navigation from 'components/Navigation';
 import SendIcon from 'icon/SendIcon';
 import useMessage from 'hooks/useMessage';
-import useAutosizeTextArea from 'utils/useAutosizeTextArea';
+import useAutosizeTextArea from 'hooks/useAutosizeTextArea';
 import Head from 'next/head';
 import Footer from 'components/Footer';
 
