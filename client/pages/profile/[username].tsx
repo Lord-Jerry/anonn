@@ -14,7 +14,7 @@ import ConversationService from 'services/conversation';
 import Navigation from 'components/Navigation';
 import SendIcon from 'icon/SendIcon';
 import useMessage from 'hooks/useMessage';
-import useAutosizeTextArea from 'utils/useAutosizeTextArea';
+import useAutosizeTextArea from 'hooks/useAutosizeTextArea';
 import Head from 'next/head';
 import Footer from 'components/Footer';
 
@@ -24,7 +24,6 @@ type GetServerSidePropsReturnType = Awaited<
 type Props = GetServerSidePropsReturnType['props'];
 export default function Profile(props: Props) {
   const [stage, setStage] = useState(1);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [content, setContent] = useState<string>('');
   const conversationId: any = props?.userId;
   const { firstMessage, initMessage } = useMessage(conversationId);
@@ -55,7 +54,7 @@ export default function Profile(props: Props) {
     errorCallback: () => {},
   });
 
-  useAutosizeTextArea(textAreaRef.current, content);
+  const textAreaRef =  useAutosizeTextArea(content);
   const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.shiftKey && event.key === 'Enter') return;
     if (event.key === 'Enter') {

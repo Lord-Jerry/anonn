@@ -1,15 +1,16 @@
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
-import Navigation from 'components/Navigation';
-import useAutosizeTextArea from 'utils/useAutosizeTextArea';
-import SendIcon from 'icon/SendIcon';
-
-import MessageBox from 'components/MessageBox';
 import { GetServerSidePropsContext } from 'next';
-import ProfileService from 'services/profile';
-import useMessage from 'hooks/useMessage';
+import { useEffect, useRef, useState } from 'react';
+
+import Navigation from 'components/Navigation';
+import MessageBox from 'components/MessageBox';
 import Button from 'components/button';
 import Loader from 'components/Loader';
+import SendIcon from 'icon/SendIcon';
+
+import ProfileService from 'services/profile';
+import useMessage from 'hooks/useMessage';
+import useAutosizeTextArea from 'hooks/useAutosizeTextArea';
 
 export default function SingleConversation({
   conversationId,
@@ -18,10 +19,10 @@ export default function SingleConversation({
 }) {
   const router = useRouter();
   const newMessageRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef<any>(null);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [content, setContent] = useState<string>('');
+  const textAreaRef = useAutosizeTextArea(content);
 
   const {
     messages,
@@ -30,11 +31,9 @@ export default function SingleConversation({
     conversation,
     sendingMessage,
     messagesLoading,
-    conversationLoading,
     updateConversationStatus,
   } = useMessage(conversationId);
 
-  useAutosizeTextArea(textAreaRef.current, content);
   const conversationStatus = useRef(conversation?.status);
 
   const scrollToBottom = (newMessage = false) => {
@@ -148,7 +147,6 @@ export default function SingleConversation({
                     updateConversationStatus('approve');
                   }}
                 />
-
                 <Button
                   text="Nayy, I’d pass"
                   bg="bg_black"
