@@ -23,7 +23,7 @@ body {
 }
 textarea {
   background: #000;
-  border-bottom: 1px solid #fff;
+  border-bottom: 2px solid #fff;
   resize: none;
   height: 72px;
   border-radius: 0;
@@ -32,7 +32,8 @@ textarea {
   transition: border-color 150ms ease;
 }
 
-textarea:focus {
+textarea:focus,
+textarea:hover {
   box-shadow: none !important;
   border-bottom: 2px solid #fff;
 }
@@ -45,10 +46,6 @@ textarea::placeholder {
 .tab {
   @apply text-[#F8F886] font-normal justify-center text-xs py-4 px-4 w-[50%];
 }
-
-/* .tab.has-new-message {
-  @apply text-[#F8F886] font-normal text-xs py-1 px-2;
-} */
 
 .selected_tab {
   @apply border-b-2 border-[#F8F886];
