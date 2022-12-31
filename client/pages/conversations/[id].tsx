@@ -1,16 +1,15 @@
-import { useRouter } from 'next/router';
-import { GetServerSidePropsContext } from 'next';
-import { useEffect, useRef, useState } from 'react';
+import { useRouter } from "next/router";
+import { GetServerSidePropsContext } from "next";
+import { useEffect, useRef, useState } from "react";
 
-import Navigation from 'components/Navigation';
-import MessageBox from 'components/MessageBox';
-import Button from 'components/button';
-import Loader from 'components/Loader';
-import SendIcon from 'icon/SendIcon';
+import Navigation from "components/Navigation";
+import MessageBox from "components/MessageBox";
+import Button from "components/button";
+import Loader from "components/Loader";
 
-import ProfileService from 'services/profile';
-import useMessage from 'hooks/useMessage';
-import useAutosizeTextArea from 'hooks/useAutosizeTextArea';
+import ProfileService from "services/profile";
+import useMessage from "hooks/useMessage";
+import ChatTextArea from "components/ChatTextarea";
 
 export default function SingleConversation({
   conversationId,
@@ -20,9 +19,6 @@ export default function SingleConversation({
   const router = useRouter();
   const newMessageRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const [content, setContent] = useState<string>('');
-  const textAreaRef = useAutosizeTextArea(content);
 
   const {
     messages,
@@ -39,13 +35,13 @@ export default function SingleConversation({
   const scrollToBottom = (newMessage = false) => {
     if (newMessageRef?.current && !newMessage) {
       newMessageRef.current?.scrollIntoView({
-        behavior: 'auto',
-        block: 'end',
-        inline: 'nearest',
+        behavior: "auto",
+        block: "end",
+        inline: "nearest",
       });
     } else if (messagesEndRef?.current) {
       messagesEndRef.current?.scrollIntoView({
-        behavior: 'auto',
+        behavior: "auto",
       });
     }
   };
@@ -63,37 +59,16 @@ export default function SingleConversation({
     );
   }
 
-  const handleSendMessage = () => {
-    const trimmedMessage = content.trim();
-    if (!trimmedMessage) return;
-
-    setContent('');
-    sendMessage(content);
-    scrollToBottom(true);
-  };
-
-  const handleEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.shiftKey && event.key === 'Enter') return;
-    if (content.trim() === '') {
-      return;
-    }
-
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleSendMessage();
-    }
-  };
-
   const handleBackButton = () => {
     const status = conversationStatus.current || conversation?.status;
-    if (status === 'PENDING') {
-      router.push('/conversations?tab=pending');
-    } else if (status === 'ACTIVE') {
-      router.push('/conversations?tab=active');
-    } else if (status === 'REJECTED') {
-      router.push('/conversations?tab=pending');
+    if (status === "PENDING") {
+      router.push("/conversations?tab=pending");
+    } else if (status === "ACTIVE") {
+      router.push("/conversations?tab=active");
+    } else if (status === "REJECTED") {
+      router.push("/conversations?tab=pending");
     } else {
-      router.push('/conversations');
+      router.push("/conversations");
     }
   };
 
@@ -112,7 +87,7 @@ export default function SingleConversation({
           className="py-16 px-2 min-[600px]:w-[600px] w-full mx-auto"
         >
           {messages?.map((msg) => {
-            if (msg.id === 'newMessageLabel') {
+            if (msg.id === "newMessageLabel") {
               return (
                 <div key={msg.id} ref={newMessageRef} className="text-center">
                   You have some new messages
@@ -131,7 +106,7 @@ export default function SingleConversation({
             );
           })}
           <div style={{ marginBottom: 30 }} ref={messagesEndRef} />
-          {conversation?.status === 'PENDING' && (
+          {conversation?.status === "PENDING" && (
             <div className="mx-auto fixed bottom-0 h-[132px] bg-[#1E1E1E] px-8 min-[600px]:w-[600px] w-full">
               <p className="text-xs opacity-70 py-3 text-white text-center">
                 This is your first conversation with anonn user, please accept
@@ -144,7 +119,7 @@ export default function SingleConversation({
                   className="text-xs mt-2 flex justify-center items-center px-4 py-2 w-full rounded-lg mr-2"
                   onClick={() => {
                     conversationStatus.current = conversation?.status;
-                    updateConversationStatus('approve');
+                    updateConversationStatus("approve");
                   }}
                 />
                 <Button
@@ -153,41 +128,19 @@ export default function SingleConversation({
                   className="text-xs mt-2 flex justify-center items-center px-4 py-2 w-full rounded-lg ml-2 border-2 border-[#f8f886]"
                   onClick={() => {
                     conversationStatus.current = conversation?.status;
-                    updateConversationStatus('reject');
+                    updateConversationStatus("reject");
                   }}
                 />
               </div>
             </div>
           )}
         </div>
-        <div className="flex justify-center focus:outline-0">
-          <div className="fixed py-8 bottom-[-40px] min-[600px]:w-[600px] w-[100vw] flex mx-auto text-center justify-center focus:outline-0">
-            <div className="relative bottom-0 focus:outline-0">
-              {conversation?.status === 'ACTIVE' && (
-                <>
-                  <textarea
-                    className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[100vw] py-6 text-opacity-70"
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="type something, durh"
-                    ref={textAreaRef}
-                    onKeyUp={(e) => handleEnter(e)}
-                    rows={6}
-                    value={content}
-                  />
-                  {content.length > 0 && (
-                    <button
-                      className="absolute right-4 h-[100%]"
-                      disabled={sendingMessage}
-                      onClick={handleSendMessage}
-                    >
-                      <SendIcon />
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+        <ChatTextArea
+          conversation={conversation}
+          sendMessage={sendMessage}
+          sendingMessage={sendingMessage}
+          scrollToBottom={scrollToBottom}
+        />
       </Navigation>
     </>
   );

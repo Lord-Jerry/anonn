@@ -1,9 +1,6 @@
-import { AVATARS } from 'constants/index';
-import dayjs from 'dayjs';
-import ArrowLeft from 'icon/ArrowLeft';
-import Dots from 'icon/DotsIcon';
 import Image from 'next/image';
 import { myLoader } from 'utils/imageLoader';
+import { useTime } from 'utils/useTime';
 
 type Props = {
   id: string;
@@ -44,7 +41,7 @@ export default function ConversationBox(props: Props) {
           <p
             className={`text-[10px] ${props.hasNewMessage && 'text-[#007AFF]'}`}
           >
-            {dayjs(props.time).format('hh:mm:a')}
+            {useTime(props.time)}
           </p>
           {props.hasNewMessage && (
             <span className="bg-[#007AFF] text-center w-[6.86px] h-[6px] rounded-full ml-4 mt-2" />
