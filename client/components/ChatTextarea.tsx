@@ -35,7 +35,7 @@ export default function ChatTextArea({sendMessage, conversation, scrollToBottom,
             <div className="relative bottom-0 focus:outline-0">
                 <>
                   <textarea
-                    className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[90vw] py-6 text-opacity-70"
+                    className="border-0 pl-8 pr-16 min-[600px]:w-[600px] w-[96vw] py-6 text-opacity-70"
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="type something, durh"
                     ref={textAreaRef}
