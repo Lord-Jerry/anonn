@@ -1,13 +1,10 @@
-import moment from "moment";
+import dayjs from "dayjs";
 
 export const useTime = (time: Date) => {
-  if (moment(time).isSame(new Date(), "day")) {
-    return moment(time).format("hh:mm:a");
-  } else if (moment(time).isSame(new Date(), "week")) {
-    return moment(time).format("dddd");
-  } else if (moment(time).isSame(new Date(), "month")) {
-    return moment(time).format("ll");
+  const form = dayjs(time);
+  if (new Date().getDate() === +form.format("D")) {
+    return dayjs(time).format("hh:mm: A");
   } else {
-    return moment(time).fromNow();
+    return dayjs(time).format("MMM D, YYYY");
   }
 };

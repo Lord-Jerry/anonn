@@ -1,4 +1,4 @@
-import moment from "moment";
+import dayjs from "dayjs";
 type Props = {
   id: string;
   isMine: boolean;
@@ -24,7 +24,7 @@ export default function MessageBox(props: Props) {
   return (
     <div accessKey={props.id} className={bg}>
       <p className={content}>{props.message}
-      <span className="block text-right text-[10px]">{moment(props.time).format('hh:mm:a')}</span>
+      <span className="block text-right text-[10px]">{dayjs(props.time).format('hh:mm:A')}</span>
       </p>
     </div>
   );
