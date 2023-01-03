@@ -8,6 +8,8 @@ import { ConversationModule } from './conversation/conversation.module';
 import { PollsModule } from './polls/polls.module';
 import { MessagesModule } from './messages/messages.module';
 import { HealthCheckController } from './health-check/health-check.controller';
+import { EncryptionModule } from './encryption/encryption.module';
+import { EncryptMessages } from './commands/encyrpt-messages';
 
 @Module({
   imports: [
@@ -22,8 +24,9 @@ import { HealthCheckController } from './health-check/health-check.controller';
     ConversationModule,
     PollsModule,
     MessagesModule,
+    EncryptionModule,
   ],
-  providers: [ConfigMangerService],
+  providers: [ConfigMangerService, EncryptMessages],
   controllers: [HealthCheckController],
 })
 export class AppModule {}
