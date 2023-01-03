@@ -17,7 +17,7 @@ export default function ConversationBox(props: Props) {
     <>
       <div
         onClick={() => props.onSelect(props.id)}
-        className="border-b-[.1px] border-b-[#53532D] flex bg-[#1E1E1E] justify-around items-center py-8 min-[600px]:w-[600px] w-full h-[45px] mx-auto cursor-pointer"
+        className="border-b-[.1px] border-b-[#53532D] flex justify-around items-center py-8 min-[600px]:w-[600px] w-full h-[45px] mx-auto cursor-pointer"
       >
         <div className="flex">
           <div>
