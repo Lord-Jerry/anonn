@@ -1,7 +1,7 @@
-import { uniqBy } from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { ConversationService } from 'src/conversation/conversation.service';
 import { DatabaseService } from 'src/providers/database/database.service';
+import { EncryptionService } from 'src/encryption/encryption.service';
 
 import { markMessageAsBelongsToUser } from '../conversation/utils';
 
@@ -10,6 +10,7 @@ export class MessagesService {
   constructor(
     private db: DatabaseService,
     private conversationService: ConversationService,
+    private encryptionService: EncryptionService,
   ) {}
 
   async sendMessage(userId: string, conversationId: string, content: string) {
@@ -19,6 +20,13 @@ export class MessagesService {
         conversationId,
       );
 
+    const encryptedMessage = conversationPermission.conversationEncryptionKey
+      ? this.encryptionService.encryptMessage(
+          content,
+          conversationPermission.conversationEncryptionKey as `${string}-${string}`,
+        )
+      : content;
+
     const [message] = await this.db.$transaction(async (tx) => {
       return Promise.all([
         this.db.messages.create({
@@ -26,7 +34,7 @@ export class MessagesService {
             conversationId: conversationPermission.conversationId,
             senderId: conversationPermission.userId,
             username: conversationPermission.conversation_username,
-            content,
+            content: encryptedMessage,
           },
         }),
         tx.users_conversations.updateMany({
@@ -52,6 +60,8 @@ export class MessagesService {
         }),
       ]);
     });
+
+    message.content = content;
 
     return {
       ...markMessageAsBelongsToUser(conversationPermission.userId, message),
@@ -111,14 +121,21 @@ export class MessagesService {
       });
     }
 
-    return messages.map((message) => ({
-      ...markMessageAsBelongsToUser(conversationPermission.userId, message),
-      // message can be considered read, when:
-      // 1. message is older than last read message
-      // 2. message is not sent by the user
-      isNewMessage:
-        message.id > conversationPermission.lastReadMessageId &&
-        message.senderId !== conversationPermission.userId,
-    }));
+    return messages.map((message) => {
+      const decryptedMessage = this.encryptionService.decryptMessage(
+        message.content,
+        conversationPermission.conversationEncryptionKey as `${string}-${string}`,
+      );
+      return {
+        ...markMessageAsBelongsToUser(conversationPermission.userId, message),
+        content: decryptedMessage,
+        // message can be considered read, when:
+        // 1. message is older than last read message
+        // 2. message is not sent by the user
+        isNewMessage:
+          message.id > conversationPermission.lastReadMessageId &&
+          message.senderId !== conversationPermission.userId,
+      };
+    });
   }
 }

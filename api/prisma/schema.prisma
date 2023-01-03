@@ -38,6 +38,7 @@ model conversations {
   creatorId   Int
   name        String?  @db.VarChar(50)
   description String?
+  key         String?   
   isOpen      Boolean  @default(true)
   isGroup     Boolean  @default(false)
   createdAt   DateTime @default(now())

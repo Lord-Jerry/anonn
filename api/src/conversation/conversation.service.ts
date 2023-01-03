@@ -9,10 +9,15 @@ import { DatabaseService } from 'src/providers/database/database.service';
 import { UserService } from 'src/user/user.service';
 import { markMessageAsBelongsToUser } from './utils';
 import { User_conversation_status } from '@prisma/client';
+import { EncryptionService } from 'src/encryption/encryption.service';
 
 @Injectable()
 export class ConversationService {
-  constructor(private db: DatabaseService, private userService: UserService) {}
+  constructor(
+    private db: DatabaseService,
+    private userService: UserService,
+    private encryptionService: EncryptionService,
+  ) {}
 
   async checkConversationPermissions(
     userId: string,
@@ -62,6 +67,7 @@ export class ConversationService {
       isGroup: conversations.isGroup,
       conversationPermissionId: id,
       lastReadMessageId,
+      conversationEncryptionKey: conversations.key,
     };
   }
   async initPrivateConversation(
@@ -74,10 +80,18 @@ export class ConversationService {
       this.userService.findUserById(participantId),
     ]);
 
+    const conversationEncryptionKey =
+      this.encryptionService.generateEncryptionKey();
+    const encryptedMessage = this.encryptionService.encryptMessage(
+      content,
+      conversationEncryptionKey,
+    );
+
     const { message, conversation } = await this.db.$transaction(async (tx) => {
       const conversation = await tx.conversations.create({
         data: {
           creatorId: conversationInitiator.id,
+          key: conversationEncryptionKey,
         },
       });
 
@@ -112,7 +126,7 @@ export class ConversationService {
         data: {
           conversationId: conversation.id,
           senderId: conversationInitiator.id,
-          content,
+          content: encryptedMessage,
           /**
            * prisma/schema.prisma
            * check message table schema,
@@ -127,6 +141,10 @@ export class ConversationService {
         conversation,
       };
     });
+
+    // don't want to decrypt the message for the response
+    message.content = content;
+
     return {
       ...markMessageAsBelongsToUser(conversationInitiator.id, message),
       conversationId: conversation.pId,
@@ -195,6 +213,7 @@ export class ConversationService {
         conversations: {
           select: {
             id: true,
+            key: true,
             pId: true,
             isOpen: true,
             isGroup: true,
@@ -243,7 +262,13 @@ export class ConversationService {
       isOpen: conversation.conversations.isOpen,
       hasNewMessage: conversation.hasNewMessage,
       isGroup: conversation.conversations.isGroup,
-      messages: conversation.conversations.messages,
+      messages: conversation.conversations.messages.map((message) => ({
+        ...message,
+        content: this.encryptionService.decryptMessage(
+          message.content,
+          conversation.conversations.key as `${string}-${string}`,
+        ),
+      })),
       conversationId: conversation.conversations.pId,
       conversationUsername: conversation.conversation_username,
       updatedAt: conversation.conversations.updatedAt,
