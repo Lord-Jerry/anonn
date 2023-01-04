@@ -426,7 +426,7 @@
 
 "@golevelup/nestjs-discovery@3.0.0":
   version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@golevelup/nestjs-discovery/-/nestjs-discovery-3.0.0.tgz#7c821924c2a8148928ef9bb0e9b995799b3087c8"
+  resolved "https://registry.npmjs.org/@golevelup/nestjs-discovery/-/nestjs-discovery-3.0.0.tgz"
   integrity sha512-ZvkXtobTKxXB1LJanP/l6Z/Fing88IMBr3uabQpU2IWjfsstjh02qYDSU2cfD6CSmNldX5ewW5Pd+SdK2lU8Sw==
   dependencies:
     lodash "^4.17.15"
@@ -1107,7 +1107,7 @@
 
 "@types/lodash@^4.14.191":
   version "4.14.191"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.191.tgz"
   integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
 
 "@types/mime@*":
@@ -2065,7 +2065,7 @@ commander@4.1.1:
 
 commander@9.4.1:
   version "9.4.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.1.tgz#d1dd8f2ce6faf93147295c0df13c7c21141cfbdd"
+  resolved "https://registry.npmjs.org/commander/-/commander-9.4.1.tgz"
   integrity sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==
 
 commander@^2.20.0:
@@ -2150,7 +2150,7 @@ cors@2.8.5:
 
 cosmiconfig@8.0.0:
   version "8.0.0"
-  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-8.0.0.tgz#e9feae014eab580f858f8a0288f38997a7bebe97"
+  resolved "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-8.0.0.tgz"
   integrity sha512-da1EafcpH6b/TD8vDRaWV7xFINlHlF6zKsGwS1TsuVJTZRkquaS5HTMq7uq6h31619QjbsYl21gVDOm32KM1vQ==
   dependencies:
     import-fresh "^3.2.1"
@@ -4177,7 +4177,7 @@ neo-async@^2.6.2:
 
 nest-commander@^3.4.0:
   version "3.4.0"
-  resolved "https://registry.yarnpkg.com/nest-commander/-/nest-commander-3.4.0.tgz#057a30d398e449cfbd20cfc5e8f312d49368fddd"
+  resolved "https://registry.npmjs.org/nest-commander/-/nest-commander-3.4.0.tgz"
   integrity sha512-HeOkubQdY2/lfh6tbVHlgtr6EgwUeRYYQREDrgIMJZ7Ufb8EJh+NLwVyNKkB0CUHdBxt3ZYRhIFOXKXJcUnvQQ==
   dependencies:
     "@golevelup/nestjs-discovery" "3.0.0"
