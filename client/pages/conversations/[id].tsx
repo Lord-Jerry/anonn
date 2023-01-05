@@ -49,7 +49,7 @@ export default function SingleConversation({
   useEffect(() => {
     // refs don't seem to be available when the useEffect is called
     setTimeout(() => scrollToBottom(), 500);
-  }, [messages[0]]);
+  }, [messagesLoading]);
 
   if (messagesLoading) {
     return (
