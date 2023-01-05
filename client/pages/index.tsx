@@ -34,13 +34,15 @@ export default function Home(props: Props) {
     <>
       <Head>
         <title>Anonn</title>
-        <meta property="title" content="Anonn" />
-        <meta property="og:title" content="Anonn" />
+        <meta name="title" property="title" content="Anonn" />
+        <meta name="og:title" property="og:title" content="Anonn" />
         <meta
+          name="description"
           property="description"
           content="Chat as Anonn. Nobody would know. Share polls and vote anonymously. Share with mask on. Censored"
         />
         <meta
+          name="og:description"
           property="og:description"
           content="Chat as Anonn. Nobody would know. Share polls and vote anonymously. Share with mask on. Censored"
         />
@@ -70,7 +72,7 @@ export default function Home(props: Props) {
           </>
         </div>
       )}
-   <Footer />
+      <Footer />
     </>
   );
 }
