@@ -7,6 +7,7 @@ import { ConfigMangerService } from 'src/common/config';
 
 import { DatabaseService } from 'src/providers/database/database.service';
 import { UserService } from 'src/user/user.service';
+import { AVATARS } from 'src/common/constants';
 
 @Injectable()
 export class NotificationService {
@@ -135,6 +136,7 @@ export class NotificationService {
         data: {
           message,
           conversationId,
+          senderAvatar: AVATARS[senderAvatar.avatar],
           sender: sender[0].conversation_username,
         },
       };

@@ -4,7 +4,7 @@ import { FirebaseService } from 'services/firebase';
 
 import { COOKIE_KEYS } from '../constants';
 
-const serviceWorkerVersion = '0.0.2';
+const serviceWorkerVersion = '0.0.1';
 
 export const useRefreshNotificationToken = () => {
   const lockRef = useRef(false);

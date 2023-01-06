@@ -28,7 +28,7 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.data.sender;
   const notificationOptions = {
     body: payload.data.message,
-    icon: '/images/favicon.png',
+    icon: payload.data.senderAvatar,
     data: payload.data,
     // actions:[
     //   {
@@ -48,34 +48,39 @@ messaging.onBackgroundMessage(function (payload) {
 });
 
 self.addEventListener('notificationclick', async (event) => {
-  if (!event.action) {
-    console.log(event)
-    const payload = event.notification.data;
-    const promiseChain = clients
-      .matchAll({
-        type: 'window',
-        includeUncontrolled: true,
-      })
-      .then((windowClients) => {
-        let matchingClient = null;
-        const conversationId = payload.conversationId;
-        const baseUrl = self.location.origin;
-        const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl).href;
+  if (event.action) return;
 
-        for (const element of windowClients) {
-          const windowClient = element;
-          if (windowClient.url.startsWith(baseUrl)) {
-            matchingClient = windowClient;
-            break;
-          }
+
+  const clickedNotification = event.notification;
+  clickedNotification.close();
+
+  const payload = event.notification.data;
+  const promiseChain = clients
+    .matchAll({
+      type: 'window',
+      includeUncontrolled: true,
+    })
+    .then((windowClients) => {
+      let matchingClient = null;
+      const conversationId = payload.conversationId;
+      const baseUrl = self.location.origin;
+      const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl)
+        .href;
+
+      for (const element of windowClients) {
+        const windowClient = element;
+        if (windowClient.url.startsWith(baseUrl)) {
+          matchingClient = windowClient;
+          break;
         }
+      }
 
-        if (matchingClient) {
-          return matchingClient.openWindow(urlToOpen);
-        }
-        return clients.openWindow(urlToOpen);
-      });
+      if (matchingClient) {
+        console.log('Found matching client');
+        return matchingClient.openWindow(urlToOpen);
+      }
+      return clients.openWindow(urlToOpen);
+    });
 
-    event.waitUntil(promiseChain);
-  }
+  event.waitUntil(promiseChain);
 });
