@@ -25,10 +25,11 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
   console.log('Received background message ', payload);
 
-  const notificationTitle = payload.notification.title;
+  const notificationTitle = payload.data.sender;
   const notificationOptions = {
-    body: payload.notification.body,
+    body: payload.data.message,
     icon: '/images/favicon.png',
+    data: payload.data,
     // actions:[
     //   {
     //     action: 'Reply',
@@ -39,40 +40,42 @@ messaging.onBackgroundMessage(function (payload) {
     // ]
   };
 
-  self.addEventListener('notificationclick', (event) => {
-    if (!event.action) {
-      const promiseChain = clients
-        .matchAll({
-          type: 'window',
-          includeUncontrolled: true,
-        })
-        .then((windowClients) => {
-          let matchingClient = null;
-          const conversationId = payload.data.conversationId;
-          const baseUrl = self.location.origin;
-          const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl).href;
-
-          for (const element of windowClients) {
-            const windowClient = element;
-            if (windowClient.url.startsWith(baseUrl)) {
-              matchingClient = windowClient;
-              break;
-            }
-          }
-
-          if (matchingClient) {
-            return matchingClient.openWindow(urlToOpen);
-          }
-          return clients.openWindow(urlToOpen);
-        });
-
-      event.waitUntil(promiseChain);
-    }
-  });
-
   // eslint-disable-next-line no-restricted-globals
   return self.registration.showNotification(
     notificationTitle,
     notificationOptions
   );
+});
+
+self.addEventListener('notificationclick', async (event) => {
+  if (!event.action) {
+    console.log(event)
+    const payload = event.notification.data;
+    const promiseChain = clients
+      .matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+      .then((windowClients) => {
+        let matchingClient = null;
+        const conversationId = payload.conversationId;
+        const baseUrl = self.location.origin;
+        const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl).href;
+
+        for (const element of windowClients) {
+          const windowClient = element;
+          if (windowClient.url.startsWith(baseUrl)) {
+            matchingClient = windowClient;
+            break;
+          }
+        }
+
+        if (matchingClient) {
+          return matchingClient.openWindow(urlToOpen);
+        }
+        return clients.openWindow(urlToOpen);
+      });
+
+    event.waitUntil(promiseChain);
+  }
 });

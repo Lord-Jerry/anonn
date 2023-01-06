@@ -128,13 +128,14 @@ export class NotificationService {
         return;
       }
       const payload = {
-        notification: {
-          title: sender[0].conversation_username,
-          body: message,
-        },
+        // notification: {
+        //   title: sender[0].conversation_username,
+        //   body: message,
+        // },
         data: {
+          message,
           conversationId,
-          avatar: senderAvatar.avatar,
+          sender: sender[0].conversation_username,
         },
       };
 
