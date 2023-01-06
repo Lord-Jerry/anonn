@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 import '../styles/globals.css';
 import Head from 'next/head';
-import { useRefreshNotificationToken } from 'hooks/useNotification';
+import { useForegroundNotification, useRefreshNotificationToken } from 'hooks/useNotification';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,6 +16,7 @@ const queryClient = new QueryClient({
 
 export default function App({ Component, pageProps }: AppProps) {
   useRefreshNotificationToken();
+  useForegroundNotification();
   return (
     <QueryClientProvider client={queryClient}>
       <Head>

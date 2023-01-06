@@ -58,27 +58,21 @@ self.addEventListener('notificationclick', async (event) => {
   const promiseChain = clients
     .matchAll({
       type: 'window',
-      includeUncontrolled: true,
+      // includeUncontrolled: true,
     })
     .then((windowClients) => {
-      let matchingClient = null;
       const conversationId = payload.conversationId;
       const baseUrl = self.location.origin;
       const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl)
         .href;
 
-      for (const element of windowClients) {
-        const windowClient = element;
+      for (const windowClient of windowClients) {
         if (windowClient.url.startsWith(baseUrl)) {
-          matchingClient = windowClient;
-          break;
+          console.log('windowClient.url', windowClient);
+          return windowClient.navigate(urlToOpen);
         }
       }
 
-      if (matchingClient) {
-        console.log('Found matching client');
-        return matchingClient.openWindow(urlToOpen);
-      }
       return clients.openWindow(urlToOpen);
     });
 

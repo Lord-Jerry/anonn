@@ -1,15 +1,17 @@
 import Cookies from 'js-cookie';
 
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getToken, getMessaging, Messaging } from 'firebase/messaging';
+import { getToken, getMessaging, Messaging, onMessage } from 'firebase/messaging';
 import ProfileService from './profile';
 import { COOKIE_KEYS } from '../constants';
+import AuthService from './auth';
 
 export class FirebaseService {
   private firebaseApp: FirebaseApp;
-  private messaging: Messaging;
+  public messaging: Messaging;
 
   private profileService = new ProfileService();
+  private authService = new AuthService();
 
   constructor() {
     const app = initializeApp({
@@ -23,6 +25,33 @@ export class FirebaseService {
     });
     this.firebaseApp = app;
     this.messaging = getMessaging(app);
+  }
+
+  messageListener() {
+    onMessage(this.messaging, (payload) => {
+      console.log('Message received. ', payload);
+      const title = payload.data?.sender as string;
+      const notification = new Notification(title, {
+        body: payload.data?.message,
+        icon: payload.data?.senderAvatar,
+        image: payload.data?.senderAvatar,
+        data: payload.data,
+      })
+      
+      notification.onclick= (e) => {
+        e.stopPropagation();
+        notification.close();
+        
+        //@ts-ignore
+        const conversationId = e?.currentTarget.data?.conversationId;
+
+        const baseUrl = window.location.origin;
+        const urlToOpen = new URL(`/conversations/${conversationId}`, baseUrl)
+        .href;
+        
+        window.location.href = urlToOpen
+      }
+    });
   }
 
   registerServiceWorker() {
@@ -75,8 +104,8 @@ export class FirebaseService {
       token,
       channelId
     );
-    Cookies.set(COOKIE_KEYS.NOTIFICATION_DEVICE_ID, channelId);
 
+    this.authService.setDeviceNotificationIdToCookie(channelId);
     return token;
   }
 

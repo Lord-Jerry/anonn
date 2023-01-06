@@ -4,7 +4,7 @@ import { FirebaseService } from 'services/firebase';
 
 import { COOKIE_KEYS } from '../constants';
 
-const serviceWorkerVersion = '0.0.1';
+const serviceWorkerVersion = '0.0.2';
 
 export const useRefreshNotificationToken = () => {
   const lockRef = useRef(false);
@@ -34,3 +34,17 @@ export const useRefreshNotificationToken = () => {
     }
   }, []);
 };
+
+export const useForegroundNotification = () => {
+  const lockRef = useRef(false);
+  useEffect(() => {
+    const notificationEnabled = Cookies.get(COOKIE_KEYS.NOTIFICATION_DEVICE_ID);
+    if (!notificationEnabled || lockRef.current) return;
+
+    const firebaseService = new FirebaseService();
+    firebaseService.messageListener();
+    
+    lockRef.current = true;
+
+  }, []);
+}

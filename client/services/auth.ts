@@ -39,6 +39,12 @@ export default class AuthService {
     });
   }
 
+  setDeviceNotificationIdToCookie(deviceId: string) {
+    Cookies.set(COOKIE_KEYS.NOTIFICATION_DEVICE_ID, deviceId, {
+      expires: cookieExpiry,
+    });
+  }
+
   async authenticate(token: string, platform: AuthPlatformType) {
     const { data } = await this.api.post<UserResponse>('/auth', {
       token,
