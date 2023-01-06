@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta charSet="utf-8" />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
+          content="width=device-width, initial-scale=1, maximum-scale=5, shrink-to-fit=no"
         />
       </Head>
       <Component {...pageProps} />
