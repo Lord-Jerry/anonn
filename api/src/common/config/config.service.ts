@@ -28,7 +28,7 @@ export class ConfigMangerService implements OnApplicationBootstrap {
       type: this.config.get('FIREBASE_TYPE'),
       project_id: this.config.get('FIREBASE_PROJECT_ID'),
       private_key_id: this.config.get('FIREBASE_PRIVATE_KEY_ID'),
-      private_key: this.config.get('FIREBASE_PRIVATE_KEY'),
+      private_key: Buffer.from(String(this.config.get('FIREBASE_PRIVATE_KEY')), 'base64').toString(),
       client_email: this.config.get('FIREBASE_CLIENT_EMAIL'),
       client_id: this.config.get('FIREBASE_CLIENT_ID'),
       auth_uri: this.config.get('FIREBASE_AUTH_URI'),

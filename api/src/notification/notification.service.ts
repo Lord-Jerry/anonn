@@ -85,17 +85,32 @@ export class NotificationService {
     message: string;
   }) {
     try {
-      const conversationParticipants =
-        await this.db.users_conversations.findMany({
+      const [conversationParticipants, senderAvatar] = await Promise.all([
+        this.db.users_conversations.findMany({
           where: {
             conversations: {
               pId: conversationId,
             },
           },
-        });
+          select: {
+            userId: true,
+            conversation_username: true,
+          }
+        }),
+        this.db.users.findFirst({
+          where: {
+            id: senderId,
+          },
+          select: {
+            avatar: true,
+          },
+        }),
+      ]);
 
-      const { sender, receiver } = groupBy(conversationParticipants, (participant) =>
-        participant.userId === senderId ? 'sender' : 'receiver',
+      const { sender, receiver } = groupBy(
+        conversationParticipants,
+        (participant) =>
+          participant.userId === senderId ? 'sender' : 'receiver',
       );
 
       const notificationChannels = await this.db.notification_channels.findMany(
@@ -119,6 +134,7 @@ export class NotificationService {
         },
         data: {
           conversationId,
+          avatar: senderAvatar.avatar,
         },
       };
 
@@ -131,7 +147,7 @@ export class NotificationService {
         },
       );
     } catch (error) {
-      console.error("Couldn't send message notification")
+      console.error("Couldn't send message notification");
       console.error(error);
     }
   }
