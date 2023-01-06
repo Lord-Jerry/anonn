@@ -1,20 +1,37 @@
-import Image from "next/image";
-import { GetServerSidePropsContext } from "next/types";
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
 
-import Button from "components/button";
-import { myLoader } from "utils/imageLoader";
-import { useProfileButtons } from "hooks/useProfileButtons";
-import ProfileService from "services/profile";
-import Navigation from "components/Navigation";
-import { ShareBtn } from "components/ShareBtn";
+import Button from 'components/button';
+import { myLoader } from 'utils/imageLoader';
+import { useProfileButtons } from 'hooks/useProfileButtons';
+import ProfileService from 'services/profile';
+import Navigation from 'components/Navigation';
+import { ShareBtn } from 'components/ShareBtn';
+import { FirebaseService } from 'services/firebase';
+import { Fragment, useState } from 'react';
+import Toogle from 'components/toogle';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType["props"];
+type Props = GetServerSidePropsReturnType['props'];
 
 export default function Profile(props: Props) {
+  const router = useRouter();
+  const [notificationEnabled, setNotificationEnabled] = useState(
+    props?.notificationEnabled ? true : false
+  );
   const profileButtons = useProfileButtons();
+
+  const onNotificationChange = (checked: boolean) => {
+    setNotificationEnabled(checked);
+    const firebaseService = new FirebaseService();
+
+    if (checked) firebaseService.promptForNotificationPermission();
+    else firebaseService.unsubscribeFromNotification();
+  };
+
   return (
     <Navigation title="Profile">
       <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
@@ -33,7 +50,7 @@ export default function Profile(props: Props) {
         ) : null}
         <Image
           loader={myLoader}
-          src={props?.avatar || ""}
+          src={props?.avatar || ''}
           alt="Profile pic"
           width={100}
           height={100}
@@ -43,21 +60,34 @@ export default function Profile(props: Props) {
           @{props?.username}
         </p>
 
+        {router.query.testing && (
+          <div className="mt-4">
+            <Toogle
+              label="Notifications"
+              checked={notificationEnabled}
+              onChange={onNotificationChange}
+            />
+          </div>
+        )}
+
         {profileButtons.map((button, index) => {
           return (
-            <>
-            {button.text === "Share your profile link" ?
-            <ShareBtn urlLink={`https://anonn.xyz/profile/${props?.username}`} /> : 
-            <Button
-              key={index}
-              text={button.text}
-              bg={button.bg}
-              icon={button.icon}
-              className="mt-12 flex justify-center items-center p-4 w-full rounded-lg hover:text-black"
-              onClick={button.onClick}
-            />
-            }
-            </>
+            <Fragment key={index}>
+              {button.text === 'Share your profile link' ? (
+                <ShareBtn
+                  urlLink={`https://anonn.xyz/profile/${props?.username}`}
+                />
+              ) : (
+                <Button
+                  key={index}
+                  text={button.text}
+                  bg={button.bg}
+                  icon={button.icon}
+                  className="mt-12 flex justify-center items-center p-4 w-full rounded-lg hover:text-black"
+                  onClick={button.onClick}
+                />
+              )}
+            </Fragment>
           );
         })}
       </div>
@@ -67,7 +97,7 @@ export default function Profile(props: Props) {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const profileService = new ProfileService();
-  const { redirectionDestination, username, avatar } =
+  const { redirectionDestination, username, avatar, notificationEnabled } =
     profileService.validateUserProfile(ctx);
 
   if (ctx.query.callback) {
@@ -78,7 +108,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   }
-  
+
   if (redirectionDestination)
     return {
       redirect: {
@@ -90,7 +120,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {
       avatar,
       username,
-      isNewUser: ctx.query?.isNewUser === "true",
+      notificationEnabled,
+      isNewUser: ctx.query?.isNewUser === 'true',
     },
   };
 }
