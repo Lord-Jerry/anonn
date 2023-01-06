@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConversationService } from 'src/conversation/conversation.service';
 import { DatabaseService } from 'src/providers/database/database.service';
 import { EncryptionService } from 'src/encryption/encryption.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 import { markMessageAsBelongsToUser } from '../conversation/utils';
 
@@ -11,6 +12,7 @@ export class MessagesService {
     private db: DatabaseService,
     private conversationService: ConversationService,
     private encryptionService: EncryptionService,
+    private notificationService: NotificationService,
   ) {}
 
   async sendMessage(userId: string, conversationId: string, content: string) {
@@ -61,6 +63,7 @@ export class MessagesService {
       ]);
     });
 
+    this.notificationService.sendMessageNotification({ senderId: conversationPermission.userId, conversationId, message: content })
     message.content = content;
 
     return {

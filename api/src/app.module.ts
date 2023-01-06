@@ -10,6 +10,7 @@ import { MessagesModule } from './messages/messages.module';
 import { HealthCheckController } from './health-check/health-check.controller';
 import { EncryptionModule } from './encryption/encryption.module';
 import { EncryptMessages } from './commands/encyrpt-messages';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { EncryptMessages } from './commands/encyrpt-messages';
     PollsModule,
     MessagesModule,
     EncryptionModule,
+    NotificationModule,
   ],
   providers: [ConfigMangerService, EncryptMessages],
   controllers: [HealthCheckController],

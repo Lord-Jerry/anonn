@@ -30,6 +30,7 @@ model users {
   journal_reactions journal_reactions[]
   referrer          users?                @relation("referredBy", fields: [referrerId], references: [id])
   referral          users[]               @relation("referredBy")
+  notification_channels    notification_channels[]
 }
 
 model conversations {
@@ -167,4 +168,20 @@ model journal_reactions {
   users    users    @relation(fields: [userId], references: [id])
 
   @@unique([journalId, userId])
+}
+
+enum Notification_channels {
+  WEB
+  MOBILE
+}
+
+model notification_channels {
+  pId       String   @unique @default(uuid()) @db.Uuid
+  userId    Int
+  channel   Notification_channels
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users users @relation(fields: [userId], references: [id])
 }

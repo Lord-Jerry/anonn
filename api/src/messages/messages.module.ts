@@ -4,10 +4,11 @@ import { MessagesService } from './messages.service';
 import { UserModule } from 'src/user/user.module';
 import { ConversationModule } from 'src/conversation/conversation.module';
 import { EncryptionModule } from 'src/encryption/encryption.module'
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   controllers: [MessagesController],
   providers: [MessagesService],
-  imports: [UserModule, ConversationModule, EncryptionModule]
+  imports: [UserModule, ConversationModule, EncryptionModule, NotificationModule]
 })
 export class MessagesModule {}
