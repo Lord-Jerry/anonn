@@ -60,7 +60,6 @@ export default function Profile(props: Props) {
           @{props?.username}
         </p>
 
-        {router.query.testing && (
           <div className="mt-12 mx-auto text-center">
             <Toogle
               label="Notifications"
@@ -68,7 +67,6 @@ export default function Profile(props: Props) {
               onChange={onNotificationChange}
             />
           </div>
-        )}
 
         {profileButtons.map((button, index) => {
           return (
