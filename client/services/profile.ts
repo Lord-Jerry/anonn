@@ -1,11 +1,11 @@
-import nextCookies from "next-cookies";
-import Cookies from "js-cookie";
-import { Axios } from "axios";
+import nextCookies from 'next-cookies';
+import Cookies from 'js-cookie';
+import { Axios } from 'axios';
 
-import ApiService from "./api";
-import AuthService, { USER_COOKIE_KEYS, UserResponse } from "./auth";
-import { AVATARS } from "constants/index";
-import { GetServerSidePropsContext } from "next";
+import ApiService from './api';
+import AuthService, { UserResponse } from './auth';
+import { AVATARS, COOKIE_KEYS } from 'constants/index';
+import { GetServerSidePropsContext } from 'next';
 
 type AvatarsType = {
   key: string;
@@ -17,13 +17,13 @@ export default class ProfileService {
   private authService: AuthService;
 
   constructor(token?: string) {
-    this.api = ApiService(token || Cookies.get(USER_COOKIE_KEYS.TOKEN));
+    this.api = ApiService(token || Cookies.get(COOKIE_KEYS.TOKEN));
     this.authService = new AuthService(token);
   }
 
   async checkUsernameAvailability(username: string) {
     const { data } = await this.api.get<any>(
-      "/user/check-username-availability",
+      '/user/check-username-availability',
       {
         params: { username },
       }
@@ -32,7 +32,7 @@ export default class ProfileService {
   }
 
   async setUsername(username: string) {
-    await this.api.put<UserResponse>("/user/set-username", {
+    await this.api.put<UserResponse>('/user/set-username', {
       username,
     });
     this.authService.setUsernameToCookie(username);
@@ -41,13 +41,13 @@ export default class ProfileService {
 
   async getAvatars() {
     const { data } = await this.api.get<AvatarsType[]>(
-      "/user/platform-avatars"
+      '/user/platform-avatars'
     );
     return data;
   }
 
   async setAvatar(avatarId: string) {
-    await this.api.put("/user/set-avatar", {
+    await this.api.put('/user/set-avatar', {
       avatarId,
     });
     this.authService.setAvatarToCookie(avatarId);
@@ -65,35 +65,56 @@ export default class ProfileService {
   }
 
   async setReferer(username: string) {
-    await this.api.put("/user/set-referrer", {
+    await this.api.put('/user/set-referrer', {
       username,
     });
     return true;
   }
 
+  async upsertUserDeviceToken(token: string, id?: string) {
+    const { data } = await this.api.post<{ id: string }>(
+      '/notification/upsert-device-token',
+      {
+        id,
+        token,
+        channel: 'web',
+      }
+    );
+
+    return data.id;
+  }
+
+  async removeUserDeviceToken(id: string) {
+    await this.api.delete('/notification/remove-device-token', {
+      params: { id },
+    });
+  }
+
   validateUserProfile(ctx: GetServerSidePropsContext) {
     const cookie = nextCookies(ctx);
-    let redirectionDestination = "";
-    const isUserLoggedIn = cookie[USER_COOKIE_KEYS.TOKEN];
-    const username = cookie[USER_COOKIE_KEYS.USERNAME];
-    const isAvatarSet = cookie[USER_COOKIE_KEYS.AVATAR] as keyof typeof AVATARS;
+    let redirectionDestination = '';
+    const isUserLoggedIn = cookie[COOKIE_KEYS.TOKEN];
+    const username = cookie[COOKIE_KEYS.USERNAME];
+    const isAvatarSet = cookie[COOKIE_KEYS.AVATAR] as keyof typeof AVATARS;
+    const notificationEnabled = cookie[COOKIE_KEYS.NOTIFICATION_DEVICE_ID] || null;
 
     if (!isUserLoggedIn) {
-      redirectionDestination = "/";
-      Object.values(USER_COOKIE_KEYS).forEach((key) =>
+      redirectionDestination = '/';
+      Object.values(COOKIE_KEYS).forEach((key) =>
         ctx.res?.setHeader(
-          "Set-Cookie",
+          'Set-Cookie',
           `${key}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT`
         )
       );
-    } else if (!username) redirectionDestination = "/profile/set-username";
-    else if (!isAvatarSet) redirectionDestination = "/profile/set-avatar";
+    } else if (!username) redirectionDestination = '/profile/set-username';
+    else if (!isAvatarSet) redirectionDestination = '/profile/set-avatar';
 
     return {
       redirectionDestination,
       token: isUserLoggedIn,
       username,
       avatar: AVATARS[isAvatarSet],
+      notificationEnabled,
     };
   }
 }

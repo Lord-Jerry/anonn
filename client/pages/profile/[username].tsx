@@ -1,26 +1,26 @@
-import Image from "next/image";
-import { useRef, useState } from "react";
-import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
+import Image from 'next/image';
+import { useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
 
-import Button from "components/button";
-import { myLoader } from "utils/imageLoader";
-import ProfileService from "services/profile";
+import Button from 'components/button';
+import { myLoader } from 'utils/imageLoader';
+import ProfileService from 'services/profile';
 import useGoogleAuth, {
   AuthenticateFunctionReturnType,
-} from "hooks/useGoogleAuth";
-import { useVisitorProfileButtons } from "hooks/useProfileButtons";
-import ConversationService from "services/conversation";
-import Navigation from "components/Navigation";
-import useMessage from "hooks/useMessage";
-import Head from "next/head";
-import Footer from "components/Footer";
-import ChatTextArea from "components/ChatTextarea";
+} from 'hooks/useGoogleAuth';
+import { useVisitorProfileButtons } from 'hooks/useProfileButtons';
+import ConversationService from 'services/conversation';
+import Navigation from 'components/Navigation';
+import useMessage from 'hooks/useMessage';
+import Head from 'next/head';
+import Footer from 'components/Footer';
+import ChatTextArea from 'components/ChatTextarea';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType["props"];
+type Props = GetServerSidePropsReturnType['props'];
 export default function Profile(props: Props) {
   const [stage, setStage] = useState(1);
   const conversationId: any = props?.userId;
@@ -37,12 +37,12 @@ export default function Profile(props: Props) {
 
       if (!user.username) {
         router.push({
-          pathname: "/profile/set-username",
+          pathname: '/profile/set-username',
           query: { callback: router.asPath },
         });
       } else if (!user.avatar) {
         router.push({
-          pathname: "/profile/set-avatar",
+          pathname: '/profile/set-avatar',
           query: { callback: router.asPath },
         });
       } else {
@@ -52,9 +52,7 @@ export default function Profile(props: Props) {
     errorCallback: () => {},
   });
 
-    const {
-    conversation,
-  } = useMessage(conversationId);
+  const { conversation } = useMessage(conversationId);
 
   return (
     <>
@@ -65,31 +63,39 @@ export default function Profile(props: Props) {
           property="og:url"
           content={`https://anonn.xyz/profile/${props?.username}`}
         />
-        <meta property="og:type" content="website" />
+        <meta name="type" property="og:type" content="website" />
         <meta
+          name="title"
           property="title"
           content={`Chat anonymously with ${props?.username} - Anonn`}
         />
         <meta
+          name="og:title"
           property="og:title"
           content={`Chat anonymously with ${props?.username} - Anonn`}
         />
         <meta
+          name="description"
           property="description"
           content={`${props?.username} wants to have an anonymous chat with you`}
         />
         <meta
+          name="og:description"
           property="og:description"
           content={`${props?.username} wants to have an anonymous chat with you`}
         />
-        <meta property="og:image" content="/images/preview.png" />
+        <meta
+          name="og:image"
+          property="og:image"
+          content="/images/preview.png"
+        />
       </Head>
       <Navigation title="Profile">
         <div className="mx-auto pt-24 px-12 min-[600px]:w-[600px] w-full">
           <div className="mb-6">
             <Image
               loader={myLoader}
-              src={props?.avatar || ""}
+              src={props?.avatar || ''}
               alt="Profile pic"
               width={100}
               height={100}
@@ -131,10 +137,10 @@ export default function Profile(props: Props) {
                       <Button
                         key={index}
                         text={button.text}
-                        bg={index === 0 ? "bg_yellow" : "bg_black"}
+                        bg={index === 0 ? 'bg_yellow' : 'bg_black'}
                         className="mt-12 flex justify-center items-center p-4 w-full rounded-lg"
                         onClick={() =>
-                          button?.text === "Start new conversation"
+                          button?.text === 'Start new conversation'
                             ? setStage(2)
                             : router.push(
                                 `/conversations/${props.lastConversationId}`
@@ -145,7 +151,7 @@ export default function Profile(props: Props) {
                   })}
                 {stage === 2 && (
                   <ChatTextArea
-                   conversation={conversation}
+                    conversation={conversation}
                     sendMessage={firstMessage}
                     sendingMessage={initMessage}
                   />
@@ -172,14 +178,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!profile) {
     return {
       redirect: {
-        destination: "/404",
+        destination: '/404',
       },
     };
   }
   if (currentUserUsername === profile.username) {
     return {
       redirect: {
-        destination: "/profile",
+        destination: '/profile',
       },
     };
   }

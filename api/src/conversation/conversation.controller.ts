@@ -29,7 +29,6 @@ import {
 } from './dto';
 import { ConversationEntity, MessageEntity } from './entities/';
 import { User_conversation_status } from '@prisma/client';
-import { userInfo } from 'os';
 
 @Controller('conversation')
 @UseInterceptors(ClassSerializerInterceptor)

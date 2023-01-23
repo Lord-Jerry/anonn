@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { markMessageAsBelongsToUser } from './utils';
 import { User_conversation_status } from '@prisma/client';
 import { EncryptionService } from 'src/encryption/encryption.service';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class ConversationService {
@@ -17,6 +18,7 @@ export class ConversationService {
     private db: DatabaseService,
     private userService: UserService,
     private encryptionService: EncryptionService,
+    private notificationService: NotificationService,
   ) {}
 
   async checkConversationPermissions(
@@ -141,6 +143,12 @@ export class ConversationService {
         conversation,
       };
     });
+
+    this.notificationService.sendMessageNotification({
+      senderId: conversationInitiator.id,
+      conversationId: conversation.pId,
+      message: content,
+    })
 
     // don't want to decrypt the message for the response
     message.content = content;

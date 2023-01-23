@@ -1,9 +1,8 @@
 import Cookies from 'js-cookie';
 import { Axios } from 'axios';
 
-import { USER_COOKIE_KEYS } from './auth';
-
 import ApiService from './api';
+import { COOKIE_KEYS } from 'constants/index';
 import { Message } from 'types/message';
 
 export type messageData = {
@@ -30,7 +29,7 @@ export default class ConversationService {
   private api: Axios;
 
   constructor(token?: string) {
-    this.api = ApiService(token || Cookies.get(USER_COOKIE_KEYS.TOKEN));
+    this.api = ApiService(token || Cookies.get(COOKIE_KEYS.TOKEN));
   }
 
   async getLastConversationWithUser(userId: string) {
