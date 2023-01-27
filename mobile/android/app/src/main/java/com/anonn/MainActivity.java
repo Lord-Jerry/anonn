@@ -1,4 +1,4 @@
-package com.mobile;
+package com.anonn;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -13,7 +13,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "mobile";
+    return "anonn";
   }
 
   /**
