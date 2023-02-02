@@ -9,65 +9,73 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import Layout from '@components/layout';
-import Button from '@components/button';
+import Button from '@components/buttons';
 
 import colors from '@constant/colors';
 
 import slides from '@constant/onboarding';
+import screens from '@constant/screens';
 
 const {width, height} = Dimensions.get('window');
 
 const Slide = (
   props: (typeof slides)[number] & {currentSlideIndex: number},
-) => (
-  <View style={[{width}, styles.container]}>
-    <View style={{flex: 3}}>
-      <ImageBackground
-        imageStyle={{
-          width: '100%',
-          resizeMode: 'contain',
-        }}
-        source={props.image}
-        style={styles.image}
-      />
-    </View>
-    <View style={styles.textWrapper}>
-      <Text style={styles.title}>{props.title}</Text>
-      <Text style={styles.description}>{props.description}</Text>
-    </View>
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10,
-      }}>
-      {slides.map((_, index) => (
-        <View
-          key={index}
-          style={[
-            styles.indicator,
-            props.currentSlideIndex == index && styles.activeIndicator,
-          ]}
-        />
-      ))}
-    </View>
+) => {
+  const navigation = useNavigation();
 
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Button
-        textColor="primary_dark"
-        backgroundColor="anonn_green"
-        title="Sign up"
-      />
-      <Button
-        textColor="white"
-        backgroundColor="primary_dark"
-        title="Log in "
-      />
+  return (
+    <View style={[{width}, styles.container]}>
+      <View style={{flex: 3}}>
+        <ImageBackground
+          imageStyle={{
+            width: '100%',
+            resizeMode: 'contain',
+          }}
+          source={props.image}
+          style={styles.image}
+        />
+      </View>
+      <View style={styles.textWrapper}>
+        <Text style={styles.title}>{props.title}</Text>
+        <Text style={styles.description}>{props.description}</Text>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginTop: 10,
+        }}>
+        {slides.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.indicator,
+              props.currentSlideIndex == index && styles.activeIndicator,
+            ]}
+          />
+        ))}
+      </View>
+
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Button
+          textColor="primary_dark"
+          backgroundColor="anonn_green"
+          title="Sign up"
+          onPress={() => navigation.navigate(screens.Signup as never)}
+        />
+        <Button
+          textColor="white"
+          backgroundColor="primary_dark"
+          title="Log in"
+          onPress={() => navigation.navigate(screens.Login as never)}
+        />
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const Onboarding = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
