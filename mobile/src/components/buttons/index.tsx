@@ -8,6 +8,10 @@ type props = {
   title: string;
   textColor: keyof typeof colors;
   backgroundColor: keyof typeof colors;
+  borderColor?: keyof typeof colors;
+  iconLeft?: JSX.Element;
+  iconRight?: JSX.Element;
+  onPress: () => void;
 };
 
 const Btn = (props: props) => {
@@ -18,10 +22,20 @@ const Btn = (props: props) => {
         {
           backgroundColor: colors[props.backgroundColor],
         },
-      ]}>
-      <Text style={[styles.text, {color: colors[props.textColor]}]}>
+        props.borderColor && { borderColor: colors[props.borderColor], borderWidth: 1 },
+      ]}
+      onPress={props.onPress}>
+      {props.iconLeft ? props.iconLeft : null}
+      <Text
+        style={[
+          styles.text,
+          {color: colors[props.textColor]},
+          props.iconLeft && { marginLeft: 10 },
+          props.iconRight && { marginRight: 10 },
+        ]}>
         {props.title}
       </Text>
+      {props.iconRight ? props.iconRight : null}
     </Pressable>
   );
 };
@@ -34,6 +48,7 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   text: {
     fontSize: 14,
