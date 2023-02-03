@@ -9,12 +9,19 @@ import Text from '@components/text';
 import GoogleBtn from '@components/buttons/google';
 import AppleBtn from '@components/buttons/apple';
 
+import useGoogleAuth from '@hooks/googleAuth';
+import useAppleAuth from '@hooks/appleAuth';
+
 import screens from '@constant/screens';
 
 const {width, height} = Dimensions.get('window');
 
 const Auth = () => {
   const navigation = useNavigation();
+  const {googleSignIn, loading: googleSignInLoading} = useGoogleAuth();
+  const {appleSignIn, loading: appleSignInLoading} = useAppleAuth();
+
+  const disableButtons = googleSignInLoading || appleSignInLoading;
 
   const openServiceTerms = async () => {
     const url = 'https://anonn.xyz/pages/terms';
@@ -26,10 +33,6 @@ const Auth = () => {
     await Linking.openURL(url);
   };
 
-  const openUsernameScreen = () => {
-    navigation.navigate(screens.SetUsername as never);
-  }
-
   return (
     <Layout showLogo imageStyle={styles.layoutLogo}>
       <React.Fragment>
@@ -40,8 +43,8 @@ const Auth = () => {
           </Text>
 
           <View style={styles.buttonContainer}>
-            <GoogleBtn onPress={openUsernameScreen} />
-            <AppleBtn onPress={openUsernameScreen} />
+            <GoogleBtn disabled={disableButtons} onPress={googleSignIn} />
+            <AppleBtn disabled={disableButtons} onPress={appleSignIn} />
           </View>
 
           <View style={styles.footer}>

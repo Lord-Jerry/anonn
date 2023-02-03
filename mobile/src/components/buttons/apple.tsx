@@ -5,11 +5,12 @@ import colors from '@constant/colors';
 
 type props = {
   onPress?: () => void;
+  disabled?: boolean;
 }
 
 const AppleBtn = (props: props) => {
   return (
-    <Pressable style={styles.button} onPress={props.onPress}>
+    <Pressable disabled={props.disabled} style={styles.button} onPress={props.onPress}>
       <Image
         style={styles.icon}
         source={require('@assets/logo/apple.png')}
