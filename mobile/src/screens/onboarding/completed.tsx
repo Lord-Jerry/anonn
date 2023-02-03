@@ -11,7 +11,9 @@ import Button from '@components/buttons';
 import colors from '@constant/colors';
 import avatars from '@constant/avatars';
 
+
 const {width, height} = Dimensions.get('window');
+
 
 const ProfileSetupComplete = () => {
   const avatarKeys = Object.keys(avatars) as Array<keyof typeof avatars>;

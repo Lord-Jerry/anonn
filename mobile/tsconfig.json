@@ -10,9 +10,14 @@
       "@screens/*": ["./src/screens/*"],
       "@navigation/*": ["./src/navigation/*"],
       "@constant/*": ["./src/constant/*"],
+      "@services/*": ["./src/services/*"],
+      "@utils/*": ["./src/utils/*"],
       "@assets/*": ["./assets/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@config/*": ["./src/config/*"],
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  //  "typeRoots": ["./types"],
   // "include": ["src", "components"]
 }
