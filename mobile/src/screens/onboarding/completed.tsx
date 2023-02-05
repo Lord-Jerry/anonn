@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Dimensions, StyleSheet, Image} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Dimensions, StyleSheet, Image, Share} from 'react-native';
 
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRight, faLink} from '@fortawesome/free-solid-svg-icons/';
@@ -11,67 +11,93 @@ import Button from '@components/buttons';
 import colors from '@constant/colors';
 import avatars from '@constant/avatars';
 
+import {retrieveData, StoreKeys} from '@services/asynstorage';
 
 const {width, height} = Dimensions.get('window');
 
-
 const ProfileSetupComplete = () => {
-  const avatarKeys = Object.keys(avatars) as Array<keyof typeof avatars>;
-  const randomAvatar =
-    avatarKeys[Math.floor(Math.random() * avatarKeys.length)];
+  const [avatar, setAvatar] = useState<keyof typeof avatars>();
+  const [username, setUsername] = useState<string>();
 
-  const selectedAvatar = randomAvatar;
+  useEffect(() => {
+    retrieveData(StoreKeys.avatar).then(data => {
+      data && setAvatar(data as keyof typeof avatars);
+    });
+
+    retrieveData(StoreKeys.username).then(data => {
+      data && setUsername(data);
+    });
+
+  }, []);
+
+  const handleShare = () => {
+    Share.share({
+      message: `https://anonn.com/profile/${username} Hey, I'm on Anonn. Let's connect and chat`,
+    });
+  };
+
   return (
-    <Layout showLogo imageStyle={styles.layoutLogo}>
-      <React.Fragment>
-        <View style={styles.container}>
-          <Text style={styles.title}>Share your profile link</Text>
-          <Text style={styles.subTitle}>
-            Let the conversations flow, yeah...
-          </Text>
+    avatar && username && (
+      <Layout showLogo imageStyle={styles.layoutLogo}>
+        <React.Fragment>
+          <View style={styles.container}>
+            <Text style={styles.title}>Share your profile link</Text>
+            <Text style={styles.subTitle}>
+              Let the conversations flow, yeah...
+            </Text>
 
-          <View style={styles.avatarContainer}>
-            <Image
-              style={styles.avatar}
-              source={{uri: avatars[selectedAvatar]}}
-            />
+            <View style={styles.avatarContainer}>
+              <Image style={styles.avatar} source={{uri: avatars[avatar]}} />
 
-            <Text style={styles.username}>@sillyjumper</Text>
+              <Text style={styles.username}>{`@${username}`}</Text>
+            </View>
+
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 40,
+              }}>
+              <Button
+                textColor="primary_dark"
+                backgroundColor="anonn_green"
+                title="Share your profile link "
+                iconRight={
+                  <FontAwesomeIcon
+                    color={colors.primary_dark}
+                    size={10}
+                    icon={faLink}
+                  />
+                }
+                onPress={handleShare}
+              />
+            </View>
           </View>
 
           <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 40,
+              marginBottom: 20,
             }}>
             <Button
-              textColor="primary_dark"
-              backgroundColor="anonn_green"
-              title="Share your profile link "
-              iconRight={<FontAwesomeIcon color={colors.primary_dark} size={10} icon={faLink} />}
+              textColor="anonn_green"
+              backgroundColor="primary_dark"
+              borderColor="anonn_green"
+              title="Nah, Later"
+              iconRight={
+                <FontAwesomeIcon
+                  color={colors.anonn_green}
+                  size={10}
+                  icon={faArrowRight}
+                />
+              }
               onPress={() => null}
             />
           </View>
-        </View>
-
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 20,
-          }}>
-          <Button
-            textColor="anonn_green"
-            backgroundColor="primary_dark"
-            borderColor='anonn_green'
-            title="Nah, Later"
-            iconRight={<FontAwesomeIcon color={colors.anonn_green} size={10} icon={faArrowRight} />}
-            onPress={() => null}
-          />
-        </View>
-      </React.Fragment>
-    </Layout>
+        </React.Fragment>
+      </Layout>
+    )
   );
 };
 

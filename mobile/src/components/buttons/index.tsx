@@ -11,6 +11,7 @@ type props = {
   borderColor?: keyof typeof colors;
   iconLeft?: JSX.Element;
   iconRight?: JSX.Element;
+  disabled?: boolean;
   onPress: () => void;
 };
 
@@ -24,6 +25,7 @@ const Btn = (props: props) => {
         },
         props.borderColor && { borderColor: colors[props.borderColor], borderWidth: 1 },
       ]}
+      disabled={props.disabled}
       onPress={props.onPress}>
       {props.iconLeft ? props.iconLeft : null}
       <Text
