@@ -1,12 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Linking,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  Keyboard,
-} from 'react-native';
+import {View, StyleSheet, Dimensions, FlatList} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 
@@ -20,6 +13,9 @@ import Button from '@components/buttons';
 
 import colors from '@constant/colors';
 import screens from '@constant/screens';
+
+import useHandleKeyboard from '@hooks/useHandlekeyboard';
+import UserService from '@services/user';
 
 const {width, height} = Dimensions.get('window');
 
@@ -43,36 +39,58 @@ const UserNameInstructions = () => (
 );
 
 const SetProfileUsername = () => {
-  const [showButton, setShowButton] = useState(true);
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState<string>();
+  const [usernameValid, setUsernameValid] = useState<boolean>();
+  const [loading, setLoading] = useState(false);
+
+  const userService = new UserService();
   const navigation = useNavigation();
+  const keyboardVisible = useHandleKeyboard();
 
-  // TODO: move this to a hook
+  const checkUsernameValid = (username: string) => {
+    const regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
+    return regex.test(username);
+  };
+
   useEffect(() => {
-    const keyboardWillShowListener = Keyboard.addListener(
-      'keyboardWillShow',
-      () => setShowButton(false),
-    );
-    const keyboardWillHideListener = Keyboard.addListener(
-      'keyboardWillHide',
-      () => setShowButton(true),
-    );
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length < 3 || !checkUsernameValid(trimmedUsername))
+      return;
 
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => setShowButton(false),
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => setShowButton(true),
-    );
+    const handler = setTimeout(async () => {
+      const isUsernameValid = await userService.checkUsernameAvailability(
+        trimmedUsername,
+      );
+      setUsernameValid(isUsernameValid);
+      !isUsernameValid && setError('Sorry, that username is already taken');
+    }, 500);
 
-    return () => {
-      keyboardWillShowListener.remove();
-      keyboardWillHideListener.remove();
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+    return () => clearTimeout(handler);
+  }, [username]);
+
+  const handleInputChange = (text: string) => {
+    const username = text.trim();
+    setUsername(username);
+    const usernameValid = checkUsernameValid(username);
+    if (!text || usernameValid) {
+      setError(undefined);
+      setUsernameValid(undefined);
+      return;
+    }
+
+    setError('Invalid username');
+    setUsernameValid(false);
+  };
+
+  const handleSubmit = async () => {
+    if (!usernameValid) return;
+    setLoading(true);
+
+    const data = await userService.setUsername(username);
+    data && navigation.navigate(screens.SetAvatar as never);
+    setLoading(false);
+  };
 
   return (
     <Layout showLogo imageStyle={styles.layoutLogo}>
@@ -89,12 +107,26 @@ const SetProfileUsername = () => {
               Quick one, please type in a username
             </Text>
 
-            <Input wrapperStyle={{marginTop: 30}} />
-            <UserNameInstructions />
+            <Input
+              autoComplete="off"
+              autoCorrect={false}
+              value={username}
+              onChangeText={handleInputChange}
+              wrapperStyle={{marginTop: 30}}
+            />
+            {!username && <UserNameInstructions />}
+            {usernameValid !== undefined && usernameValid && (
+              <Text style={styles.successMessage}>
+                cool username, good to go!
+              </Text>
+            )}
+            {error && usernameValid !== undefined && !usernameValid && (
+              <Text style={styles.errorMessage}>{error}</Text>
+            )}
           </View>
         </View>
 
-        {showButton && (
+        {!keyboardVisible && (
           <View
             style={{
               justifyContent: 'center',
@@ -102,11 +134,12 @@ const SetProfileUsername = () => {
               marginBottom: 35,
             }}>
             <Button
+              disabled={loading || !usernameValid}
               textColor="primary_dark"
               backgroundColor="anonn_green"
               title="Continue"
               iconRight={<FontAwesomeIcon size={10} icon={faArrowRight} />}
-              onPress={() => navigation.navigate(screens.SetAvatar as never)}
+              onPress={handleSubmit}
             />
           </View>
         )}
@@ -162,6 +195,18 @@ const styles = StyleSheet.create({
   instructionText: {
     color: colors.white,
     fontSize: 12,
+  },
+  successMessage: {
+    marginTop: 14,
+    color: colors.green,
+    fontSize: 10,
+    fontWeight: '400',
+  },
+  errorMessage: {
+    marginTop: 14,
+    color: colors.light_red,
+    fontSize: 10,
+    fontWeight: '400',
   },
 });
 

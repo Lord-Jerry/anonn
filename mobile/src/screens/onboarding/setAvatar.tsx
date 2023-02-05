@@ -11,6 +11,9 @@ import {
 
 import {useNavigation} from '@react-navigation/native';
 
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faArrowRight} from '@fortawesome/free-solid-svg-icons/';
+
 import Layout from '@components/layout';
 import Text from '@components/text';
 import Button from '@components/buttons';
@@ -19,6 +22,8 @@ import colors from '@constant/colors';
 import avatars from '@constant/avatars';
 import screens from '@constant/screens';
 
+import UserService from '@services/user';
+
 const {width, height} = Dimensions.get('window');
 
 const SetProfileAvatar = () => {
@@ -26,11 +31,21 @@ const SetProfileAvatar = () => {
   const randomAvatar =
     avatarKeys[Math.floor(Math.random() * avatarKeys.length)];
 
+  const [loading, setLoading] = useState(false);
   const [showAvatarOptions, setShowAvatarOptions] = useState(false);
   const [selectedAvatar, setSelectedAvatar] =
     useState<keyof typeof avatars>(randomAvatar);
 
+  const userService = new UserService();
   const navigation = useNavigation();
+
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    const data = await userService.setAvatar(selectedAvatar);
+    data && navigation.navigate(screens.ProfileSetupcomplete as never);
+    setLoading(false);
+  };
 
   const toogleAvatarOptions = () => setShowAvatarOptions(!showAvatarOptions);
   return (
@@ -87,10 +102,12 @@ const SetProfileAvatar = () => {
             marginBottom: 20,
           }}>
           <Button
+            disabled={loading}
             textColor="primary_dark"
             backgroundColor="anonn_green"
-            title="Sign up"
-            onPress={() => navigation.navigate(screens.ProfileSetupcomplete as never)}
+            title="Complete"
+            iconRight={<FontAwesomeIcon size={10} icon={faArrowRight} />}
+            onPress={handleSubmit}
           />
         </View>
       </React.Fragment>

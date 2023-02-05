@@ -1,12 +1,15 @@
+import * as crypto from "crypto";
 import {
 	Injectable,
 	UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { OAuth2Client } from "google-auth-library";
+import appleSigninAuth from 'apple-signin-auth';
 
 import { DatabaseService } from "src/providers/database/database.service";
 import { ConfigMangerService } from "src/common/config/";
+import { UserService } from "src/user/user.service";
 import { AuthZeroDto } from "./dto";
 
 
@@ -17,6 +20,7 @@ export class AuthService {
 		private config: ConfigMangerService,
 		private db: DatabaseService,
 		private jwtService: JwtService,
+		private userService: UserService,
 	) {
 		this.client = new OAuth2Client(this.config.get("GOOGLE_CLIENT_ID"));
 	}
@@ -38,6 +42,22 @@ export class AuthService {
 			}
 		} catch (error) {
 			throw new UnauthorizedException("Invalid Google Token");
+		}
+	}
+
+	async verifyAppleLogin(token: string) {
+		const nonce = 'abc123_nonce'
+		const appleIdTokenClaims = await appleSigninAuth.verifyIdToken(token, {
+			audience: ['com.anonn.ios', 'com.anonn.web'],
+			/** sha256 hex hash of raw nonce */
+			nonce: nonce ? crypto.createHash('sha256').update(nonce).digest('hex') : undefined,
+		});
+
+		return {
+			provider: "apple",
+			providerId: appleIdTokenClaims.sub,
+			name: this.userService.generateRandomUsername(),
+			email: appleIdTokenClaims.email,
 		}
 	}
 
@@ -67,15 +87,26 @@ export class AuthService {
 
 
 	async authenticate (dto: AuthZeroDto) {
-		const auth0User = await this.verifyGoogleLogin(dto.token);
+		const auth0User = dto.platform === 'google' ? await this.verifyGoogleLogin(dto.token) : await this.verifyAppleLogin(dto.token);
 		const findUser = await this.db.users.findFirst({
 			where: {
 				email: auth0User.email,
 			},
 		});
 
+		
+		// apple only returns name on first login/signup,
+		// so if payload has name, then it can be assumed to be the first login/signup
+		if (!findUser && dto.name && dto.platform === 'apple') {
+			auth0User.name = dto.name;
+		}
+
 		if (!findUser) {
 			return this.createAccount(auth0User)
+		}
+
+		if (auth0User.provider !== findUser.provider) {
+			throw new UnauthorizedException("Email already registered with different provider");
 		}
 
 		const token = await this.generateToken(findUser.pId);
