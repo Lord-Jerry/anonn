@@ -12,5 +12,5 @@ export const getAuthScreen = (props: {
     if (!username) return screens.SetUsername
     if (!avatar) return screens.SetAvatar
 
-    return screens.ProfileSetupcomplete
+    return screens.Conversation
 };
