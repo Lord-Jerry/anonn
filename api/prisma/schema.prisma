@@ -79,6 +79,8 @@ model users_conversations {
 
   conversations conversations @relation(fields: [conversationId], references: [id])
   users         users         @relation(fields: [userId], references: [id])
+
+  @@index([conversationId])
 }
 
 model messages {
@@ -100,6 +102,9 @@ model messages {
   updatedAt      DateTime @updatedAt
 
   conversations conversations @relation(fields: [conversationId], references: [id])
+
+  @@index([conversationId])
+  @@index([createdAt])
 }
 
 model polls {
