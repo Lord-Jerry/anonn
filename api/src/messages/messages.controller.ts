@@ -15,8 +15,12 @@ import {
 import { MessagesService } from './messages.service';
 import { AtGuard } from 'src/auth/guards';
 import { IRequestUser } from 'src/common/types';
-import { ConversationIdParamDto, GetMessagesQueryParamDto, SendMessageDto } from './dto';
-import { MessageEntity } from './entities';
+import {
+  ConversationIdParamDto,
+  GetMessagesQueryParamDto,
+  SendMessageDto,
+} from './dto';
+import { MessageEntity, MobileAppMessageEntity } from './entities';
 
 @Controller('messages')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -38,6 +42,20 @@ export class MessagesController {
     );
 
     return new MessageEntity(message);
+  }
+
+  @UseGuards(AtGuard)
+  @Get('/get')
+  @HttpCode(HttpStatus.OK)
+  async getMessagesForMobileApp(
+    @Request() req: IRequestUser,
+    @Query() query: GetMessagesQueryParamDto,
+  ) {
+    const messages = await this.messageService.getMessagesForMobileApp(
+      req.user.userId,
+      query.cursor,
+    );
+    return messages.map((message) => new MobileAppMessageEntity(message));
   }
 
   @UseGuards(AtGuard)

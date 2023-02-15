@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+
+import { UserService } from 'src/user/user.service';
 import { ConversationService } from 'src/conversation/conversation.service';
 import { DatabaseService } from 'src/providers/database/database.service';
 import { EncryptionService } from 'src/encryption/encryption.service';
@@ -6,10 +8,31 @@ import { NotificationService } from 'src/notification/notification.service';
 
 import { markMessageAsBelongsToUser } from '../conversation/utils';
 
+interface AllMessages {
+  id: string;
+  privateId: number;
+  senderId: number;
+  status: string;
+  content: string;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+  conversationId: string;
+  description: string;
+  isOpen: boolean;
+  isGroup: boolean;
+  conversationCreatedAt: Date;
+  conversationUpdatedAt: Date;
+  encryptionKey: string;
+  lastReadMessageId: number;
+  conversationName: string;
+}
+
 @Injectable()
 export class MessagesService {
   constructor(
     private db: DatabaseService,
+    private userService: UserService,
     private conversationService: ConversationService,
     private encryptionService: EncryptionService,
     private notificationService: NotificationService,
@@ -63,7 +86,11 @@ export class MessagesService {
       ]);
     });
 
-    this.notificationService.sendMessageNotification({ senderId: conversationPermission.userId, conversationId, message: content })
+    this.notificationService.sendMessageNotification({
+      senderId: conversationPermission.userId,
+      conversationId,
+      message: content,
+    });
     message.content = content;
 
     return {
@@ -138,6 +165,53 @@ export class MessagesService {
         isNewMessage:
           message.id > conversationPermission.lastReadMessageId &&
           message.senderId !== conversationPermission.userId,
+      };
+    });
+  }
+
+  async getMessagesForMobileApp(userId: string, cursor?: Date) {
+    const user = await this.userService.findUserById(userId);
+    const messages = await this.db.$queryRaw <AllMessages[]>`
+      SELECT
+        c."isOpen",
+	      c."isGroup",
+	      m.content,
+        uc.status,
+	      m.username,
+	      c.description,
+	      m."pId" AS id,
+	      m."senderId",
+	      m."createdAt",
+	      m."updatedAt",
+	      m.id AS "privateId",
+        uc. "lastReadMessageId",
+	      c.key AS "encryptionKey",
+	      c. "pId" AS "conversationId",
+	      uc.title AS "conversationName",
+	      c. "createdAt" AS "conversationCreatedAt",
+	      c. "updatedAt" AS "conversationUpdatedAt"
+      FROM messages m
+	    JOIN conversations c ON m."conversationId" = c.id
+	    JOIN users_conversations uc ON uc."conversationId" = c.id
+      WHERE uc. "userId" = ${user.id} AND m."createdAt" > ${cursor || '2022-01-01'}::timestamp
+      LIMIT 100;
+    `;
+
+    return messages.map((message) => {
+      const decryptedMessage = this.encryptionService.decryptMessage(
+        message.content,
+        message.encryptionKey as `${string}-${string}`,
+      );
+      return {
+        ...message,
+        content: decryptedMessage,
+        isMine: user.id === message.senderId,
+        // message can be considered read, when:
+        // 1. message is older than last read message
+        // 2. message is not sent by the user
+        isNewMessage:
+          message.privateId > message.lastReadMessageId &&
+          message.senderId !== user.id,
       };
     });
   }
