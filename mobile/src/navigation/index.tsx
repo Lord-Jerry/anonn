@@ -8,19 +8,17 @@ import SetProfileUsername from '@screens/onboarding/setUsername';
 import SetProfileAvatar from '@screens/onboarding/setAvatar';
 import ProfileSetupComplete from '@screens/onboarding/completed';
 import Conversation from '@screens/conversations';
+import ConversationRequest from '@screens/conversations/requests';
 
 import {getAuthScreen} from '@utils/auth';
 import screens from '@constant/screens';
 
 import {retrieveData, StoreKeys} from '@services/asynstorage';
 
-// import { API_SERVER } from '@config/index'
-
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
   const [defaultScreen, setDefaultScreen] = useState<string>();
-
   useEffect(() => {
     (async () => {
       const token = await retrieveData(StoreKeys.token);
@@ -32,49 +30,33 @@ const Navigation = () => {
     })();
   }, []);
 
-  return (
-    defaultScreen && (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName={defaultScreen}>
-          <Stack.Screen
-            name={screens.Onboarding}
-            component={OnboardingScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={screens.Signup}
-            component={AuthScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={screens.Login}
-            component={AuthScreen}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={screens.SetUsername}
-            component={SetProfileUsername}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={screens.SetAvatar}
-            component={SetProfileAvatar}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name={screens.ProfileSetupcomplete}
-            component={ProfileSetupComplete}
-            options={{headerShown: false, gestureEnabled: false}}
-          />
-          <Stack.Screen
-            name={screens.Conversation}
-            component={Conversation}
-            options={{headerShown: false, gestureEnabled: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    )
-  );
+  return defaultScreen ? (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={defaultScreen}>
+        <Stack.Screen name={screens.Onboarding} component={OnboardingScreen} options={{headerShown: false}} />
+        <Stack.Screen name={screens.Signup} component={AuthScreen} options={{headerShown: false}} />
+        <Stack.Screen name={screens.Login} component={AuthScreen} options={{headerShown: false}} />
+        <Stack.Screen name={screens.SetUsername} component={SetProfileUsername} options={{headerShown: false}} />
+        <Stack.Screen name={screens.SetAvatar} component={SetProfileAvatar} options={{headerShown: false}} />
+        <Stack.Screen
+          name={screens.ProfileSetupcomplete}
+          component={ProfileSetupComplete}
+          options={{headerShown: false, gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name={screens.Conversation}
+          component={Conversation}
+          options={{headerShown: false, gestureEnabled: false}}
+        />
+
+        <Stack.Screen
+          name={screens.ConversationRequest}
+          component={ConversationRequest}
+          options={{headerShown: false, gestureEnabled: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  ) : null;
 };
 
 export default Navigation;

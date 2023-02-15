@@ -1,10 +1,9 @@
 import React from 'react';
+import withObservables from '@nozbe/with-observables';
 
 import Layout from '@components/layout';
 import ConversationList from '@components/conversation/conversationList';
-import {ConversationListHeader} from '@components/conversation/conversationListHeader';
-
-import withObservables from '@nozbe/with-observables';
+import {ConversationRequestsHeader} from '@components/conversation/conversationListHeader';
 
 import {database, Conversations as ConversationsModel, Messages as MessageModel} from '@db/index';
 
@@ -12,14 +11,15 @@ type Props = {
   messages: MessageModel[];
   conversations: ConversationsModel[];
 };
-const Conversations = (props: Props) => {
+
+const ConversationRequests = (props: Props) => {
   const {messages, conversations} = props;
   return (
     <Layout>
       <ConversationList
-        conversations={conversations}
         messages={messages}
-        conversationListHeader={ConversationListHeader}
+        conversations={conversations}
+        conversationListHeader={ConversationRequestsHeader}
       />
     </Layout>
   );
@@ -30,4 +30,4 @@ const enhance = withObservables(['conversations'], () => ({
   messages: database.collections.get<MessageModel>('messages').query().observe(),
 }));
 
-export default enhance(Conversations);
+export default enhance(ConversationRequests);

@@ -17,6 +17,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A2A16A0C2A6C494E8B1D8E0C /* Quicksand-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6550096657CB440E8AD0EE5D /* Quicksand-Bold.ttf */; };
 		BB4B21B36A5A4863B342E42B /* Quicksand-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3346781E053F413D9EDFC757 /* Quicksand-Medium.ttf */; };
+		C41E50E02995C8DF00B9FCD8 /* wmelon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41E50DF2995C8DF00B9FCD8 /* wmelon.swift */; };
 		CD8C46A63B4249BFB03CA6EA /* Quicksand-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51042C965FD54DE7AB7E26E3 /* Quicksand-SemiBold.ttf */; };
 		F2EBD115122848ED9E5063C8 /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 75A072E80B364483B0B1A247 /* Quicksand-Light.ttf */; };
 /* End PBXBuildFile section */
@@ -53,6 +54,8 @@
 		75A072E80B364483B0B1A247 /* Quicksand-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Light.ttf"; path = "../assets/fonts/Quicksand-Light.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = anonn/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-anonn-anonnTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-anonn-anonnTests.release.xcconfig"; path = "Target Support Files/Pods-anonn-anonnTests/Pods-anonn-anonnTests.release.xcconfig"; sourceTree = "<group>"; };
+		C41E50DE2995C8DE00B9FCD8 /* anonn-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "anonn-Bridging-Header.h"; sourceTree = "<group>"; };
+		C41E50DF2995C8DF00B9FCD8 /* wmelon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wmelon.swift; sourceTree = "<group>"; };
 		C423B205298C239200C8D3D3 /* anonn.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = anonn.entitlements; path = anonn/anonn.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -128,6 +131,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				C41E50DF2995C8DF00B9FCD8 /* wmelon.swift */,
 				13B07FAE1A68108700A75B9A /* anonn */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* anonnTests */,
@@ -135,6 +139,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				D7AE77CE74DE4FE49B3514B7 /* Resources */,
+				C41E50DE2995C8DE00B9FCD8 /* anonn-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -232,7 +237,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1420;
 					};
 				};
 			};
@@ -444,6 +449,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				C41E50E02995C8DF00B9FCD8 /* wmelon.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +468,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-anonn-anonnTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -489,6 +496,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-anonn-anonnTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = anonnTests/Info.plist;
@@ -532,6 +540,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.anonn.ios;
 				PRODUCT_NAME = anonn;
+				SWIFT_OBJC_BRIDGING_HEADER = "anonn-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -560,6 +569,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.anonn.ios;
 				PRODUCT_NAME = anonn;
+				SWIFT_OBJC_BRIDGING_HEADER = "anonn-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

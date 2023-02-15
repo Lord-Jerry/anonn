@@ -6,4 +6,5 @@ export default {
     SetAvatar: 'SetAvatar',
     ProfileSetupcomplete: 'ProfileSetupcomplete',
     Conversation: 'Conversation',
+    ConversationRequest: 'ConversationRequest',
 } as const
