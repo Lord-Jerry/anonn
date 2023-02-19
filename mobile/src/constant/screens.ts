@@ -5,4 +5,6 @@ export default {
     SetUsername: 'SetUsername',
     SetAvatar: 'SetAvatar',
     ProfileSetupcomplete: 'ProfileSetupcomplete',
+    Conversation: 'Conversation',
+    ConversationRequest: 'ConversationRequest',
 } as const

@@ -8,7 +8,7 @@ import {faArrowRight} from '@fortawesome/free-solid-svg-icons/';
 
 import Layout from '@components/layout';
 import Text from '@components/text';
-import Input from '@components/input';
+import Input from '@components/inputs';
 import Button from '@components/buttons';
 
 import colors from '@constant/colors';

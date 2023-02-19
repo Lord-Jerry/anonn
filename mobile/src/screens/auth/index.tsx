@@ -1,6 +1,5 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View, Linking, StyleSheet, Dimensions} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 
 import Layout from '@components/layout';
 import colors from '@constant/colors';
@@ -12,12 +11,9 @@ import AppleBtn from '@components/buttons/apple';
 import useGoogleAuth from '@hooks/googleAuth';
 import useAppleAuth from '@hooks/appleAuth';
 
-import screens from '@constant/screens';
-
 const {width, height} = Dimensions.get('window');
 
 const Auth = () => {
-  const navigation = useNavigation();
   const {googleSignIn, loading: googleSignInLoading} = useGoogleAuth();
   const {appleSignIn, loading: appleSignInLoading} = useAppleAuth();
 
