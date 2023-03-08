@@ -1,27 +1,22 @@
-import { useRef } from "react";
-import { useRouter } from "next/router";
-import { GetServerSidePropsContext } from "next/types";
-import ProfileService from "services/profile";
-import Hero from "components/hero";
-import useGoogleAuth from "hooks/useGoogleAuth";
-import Button from "components/button";
-import Link from "next/link";
-import Head from "next/head";
-import ArrowRight from "icon/ArrowRight";
-import Footer from "components/Footer";
-import Features from "components/Features";
-import StarIcon from "icon/StarIcon";
-import MessageIcon from "icon/MessageIcon";
-import AnnonMsgIcon from "icon/AnnonMsgIcon";
-import EncryptedMsgIcon from "icon/EncryptedMsgIcon";
-import IphoneIcon from "icon/IphoneIcon";
-import MarkedIcon from "icon/MarkedIcon";
-import Remarks from "components/Remarks";
+import { useRef } from 'react';
+import { useRouter } from 'next/router';
+import { GetServerSidePropsContext } from 'next/types';
+import ProfileService from 'services/profile';
+import Hero from 'components/hero';
+import useGoogleAuth from 'hooks/useGoogleAuth';
+import Button from 'components/button';
+import Link from 'next/link';
+import Head from 'next/head';
+import ArrowRight from 'icon/ArrowRight';
+import Footer from 'components/Footer';
+import StarIcon from 'icon/StarIcon';
+import Remarks from 'components/Remarks';
+import Why from 'components/Why-anonn';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
 >;
-type Props = GetServerSidePropsReturnType["props"];
+type Props = GetServerSidePropsReturnType['props'];
 
 export default function Home(props: Props) {
   const router = useRouter();
@@ -30,11 +25,11 @@ export default function Home(props: Props) {
     googleBtnRef,
     isUserLoggedIn: false,
     successCallback: () => {
-      router.push("/profile");
-      console.log("success signing in");
+      router.push('/profile');
+      console.log('success signing in');
     },
     errorCallback: () => {
-      console.log("error signing in");
+      console.log('error signing in');
     },
   });
 
@@ -70,7 +65,7 @@ export default function Home(props: Props) {
           <>
             <p className="text-left font-bold text-4xl pt-12">Welcome back</p>
             <p className="text-left text-base pt-1">@{props?.username}</p>
-            <Link href={"/profile"}>
+            <Link href={'/profile'}>
               <Button
                 text="Continue"
                 bg="bg_yellow"
@@ -90,48 +85,8 @@ export default function Home(props: Props) {
           </div>
         ))}
       </div>
-      <div className="mx-4 bg-[url('/images/hero1.svg')] bg-auto bg-no-repeat bg-center h-96" />
-      <div className="px-4">
-      <h3 className="text-sm text-center opacity-50 pt-8 pb-2">FEATURES</h3>
-      <p className="text-center text-[32px]">Why Anonn?</p>
-      <Features
-        icon={<MessageIcon />}
-        title="Chat-like Interface"
-        desc="We have an easy to understand application flow for you to use for transactions"
-      />
-         <Features
-        icon={<EncryptedMsgIcon />}
-        title="Encrypted messages"
-        desc="We have an easy to understand application flow for you to use for transactions"
-      />
-        <Features
-        icon={<AnnonMsgIcon />}
-        title="Create anonymous polls"
-        desc="We have an easy to understand application flow for you to use for transactions"
-      />
-      </div>
-      <div className="flex items-center flex-col bg-white rounded-xl pt-10 mx-4">
-        <IphoneIcon />
-        <h3 className="text-black text-2xl text-center mt-4 font-bold">
-          Random usernames are generated for you
-        </h3>
-        <p className="text-black text-base flex items-center justify-between mt-4">
-          <MarkedIcon/> Get up to 1.95% annual interest daily
-        </p>
-        <p className="text-black text-base flex items-center mx-2">
-          <MarkedIcon/> Withdraw instantly, any time
-        </p>
-          <Link href={"/profile"}>
-              <Button
-                text="Get started"
-                bg="bg_white"
-                onClick={() => null}
-                icon={<ArrowRight />}
-                className="mt-12 mb-4 flex justify-center items-center p-3 w-[280px] rounded-lg"
-              />
-            </Link>
-      </div>
-        <Remarks />
+      <Why />
+      <Remarks />
       <Footer />
     </>
   );
@@ -145,7 +100,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       isloggedIn: !!token,
-      username: currentUserUsername || "",
+      username: currentUserUsername || '',
     },
   };
 }
