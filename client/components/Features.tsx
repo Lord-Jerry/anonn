@@ -1,5 +1,3 @@
-import MessageIcon from 'icon/MessageIcon'
-import Link from 'next/link'
 import React from 'react'
 
 
@@ -11,10 +9,11 @@ export type Props = {
 export default function Features(props: Props) {
   return (
     <div className='text-center mx-auto my-12'>
-      <p className='flex justify-center items-center text-xl'>
-        {props.icon} {props.title}
-      </p>
-      <p className='text-sm mx-auto max-w-[315px]'>
+      <div className='flex justify-center items-center text-xl text-[#FEFEE7]'>
+        <p className='mr-2'>{props.icon}</p> 
+        <p>{props.title}</p>
+      </div>
+      <p className='text-base mx-auto max-w-[315px] px-8 pt-3 leading-[25px]'>
       {props.desc}
       </p>
     </div>
