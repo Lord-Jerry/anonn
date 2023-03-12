@@ -38,7 +38,7 @@ export default function Why() {
             text="OPEN-SOURCE"
             bg="bg_yellow"
             onClick={() => null}
-            className="mb-16 flex justify-center items-center p-3 w-[355px] rounded-lg h-[57px]"
+            className="mb-16 mx-auto flex justify-center items-center p-3 w-[355px] rounded-lg h-[57px]"
           />
         </Link>
       </div>
@@ -57,7 +57,7 @@ export default function Why() {
             <p className="ml-2"> Withdraw instantly, any time </p>
           </div>
         </div>
-        <div className="text-left mx-8">
+        <div className="mx-auto w-[300px]">
           <Link href={'/profile'}>
             <Button
               text="Get started"

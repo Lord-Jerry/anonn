@@ -40,13 +40,12 @@ export default function Remarks() {
       setDotState(index + 1);
     },
   };
-  console.log(dotState);
   return (
-    <div className="mt-16">
+    <div className="mt-16 mx-auto text-center">
       <h2 className="text-2xl text-center text-[#FEFEE7] mb-8">
         “What people are saying”
       </h2>
-      <Slider ref={sliderRef} {...settings} className="pl-4">
+      <Slider ref={sliderRef} {...settings} className="pl-4 md:!max-w-[400px] md:!m-auto">
         {Array.from({ length: 3 }, (_, i) => i + 1).map((_, index) => (
           <div
             key={index}

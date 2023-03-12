@@ -12,6 +12,10 @@ body {
   font-display: auto;
 }
 
+.slick-slider {
+  margin: auto;
+  max-width: 400px;
+}
 .slick-slide {
   margin: 4px;
 }
