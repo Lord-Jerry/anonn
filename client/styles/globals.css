@@ -1,17 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
 *,
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-display: auto;
 }
 
+.slick-slider {
+  margin: auto;
+  max-width: 400px;
+}
+.slick-slide {
+  margin: 4px;
+}
+.slick-dots li button:before {
+  opacity: 1 !important;
+  color: #fff !important;
+}
+.slick-dots li.slick-active button {
+  opacity: 1 !important;
+  color: #fff !important;
+  width: 40px !important;
+}
 * {
   box-sizing: border-box;
 }
@@ -72,7 +88,7 @@ textarea::placeholder {
   animation: 8s loader ease infinite alternate, 2s loader2 linear infinite;
   stroke: url(#Gradient);
   stroke-linecap: round;
-  stroke-width: 5;
+  strokewidth: 5;
   stroke-dasharray: 94.0955352783 94.0955352783;
   stroke-dashoffset: 0;
 }
