@@ -48,11 +48,11 @@ export default function Why() {
           <h3 className="text-black text-2xl text-left mt-4 font-semibold">
             Random usernames are <br /> generated for you
           </h3>
-          <div className="text-black text-base flex items-center mx-4 mt-4 w-[300px]">
+          <div className="text-black text-base flex items-center ml-4 mt-4 w-[300px] my-2">
             <MarkedIcon />
             <p className="ml-2"> Get up to 1.95% annual interest daily </p>
           </div>
-          <div className="text-black text-base flex items-center mt-4 w-[300px]">
+          <div className="text-black text-base flex items-center ml-4 w-[300px] my-2">
             <MarkedIcon />
             <p className="ml-2"> Withdraw instantly, any time </p>
           </div>
@@ -64,7 +64,7 @@ export default function Why() {
               bg="bg_yellow"
               onClick={() => null}
               icon={<ArrowRight />}
-              className="mt-8 mb-12 flex items-center px-2 text-xs w-[130px] rounded-md h-[40px]"
+              className="font-semibold text-[14px] mt-8 mb-12 flex items-center px-2 w-[160px] rounded-md h-[50px]"
             />
           </Link>
         </div>
