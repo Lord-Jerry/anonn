@@ -5,6 +5,8 @@ import Slider, { Settings } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Quote from 'icon/Quote';
+import Image from 'next/image';
+import { myLoader } from 'utils/imageLoader';
 export default function Remarks() {
   const sliderRef = useRef<InstanceType<typeof Slider>>(null);
   const [dotState, setDotState] = useState(1);
@@ -41,11 +43,15 @@ export default function Remarks() {
     },
   };
   return (
-    <div className="mt-16 mx-auto text-center">
+    <div className="mt-16 mx-auto text-left">
       <h2 className="text-2xl text-center text-[#FEFEE7] mb-8">
         “What people are saying”
       </h2>
-      <Slider ref={sliderRef} {...settings} className="pl-4 md:!max-w-[400px] md:!m-auto">
+      <Slider
+        ref={sliderRef}
+        {...settings}
+        className="pl-4 md:!max-w-[400px] md:!m-auto"
+      >
         {Array.from({ length: 3 }, (_, i) => i + 1).map((_, index) => (
           <div
             key={index}
@@ -56,6 +62,20 @@ export default function Remarks() {
               "It’s so easy to use, the chat-like interface gives the App a
               friendly undertone. I love it"
             </h3>
+            <div className="flex my-3 items-center">
+              <Image
+                loader={myLoader}
+                src="https://res.cloudinary.com/dd1kbfk70/image/upload/v1671305667/anonn-avatars/01.png"
+                alt="Profile pic"
+                width={60}
+                height={60}
+                className="rounded-lg"
+              />
+              <div className="text-black">
+                <p className="font-bold text-[11px]">@Sillyjumper</p>
+                <p className="text-[10px] text-[#090909] opacity-70"> Annon User </p>
+              </div>
+            </div>
           </div>
         ))}
       </Slider>
