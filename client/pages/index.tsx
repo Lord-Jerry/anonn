@@ -9,6 +9,9 @@ import Link from 'next/link';
 import Head from 'next/head';
 import ArrowRight from 'icon/ArrowRight';
 import Footer from 'components/Footer';
+import StarIcon from 'icon/StarIcon';
+import Remarks from 'components/Remarks';
+import Why from 'components/Why-anonn';
 
 type GetServerSidePropsReturnType = Awaited<
   ReturnType<typeof getServerSideProps>
@@ -47,31 +50,43 @@ export default function Home(props: Props) {
           content="Chat as Anonn. Nobody would know. Share polls and vote anonymously. Share with mask on. Censored"
         />
       </Head>
-      <Hero hideText={props.isloggedIn} />
+      <div className='min-[600px]:w-[400px] mx-auto pt-4"'>
+        <Hero hideText={props.isloggedIn} />
+      </div>
       {!props.isloggedIn && (
         <div
-          className="flex justify-center py-6 px-[80px]"
+          className="flex justify-center py-6 pr-[80px] pl-12"
           ref={googleBtnRef}
         />
       )}
 
       {props.isloggedIn && (
-        <div className="min-[600px]:w-[400px] mx-auto pt-4">
+        <div className="min-[600px]:w-[400px] mx-auto pl-8 pt-4">
           <>
-            <p className="text-center font-bold text-4xl">Welcome back</p>
-            <p className="text-center text-base pt-2">@{props?.username}</p>
+            <p className="text-left font-bold text-4xl pt-12">Welcome back</p>
+            <p className="text-left text-base pt-1">@{props?.username}</p>
             <Link href={'/profile'}>
               <Button
                 text="Continue"
                 bg="bg_yellow"
                 onClick={() => null}
                 icon={<ArrowRight />}
-                className="mt-12 flex justify-center items-center px-8 min-[600px]:w-[400px] p-4 w-[350px] mx-auto rounded-lg"
+                className="mt-12 mb-4 flex justify-center items-center p-3 w-[280px] rounded-lg"
               />
             </Link>
           </>
         </div>
       )}
+      <div className="mb-4 flex justify-left items-center min-[600px]:w-[400px] mx-auto pl-8 pt-4">
+        <p className="text-base">4.9/5.0</p>
+        {Array.from({ length: 5 }, (v, i) => (
+          <div className="mx-1">
+            <StarIcon />
+          </div>
+        ))}
+      </div>
+      <Why />
+      <Remarks />
       <Footer />
     </>
   );
