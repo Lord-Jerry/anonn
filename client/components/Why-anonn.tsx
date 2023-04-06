@@ -48,14 +48,14 @@ export default function Why() {
           <h3 className="text-black text-2xl text-left mt-4 font-semibold">
             Random usernames are <br /> generated for you
           </h3>
-          <div className="text-black text-base flex items-center ml-4 mt-4 w-[300px] my-2">
+          {/* <div className="text-black text-base flex items-center ml-4 mt-4 w-[300px] my-2">
             <MarkedIcon />
             <p className="ml-2"> Get up to 1.95% annual interest daily </p>
           </div>
           <div className="text-black text-base flex items-center ml-4 w-[300px] my-2">
             <MarkedIcon />
             <p className="ml-2"> Withdraw instantly, any time </p>
-          </div>
+          </div> */}
         </div>
         <div className="mx-auto w-[300px]">
           <Link href={'/profile'}>
