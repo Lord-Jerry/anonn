@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "docker-compose up -d db && npx prisma migrate dev && nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "rome check ./src --review",
     "lint:fix": "rome format ./src",
     "test": "jest",
