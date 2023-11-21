@@ -1,28 +1,19 @@
 import {View, Image, StyleSheet} from 'react-native';
 
-import { formatMessageTimestamp } from '@utils/time'
 import Text from '@components/text';
-import colors from '@constant/colors';
+import colors from '../constant/colors';
 
 type Props = {
-  title: string;
   avatar: string;
   msgCount: number;
   hasUnreadMsg?: boolean;
-  latestMsg: string;
-  timestamp: Date;
 };
 
-const NewMessageIndicator = (props: {count: number}) => (
+const NewMessageIndicator = (props: { count: number}) => (
   <View style={styles.newMsgIndicator}>
     <Text style={styles.newMessageIndicatorTxt}>{String(props.count)}</Text>
   </View>
 );
-
-const shortenMsg = (msg: string = '') => {
-  if (msg.length < 40) return msg;
-  return `${msg.slice(0, 40)}....`;
-};
 
 const Conversation = (props: Props) => {
   return (
@@ -35,8 +26,8 @@ const Conversation = (props: Props) => {
       />
       <View style={[styles.wrapper, styles.chatInfo]}>
         <View style={styles.chatWrapper}>
-          <Text style={styles.username}>{props.title}</Text>
-          <Text style={styles.msg}>{shortenMsg(props.latestMsg)}</Text>
+          <Text style={styles.username}>@agbamecho</Text>
+          <Text style={styles.msg}>hey fish head, I hate you...</Text>
         </View>
         <View style={styles.timestampWrapper}>
           <Text
@@ -44,7 +35,7 @@ const Conversation = (props: Props) => {
               styles.timestamp,
               props.hasUnreadMsg && styles.timestampNewMessageIndicator,
             ]}>
-            {formatMessageTimestamp(props.timestamp)}
+            7:45pm
           </Text>
           {props.hasUnreadMsg && <NewMessageIndicator count={props.msgCount} />}
         </View>
@@ -109,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.anonn_dark_green,
     marginTop: 10,
 
-    marginLeft: 5,
+    marginLeft: 10,
   },
   newMessageIndicatorTxt: {
     fontSize: 12,

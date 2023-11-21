@@ -2,13 +2,10 @@
   "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
     "strict": true,
-    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "@src/*": ["./src*"],
-      "@db/*": ["./src/db/*"],
-      "@interfaces/*": ["./src/interfaces/*"],
       "@components/*": ["./src/components/*"],
       "@screens/*": ["./src/screens/*"],
       "@navigation/*": ["./src/navigation/*"],

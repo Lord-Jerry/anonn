@@ -8,11 +8,10 @@ import {
 } from 'react-native';
 
 import colors from '@constant/colors';
-import useFetchMessages from '@hooks/useFetchMessages';
 
 type props = {
   children: JSX.Element;
-  showLogo?: boolean;
+  showLogo?: Boolean;
   imageStyle?: {
     width: number;
     height: number;
@@ -23,7 +22,6 @@ type props = {
 };
 
 const Layout = ({children, showLogo, imageStyle}: props) => {
-  useFetchMessages();
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
