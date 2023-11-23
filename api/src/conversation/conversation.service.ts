@@ -218,6 +218,7 @@ export class ConversationService {
         hasNewMessage: true,
         conversation_username: true,
         status: true,
+        updatedAt: true,
         conversations: {
           select: {
             id: true,
@@ -279,7 +280,7 @@ export class ConversationService {
       })),
       conversationId: conversation.conversations.pId,
       conversationUsername: conversation.conversation_username,
-      updatedAt: conversation.conversations.updatedAt,
+      updatedAt: conversation.updatedAt,
       lastMessageIsMine:
         conversation.conversations.messages[0]?.senderId === user.id,
       title: conversation.conversations.isGroup
