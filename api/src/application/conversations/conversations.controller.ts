@@ -1,6 +1,7 @@
 import {
   Put,
   Body,
+  Query,
   Request,
   HttpCode,
   Controller,
@@ -27,7 +28,7 @@ export class ConversationsController {
 
   @Get('/')
   @HttpCode(HttpStatus.OK)
-  async getAll(@Request() req: IRequestUser, @Body() dto: FetchConversationQueryParamDto) {
+  async getAll(@Request() req: IRequestUser, @Query() dto: FetchConversationQueryParamDto) {
     return this._fetchUserConversationsService.fetchUserConversations({ ...dto, userPublicId: req.user.userId });
   }
 
