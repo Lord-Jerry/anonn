@@ -1,17 +1,14 @@
 import BaseService from './base';
 import {storeData, StoreKeys} from './asynstorage';
 
-import AVATARS from '@constant/avatars';
+import AVATARS from 'constant/avatars';
 
 export default class UserService extends BaseService {
   async checkUsernameAvailability(username: string) {
     try {
-      const {data} = await this.api.get<boolean>(
-        '/user/check-username-availability',
-        {
-          params: {username},
-        },
-      );
+      const {data} = await this.api.get<boolean>('/user/check-username-availability', {
+        params: {username},
+      });
 
       return data;
     } catch (error) {

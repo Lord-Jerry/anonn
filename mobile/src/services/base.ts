@@ -1,9 +1,9 @@
 import {Axios} from 'axios';
 
 import ApiService from './api';
-import {storeData, retrieveData, StoreKeys} from './asynstorage';
+import {retrieveData, StoreKeys} from './asynstorage';
 
-export default class baseService {
+export default class BaseService {
   public api: Axios;
 
   constructor() {
@@ -12,8 +12,7 @@ export default class baseService {
   }
 
   async init() {
-    const token = await retrieveData(StoreKeys.token) || undefined;
+    const token = (await retrieveData(StoreKeys.token)) ?? undefined;
     this.api = ApiService(token);
   }
-  
 }
