@@ -1,13 +1,14 @@
-import {uniqBy} from 'lodash';
+import {get, uniqBy} from 'lodash';
 import {useEffect} from 'react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import ConversationService from 'services/conversation';
+import {getConversationsQueryKey} from '../constant/querykeys';
 
 export default function useFetchConversations() {
   const queryClient = useQueryClient();
   const conversationService = new ConversationService();
 
-  const queryKey = ['conversations-active'];
+  const queryKey = getConversationsQueryKey();
 
   const {data: conversations} = useQuery({
     queryKey,
@@ -33,10 +34,10 @@ export default function useFetchConversations() {
 
     newConversations.forEach(async conversation => {
       console.log('refetching', conversation.conversationId);
-      await queryClient.invalidateQueries({
-        queryKey: ['messages-active', conversation.conversationId],
-        type: 'all',
-      });
+      // await queryClient.invalidateQueries({
+      //   queryKey: ['messages-active', conversation.conversationId],
+      //   type: 'all',
+      // });
     });
   }
 

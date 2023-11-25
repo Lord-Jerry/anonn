@@ -6,4 +6,5 @@ export type IMessage = {
   isMine: boolean;
   username: string;
   isNewMessage: boolean;
+  isPending?: boolean;
 };

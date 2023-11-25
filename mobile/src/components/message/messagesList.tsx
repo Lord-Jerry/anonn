@@ -1,17 +1,23 @@
-import React from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
+import {SectionList, StyleSheet, Text, View} from 'react-native';
 import MessageBubble from '../MessageBubble';
 import {IMessage} from 'src//types/message';
+import {groupMessagesByDate} from 'utils/message';
+import {getMessagesLastReadAtQueryKey} from 'src//constant/querykeys';
 
 type Props = {
   messages: IMessage[];
+  conversationId: string;
   recipientAvatar: string;
   handleScrollFetch: () => void;
 };
 
 const MessagesList = (props: Props) => {
+  const queryClient = useQueryClient();
+  const lastReadAt = queryClient.getQueryData<Date>(getMessagesLastReadAtQueryKey(props.conversationId));
   return (
-    <FlatList
+    <SectionList
       inverted
       renderItem={({item}) => (
         <MessageBubble
@@ -19,17 +25,23 @@ const MessagesList = (props: Props) => {
           incoming={!item.isMine}
           timestamp={item.createdAt}
           avatarUri={props.recipientAvatar}
+          isPending={item.isPending}
         />
       )}
+      renderSectionFooter={({section: {title}}) => (
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{title}</Text>
+        </View>
+      )}
       windowSize={21}
-      data={props.messages}
+      sections={groupMessagesByDate(props.messages, lastReadAt)}
       initialNumToRender={10}
       maxToRenderPerBatch={5}
       onEndReachedThreshold={0.5}
       keyExtractor={item => item.id}
       keyboardDismissMode="interactive"
       onEndReached={props.handleScrollFetch}
-      contentContainerStyle={styles.listContainer}
+      // contentContainerStyle={styles.listContainer}
     />
   );
 };
@@ -37,6 +49,18 @@ const MessagesList = (props: Props) => {
 const styles = StyleSheet.create({
   listContainer: {
     padding: 10,
+  },
+  sectionHeader: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  sectionTitle: {
+    color: 'grey',
+  },
+  messageBubbleContainer: {
+    flexDirection: 'column',
   },
 });
 
