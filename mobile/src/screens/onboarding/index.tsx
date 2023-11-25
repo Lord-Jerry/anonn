@@ -11,19 +11,17 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import Layout from '@components/layout';
-import Button from '@components/buttons';
+import Layout from 'components/layout';
+import Button from 'components/buttons';
 
-import colors from '@constant/colors';
+import colors from 'constant/colors';
 
-import slides from '@constant/onboarding';
-import screens from '@constant/screens';
+import slides from 'constant/onboarding';
+import screens from 'constant/screens';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
-const Slide = (
-  props: (typeof slides)[number] & {currentSlideIndex: number},
-) => {
+const Slide = (props: (typeof slides)[number] & {currentSlideIndex: number}) => {
   const navigation = useNavigation();
 
   return (
@@ -49,13 +47,7 @@ const Slide = (
           marginTop: 10,
         }}>
         {slides.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicator,
-              props.currentSlideIndex == index && styles.activeIndicator,
-            ]}
-          />
+          <View key={index} style={[styles.indicator, props.currentSlideIndex == index && styles.activeIndicator]} />
         ))}
       </View>
 
@@ -63,15 +55,15 @@ const Slide = (
         <Button
           textColor="primary_dark"
           backgroundColor="anonn_green"
-          title="Sign up"
-          onPress={() => navigation.navigate(screens.Signup as never)}
+          title="Get started"
+          onPress={() => navigation.navigate(screens.Login as never)}
         />
-        <Button
+        {/* <Button
           textColor="white"
           backgroundColor="primary_dark"
           title="Log in"
           onPress={() => navigation.navigate(screens.Login as never)}
-        />
+        /> */}
       </View>
     </View>
   );
@@ -79,9 +71,7 @@ const Slide = (
 
 const Onboarding = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
-  const updateCurrentSlideIndex = (
-    e: NativeSyntheticEvent<NativeScrollEvent>,
-  ) => {
+  const updateCurrentSlideIndex = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(contentOffsetX / width);
     setCurrentSlideIndex(currentIndex);
@@ -95,9 +85,7 @@ const Onboarding = () => {
         // contentContainerStyle={{height: height * 0.75}}
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={updateCurrentSlideIndex}
-        renderItem={({item}) => (
-          <Slide currentSlideIndex={currentSlideIndex} {...item} />
-        )}
+        renderItem={({item}) => <Slide currentSlideIndex={currentSlideIndex} {...item} />}
       />
     </Layout>
   );

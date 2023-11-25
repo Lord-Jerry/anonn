@@ -1,13 +1,8 @@
 import * as React from 'react';
 
-import {
-  SafeAreaView,
-  StyleSheet,
-  StatusBar,
-  Image,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, StatusBar, Image} from 'react-native';
 
-import colors from '@constant/colors';
+import colors from 'constant/colors';
 
 type props = {
   children: JSX.Element;
@@ -24,16 +19,8 @@ type props = {
 const Layout = ({children, showLogo, imageStyle}: props) => {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={colors.primary_dark}
-      />
-      {showLogo && (
-        <Image
-          style={imageStyle || styles.logoStyle}
-          source={require('@assets/logo/logo.png')}
-        />
-      )}
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary_dark} />
+      {showLogo && <Image style={imageStyle || styles.logoStyle} source={require('@assets/logo/logo.png')} />}
       {children}
     </SafeAreaView>
   );

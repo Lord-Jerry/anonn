@@ -1,20 +1,18 @@
+import React from 'react';
 import {Image, Pressable, StyleSheet} from 'react-native/';
 
-import Text from '@components/text';
-import colors from '@constant/colors';
+import Text from 'components/text';
+import colors from 'constant/colors';
 
 type props = {
   onPress?: () => void;
   disabled?: boolean;
-}
+};
 
 const AppleBtn = (props: props) => {
   return (
     <Pressable disabled={props.disabled} style={styles.button} onPress={props.onPress}>
-      <Image
-        style={styles.icon}
-        source={require('@assets/logo/apple.png')}
-      />
+      <Image style={styles.icon} source={require('@assets/logo/apple.png')} />
       <Text style={styles.text}>Continue with Apple</Text>
     </Pressable>
   );

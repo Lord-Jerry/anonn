@@ -1,8 +1,7 @@
 import React from 'react';
-
 import {Text, Pressable, StyleSheet} from 'react-native';
 
-import colors from '@constant/colors';
+import colors from 'constant/colors';
 
 type props = {
   title: string;
@@ -23,7 +22,7 @@ const Btn = (props: props) => {
         {
           backgroundColor: colors[props.backgroundColor],
         },
-        props.borderColor && { borderColor: colors[props.borderColor], borderWidth: 1 },
+        props.borderColor && {borderColor: colors[props.borderColor], borderWidth: 1},
       ]}
       disabled={props.disabled}
       onPress={props.onPress}>
@@ -32,8 +31,8 @@ const Btn = (props: props) => {
         style={[
           styles.text,
           {color: colors[props.textColor]},
-          props.iconLeft && { marginLeft: 10 },
-          props.iconRight && { marginRight: 10 },
+          props.iconLeft && {marginLeft: 10},
+          props.iconRight && {marginRight: 10},
         ]}>
         {props.title}
       </Text>

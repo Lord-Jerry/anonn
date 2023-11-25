@@ -1,5 +1,5 @@
 import BaseService from './base';
-import AVATARS from '@constant/avatars';
+import AVATARS from 'constant/avatars';
 
 import {storeData, StoreKeys} from './asynstorage';
 

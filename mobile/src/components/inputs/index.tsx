@@ -1,26 +1,12 @@
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TextInputProps,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons/';
-import colors from '@constant/colors';
+import React from 'react';
+import {View, TextInput, StyleSheet, TextInputProps, ViewStyle, StyleProp} from 'react-native';
+import colors from 'constant/colors';
 
-const Input = (
-  props: TextInputProps & {wrapperStyle?: StyleProp<ViewStyle>; iconLeft?: JSX.Element},
-) => {
+const Input = (props: TextInputProps & {wrapperStyle?: StyleProp<ViewStyle>; iconLeft?: JSX.Element}) => {
   return (
     <View style={[styles.inputWrapper, props.wrapperStyle]}>
       {props.iconLeft}
-      <TextInput
-        {...props}
-        style={[styles.input, props.style]}
-        placeholderTextColor={colors.white}
-      />
+      <TextInput {...props} style={[styles.input, props.style]} placeholderTextColor={colors.white} />
     </View>
   );
 };

@@ -6,16 +6,16 @@ import {useNavigation} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRight} from '@fortawesome/free-solid-svg-icons/';
 
-import Layout from '@components/layout';
-import Text from '@components/text';
-import Input from '@components/inputs';
-import Button from '@components/buttons';
+import Layout from 'components/layout';
+import Text from 'components/text';
+import Input from 'components/inputs';
+import Button from 'components/buttons';
 
-import colors from '@constant/colors';
-import screens from '@constant/screens';
+import colors from 'constant/colors';
+import screens from 'constant/screens';
 
-import useHandleKeyboard from '@hooks/useHandlekeyboard';
-import UserService from '@services/user';
+import useHandleKeyboard from 'hooks/useHandlekeyboard';
+import UserService from 'services/user';
 
 const {width, height} = Dimensions.get('window');
 
@@ -55,13 +55,12 @@ const SetProfileUsername = () => {
 
   useEffect(() => {
     const trimmedUsername = username.trim();
-    if (trimmedUsername.length < 3 || !checkUsernameValid(trimmedUsername))
+    if (trimmedUsername.length < 3 || !checkUsernameValid(trimmedUsername)) {
       return;
+    }
 
     const handler = setTimeout(async () => {
-      const isUsernameValid = await userService.checkUsernameAvailability(
-        trimmedUsername,
-      );
+      const isUsernameValid = await userService.checkUsernameAvailability(trimmedUsername);
       setUsernameValid(isUsernameValid);
       !isUsernameValid && setError('Sorry, that username is already taken');
     }, 500);
@@ -84,7 +83,9 @@ const SetProfileUsername = () => {
   };
 
   const handleSubmit = async () => {
-    if (!usernameValid) return;
+    if (!usernameValid) {
+      return;
+    }
     setLoading(true);
 
     const data = await userService.setUsername(username);
@@ -103,9 +104,7 @@ const SetProfileUsername = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.description}>
-              Quick one, please type in a username
-            </Text>
+            <Text style={styles.description}>Quick one, please type in a username</Text>
 
             <Input
               autoComplete="off"
@@ -116,13 +115,9 @@ const SetProfileUsername = () => {
             />
             {!username && <UserNameInstructions />}
             {usernameValid !== undefined && usernameValid && (
-              <Text style={styles.successMessage}>
-                cool username, good to go!
-              </Text>
+              <Text style={styles.successMessage}>cool username, good to go!</Text>
             )}
-            {error && usernameValid !== undefined && !usernameValid && (
-              <Text style={styles.errorMessage}>{error}</Text>
-            )}
+            {error && usernameValid !== undefined && !usernameValid && <Text style={styles.errorMessage}>{error}</Text>}
           </View>
         </View>
 

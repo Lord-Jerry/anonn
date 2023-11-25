@@ -1,40 +1,30 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  Image,
-  Pressable,
-  FlatList,
-  ScrollView,
-} from 'react-native';
+import {View, Dimensions, StyleSheet, Image, Pressable, FlatList, ScrollView} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRight} from '@fortawesome/free-solid-svg-icons/';
 
-import Layout from '@components/layout';
-import Text from '@components/text';
-import Button from '@components/buttons';
+import Layout from 'components/layout';
+import Text from 'components/text';
+import Button from 'components/buttons';
 
-import colors from '@constant/colors';
-import avatars from '@constant/avatars';
-import screens from '@constant/screens';
+import colors from 'constant/colors';
+import avatars from 'constant/avatars';
+import screens from 'constant/screens';
 
-import UserService from '@services/user';
+import UserService from 'services/user';
 
 const {width, height} = Dimensions.get('window');
 
 const SetProfileAvatar = () => {
   const avatarKeys = Object.keys(avatars) as Array<keyof typeof avatars>;
-  const randomAvatar =
-    avatarKeys[Math.floor(Math.random() * avatarKeys.length)];
+  const randomAvatar = avatarKeys[Math.floor(Math.random() * avatarKeys.length)];
 
   const [loading, setLoading] = useState(false);
   const [showAvatarOptions, setShowAvatarOptions] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] =
-    useState<keyof typeof avatars>(randomAvatar);
+  const [selectedAvatar, setSelectedAvatar] = useState<keyof typeof avatars>(randomAvatar);
 
   const userService = new UserService();
   const navigation = useNavigation();
@@ -53,21 +43,14 @@ const SetProfileAvatar = () => {
       <React.Fragment>
         <View style={styles.container}>
           <Text style={styles.title}>Set Anonn Profile</Text>
-          <Text style={styles.subTitle}>
-            Please select an avatar to continue.
-          </Text>
+          <Text style={styles.subTitle}>Please select an avatar to continue.</Text>
 
           <View style={styles.avatarContainer}>
-            <Image
-              style={styles.avatar}
-              source={{uri: avatars[selectedAvatar]}}
-            />
+            <Image style={styles.avatar} source={{uri: avatars[selectedAvatar]}} />
 
             <Text style={styles.username}>@sillyjumper</Text>
 
-            <Pressable
-              style={styles.changeAvatarBtn}
-              onPress={toogleAvatarOptions}>
+            <Pressable style={styles.changeAvatarBtn} onPress={toogleAvatarOptions}>
               <Text style={{color: '#E3E4E5'}}> change avatar</Text>
             </Pressable>
           </View>
@@ -85,10 +68,7 @@ const SetProfileAvatar = () => {
                 data={avatarKeys}
                 renderItem={({item}) => (
                   <Pressable onPress={() => setSelectedAvatar(item)}>
-                    <Image
-                      style={styles.avatarOption}
-                      source={{uri: avatars[item]}}
-                    />
+                    <Image style={styles.avatarOption} source={{uri: avatars[item]}} />
                   </Pressable>
                 )}
               />
