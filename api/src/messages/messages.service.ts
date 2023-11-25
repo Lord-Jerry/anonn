@@ -28,6 +28,12 @@ interface AllMessages {
   conversationName: string;
 }
 
+type SendMessageProps = {
+  id?: string;
+  userId: string;
+  conversationId: string;
+  content: string;
+}
 @Injectable()
 export class MessagesService {
   constructor(
@@ -38,7 +44,7 @@ export class MessagesService {
     private notificationService: NotificationService,
   ) {}
 
-  async sendMessage(userId: string, conversationId: string, content: string) {
+  async sendMessage({id, userId, conversationId, content}: SendMessageProps) {
     const conversationPermission =
       await this.conversationService.checkConversationPermissions(
         userId,
@@ -56,6 +62,7 @@ export class MessagesService {
       return Promise.all([
         this.db.messages.create({
           data: {
+            pId: id,
             conversationId: conversationPermission.conversationId,
             senderId: conversationPermission.userId,
             username: conversationPermission.conversation_username,

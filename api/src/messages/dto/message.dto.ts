@@ -1,6 +1,9 @@
 import { IsDateString, IsIn, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class SendMessageDto {
+  @IsUUID()
+  @IsOptional()
+  id: string;
   @IsNotEmpty()
   @IsString()
   content: string;
