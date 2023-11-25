@@ -35,11 +35,12 @@ export class MessagesController {
     @Param() param: ConversationIdParamDto,
     @Body() dto: SendMessageDto,
   ) {
-    const message = await this.messageService.sendMessage(
-      req.user.userId,
-      param.conversationId,
-      dto.content,
-    );
+    const message = await this.messageService.sendMessage({
+      id: dto.id,
+      content: dto.content,
+      userId: req.user.userId,
+      conversationId: param.conversationId,
+  });
 
     return new MessageEntity(message);
   }
