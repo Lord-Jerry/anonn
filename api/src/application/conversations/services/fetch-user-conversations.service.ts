@@ -28,20 +28,20 @@ export class FetchUserConversationsService {
       isOpen: userConversation.conversations.isOpen,
       hasNewMessage: userConversation.hasNewMessage,
       isGroup: userConversation.conversations.isGroup,
-      messages: userConversation.conversations.messages.map((message) => ({
-        ...message,
-        content: this._encryptionService.decryptMessage(
-          message.content,
-          userConversation.conversations.key as `${string}-${string}`,
-        ),
-      })),
       conversationId: userConversation.conversations.pId,
       conversationUsername: userConversation.conversation_username,
       updatedAt: userConversation.updatedAt,
-      lastMessageIsMine: userConversation.conversations.messages[0]?.senderId === user.id,
       title: userConversation.conversations.isGroup ? userConversation.conversations.name : userConversation.title,
       avatar: conversationParticipants.find((convo) => convo.conversationId === userConversation.conversations.id)
         ?.users.avatar,
+      lastMessage: {
+        content:  this._encryptionService.decryptMessage(
+          userConversation.conversations.messages[0]?.content,
+          userConversation.conversations.key as `${string}-${string}`,
+        ),
+        sentAt: userConversation.conversations.messages[0]?.createdAt,
+        isMine: userConversation.conversations.messages[0]?.senderId === user.id,
+      }
     }));
   }
 
