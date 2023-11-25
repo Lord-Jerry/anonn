@@ -1,5 +1,5 @@
 export interface IRequestUser {
-	user: {
-		userId: string;
-	};
+  user: {
+    userId: string;
+  };
 }

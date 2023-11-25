@@ -2,6 +2,12 @@ import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
+export interface IRequestUser {
+  user: {
+    userId: string;
+  };
+}
+
 @Injectable()
 export class AtGuard extends AuthGuard('jwt-access-token') {
   constructor(private reflector: Reflector) {
@@ -9,10 +15,7 @@ export class AtGuard extends AuthGuard('jwt-access-token') {
   }
 
   canActivate(context: ExecutionContext) {
-    const isPublic = this.reflector.getAllAndOverride('isPublic', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const isPublic = this.reflector.getAllAndOverride('isPublic', [context.getHandler(), context.getClass()]);
 
     if (isPublic) {
       return true;
