@@ -1,5 +1,5 @@
 import {
-  Body,
+  Query,
   Request,
   HttpCode,
   Controller,
@@ -28,7 +28,7 @@ export class MessagesController {
   async getAll(
     @Request() req: IRequestUser,
     @Param() param: FetchUserConversationMessagesParamDto,
-    @Body() dto: FetchUserConversationMessagesQueryParamDto,
+    @Query() dto: FetchUserConversationMessagesQueryParamDto,
   ) {
     return this._getUserConversationMessagesService.fetchUserConversationMessages({
       ...dto,
