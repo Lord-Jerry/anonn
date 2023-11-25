@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AVATARS } from 'src/infrastructure/constants';
 import { User_conversation_status } from '@prisma/client';
 import { DatabaseService } from 'src/infrastructure/database/database.service';
 import { EncryptionService } from 'src/infrastructure/services/encryption.service';
@@ -25,23 +26,26 @@ export class FetchUserConversationsService {
     const conversationParticipants = await this._getConversationParticipants(user.id, conversationPrivateIds);
     return userConversations.map((userConversation) => ({
       status: userConversation.status,
+      updatedAt: userConversation.updatedAt,
       isOpen: userConversation.conversations.isOpen,
       hasNewMessage: userConversation.hasNewMessage,
       isGroup: userConversation.conversations.isGroup,
       conversationId: userConversation.conversations.pId,
       conversationUsername: userConversation.conversation_username,
-      updatedAt: userConversation.updatedAt,
       title: userConversation.conversations.isGroup ? userConversation.conversations.name : userConversation.title,
-      avatar: conversationParticipants.find((convo) => convo.conversationId === userConversation.conversations.id)
-        ?.users.avatar,
+      avatar:
+        AVATARS[
+          conversationParticipants.find((convo) => convo.conversationId === userConversation.conversations.id)?.users
+            .avatar
+        ],
       lastMessage: {
-        content:  this._encryptionService.decryptMessage(
+        content: this._encryptionService.decryptMessage(
           userConversation.conversations.messages[0]?.content,
           userConversation.conversations.key as `${string}-${string}`,
         ),
         sentAt: userConversation.conversations.messages[0]?.createdAt,
         isMine: userConversation.conversations.messages[0]?.senderId === user.id,
-      }
+      },
     }));
   }
 
