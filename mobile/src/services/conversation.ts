@@ -4,6 +4,7 @@ import BaseService from './base';
 export type messageData = {
   id: string;
   content: string;
+  conversationId: string;
 };
 
 export type ConversationType = {
@@ -55,10 +56,11 @@ export default class ConversationService extends BaseService {
     }
   }
 
-  async sendMessage({id, content}: messageData) {
+  async sendMessage({id, content, conversationId}: messageData) {
     try {
-      const {data} = await this.api.post(`/messages/send/${id}`, {
-        content: content,
+      const {data} = await this.api.post(`/messages/send/${conversationId}`, {
+        id,
+        content,
       });
       return data;
     } catch (error) {

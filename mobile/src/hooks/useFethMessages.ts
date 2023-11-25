@@ -3,13 +3,14 @@ import {useEffect, useState} from 'react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import ConversationService from 'services/conversation';
 import {IMessage} from '../types/message';
+import {getMessagesQueryKey} from '../constant/querykeys';
 
 export default function useFetchMessages(conversationId: string) {
   const queryClient = useQueryClient();
   const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false);
   const conversationService = new ConversationService();
 
-  const queryKey = ['messages-active', conversationId];
+  const queryKey = getMessagesQueryKey(conversationId);
   const {data: messages, isLoading} = useQuery({
     queryKey,
     queryFn: () => conversationService.getConversationMessages(conversationId),

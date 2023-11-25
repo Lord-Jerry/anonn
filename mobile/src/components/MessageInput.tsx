@@ -10,18 +10,38 @@ type Props = {
 
 const MessageInput = (props: Props) => {
   const [value, setValue] = useState('');
+  const [inputHeight, setInputHeight] = useState(40);
+  const isButtonDisabled = value.trim().length === 0;
 
   const onSubmit = () => {
-    props.handleSubmit(value);
     setValue('');
+    setInputHeight(40);
+    props.handleSubmit(value.trim());
+  };
+
+  const handleContentSizeChange = (event: {nativeEvent: {contentSize: {height: React.SetStateAction<number>}}}) => {
+    setInputHeight(event.nativeEvent.contentSize.height);
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <TextInput style={styles.input} onChangeText={text => setValue(text)} value={value} placeholder="Type here..." />
-      <TouchableOpacity onPress={onSubmit}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TextInput
+        multiline
+        value={value}
+        placeholder="Type here..."
+        placeholderTextColor={colors.grey}
+        onChangeText={text => setValue(text)}
+        onContentSizeChange={handleContentSizeChange}
+        style={[styles.input, {height: Math.max(40, inputHeight)}]}
+      />
+      <TouchableOpacity onPress={onSubmit} disabled={isButtonDisabled}>
         <View style={styles.iconButton}>
-          <FontAwesomeIcon style={styles.icon} icon={faPaperPlane} size={22} color={colors.white} />
+          <FontAwesomeIcon
+            size={22}
+            style={styles.icon}
+            icon={faPaperPlane}
+            color={isButtonDisabled ? colors.grey : colors.white}
+          />
         </View>
       </TouchableOpacity>
     </KeyboardAvoidingView>
@@ -35,7 +55,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
+    maxHeight: 120,
     margin: 12,
     borderWidth: 1,
     padding: 10,
@@ -45,13 +65,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   iconButton: {
+    alignItems: 'center',
     marginTop: 20,
     marginRight: 20,
   },
-  icon: {
-    // backgroundColor: colors.anonn_green,
-    // padding: 30,
-  },
+  icon: {},
 });
 
 export default MessageInput;

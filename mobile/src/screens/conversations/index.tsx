@@ -24,9 +24,9 @@ const Conversations = () => {
           style={styles.container}
           onEndReachedThreshold={0.5}
           onEndReached={fetchPaginatedConversations}
-          ListHeaderComponent={<MessageRequestsHeader />}
+          // ListHeaderComponent={<MessageRequestsHeader />}
           ListFooterComponent={<View style={{height: 100}} />}
-          renderItem={({item}) => <ConversationItem {...item} />}
+          renderItem={({item, index}) => <ConversationItem {...item} index={index} />}
         />
       </>
     </Layout>
