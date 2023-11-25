@@ -55,6 +55,6 @@ export class AuthenticateService {
 
   async _generateToken(userId: string) {
     const secret = this._config.get(ENVIRONMENTAL_VARIABLES.AT_SECRET);
-    return this._jwt.signAsync({ userId }, { secret, expiresIn: Infinity });
+    return this._jwt.signAsync({ userId }, { secret, expiresIn: '10y' });
   }
 }
