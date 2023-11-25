@@ -1,16 +1,20 @@
 import { JwtModule } from '@nestjs/jwt';
 import { CacheModule, Module } from '@nestjs/common';
-import { PrismaModule } from './providers/database/database.module';
-import { AuthModule } from './auth/auth.module';
-import { ConfigMangerModule, ConfigMangerService } from './common/config';
-import { UserModule } from './user/user.module';
-import { ConversationModule } from './conversation/conversation.module';
-import { PollsModule } from './polls/polls.module';
-import { MessagesModule } from './messages/messages.module';
-import { HealthCheckController } from './health-check/health-check.controller';
-import { EncryptionModule } from './encryption/encryption.module';
-import { EncryptMessages } from './commands/encyrpt-messages';
-import { NotificationModule } from './notification/notification.module';
+import { PrismaModule } from './Legacy/providers/database/database.module';
+import { AuthModule } from './Legacy/auth/auth.module';
+import {
+  ConfigMangerModule,
+  ConfigMangerService,
+} from './Legacy/common/config';
+import { UserModule } from './Legacy/user/user.module';
+import { ConversationModule } from './Legacy/conversation/conversation.module';
+import { PollsModule } from './Legacy/polls/polls.module';
+import { MessagesModule } from './Legacy/messages/messages.module';
+import { HealthCheckController } from './Legacy/health-check/health-check.controller';
+import { EncryptionModule } from './Legacy/encryption/encryption.module';
+import { EncryptMessages } from './Legacy/commands/encyrpt-messages';
+import { NotificationModule } from './Legacy/notification/notification.module';
+import { InfrastructureModule } from 'src/infrastructure/infrastructure.modules';
 
 @Module({
   imports: [
@@ -27,6 +31,7 @@ import { NotificationModule } from './notification/notification.module';
     MessagesModule,
     EncryptionModule,
     NotificationModule,
+    InfrastructureModule,
   ],
   providers: [ConfigMangerService, EncryptMessages],
   controllers: [HealthCheckController],
