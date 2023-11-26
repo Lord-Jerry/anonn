@@ -36,7 +36,8 @@ export class MarkUserConversationAsReadService {
       },
       data: {
         hasNewMessage: false,
-        lastReadMessageId: conversationDetails.conversationPrivateId,
+        lastReadMessageId: message.id,
+        updatedAt: conversationDetails.userConversationLastUpdatedAt,
       },
     });
   }
