@@ -18,9 +18,7 @@ export class NotificationService {
     config: ConfigMangerService,
   ) {
     this.firebase = admin.initializeApp({
-      credential: admin.credential.cert(
-        config.getFirebaseConfig() as admin.ServiceAccount,
-      ),
+      credential: admin.credential.cert(config.getFirebaseConfig() as admin.ServiceAccount),
     });
   }
 
@@ -96,7 +94,7 @@ export class NotificationService {
           select: {
             userId: true,
             conversation_username: true,
-          }
+          },
         }),
         this.db.users.findFirst({
           where: {
@@ -108,31 +106,44 @@ export class NotificationService {
         }),
       ]);
 
-      const { sender, receiver } = groupBy(
-        conversationParticipants,
-        (participant) =>
-          participant.userId === senderId ? 'sender' : 'receiver',
+      const { sender, receiver } = groupBy(conversationParticipants, (participant) =>
+        participant.userId === senderId ? 'sender' : 'receiver',
       );
 
-      const notificationChannels = await this.db.notification_channels.findMany(
-        {
-          where: {
-            userId: receiver[0].userId,
-          },
-          select: {
-            token: true,
-          },
+      const notificationChannels = await this.db.notification_channels.findMany({
+        where: {
+          userId: receiver[0].userId,
         },
-      );
+        select: {
+          token: true,
+        },
+      });
 
       if (notificationChannels.length === 0) {
         return;
       }
       const payload = {
-        // notification: {
-        //   title: sender[0].conversation_username,
-        //   body: message,
-        // },
+        notification: {
+          title: sender[0].conversation_username,
+          body: message,
+        },
+        apns: {
+          payload: {
+            aps: {
+              priority: 'high',
+              'mutable-content': 1,
+              'content-available': true,
+            },
+          },
+          fcmOptions: {
+            imageUrl: AVATARS[senderAvatar.avatar],
+          },
+        },
+        android: {
+          notification: {
+            imageUrl: AVATARS[senderAvatar.avatar],
+          },
+        },
         data: {
           message,
           conversationId,
