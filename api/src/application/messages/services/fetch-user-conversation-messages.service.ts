@@ -31,6 +31,7 @@ export class GetUserConversationMessagesService {
       userConversationLastReadMessageId: conversationDetails.userConversationLastReadMessageId,
     });
     return messages.map((message) => ({
+      id: message.pId,
       isNewMessage:
         message.id > conversationDetails.userConversationLastReadMessageId &&
         message.senderId !== conversationDetails.userPrivateId,
