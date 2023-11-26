@@ -60,32 +60,34 @@ const styles = StyleSheet.create({
   layoutLogo: {
     width: 77,
     height: 22,
-    marginTop: height * 0.04,
-    marginBottom: height * 0.04,
-    marginLeft: width * 0.1,
+    marginLeft: width * 0.12,
+    marginTop: 20,
+    marginBottom: 20,
   },
   container: {
     flex: 1,
-    marginTop: height * 0.04,
-    marginLeft: width * 0.1,
-    marginRight: width * 0.1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: '700',
     color: colors.white,
+    textAlign: 'center',
   },
   description: {
     marginTop: 8,
     fontSize: 14,
     fontWeight: '500',
     color: colors.white,
+    textAlign: 'center',
   },
   buttonContainer: {
-    marginTop: 80,
+    marginTop: 30,
   },
   footer: {
-    marginTop: 50,
+    marginTop: 30,
   },
   footerText: {
     fontSize: 12,
@@ -100,7 +102,6 @@ const styles = StyleSheet.create({
   footerLink: {
     fontSize: 12,
     fontWeight: '400',
-    textAlign: 'center',
     color: colors.anonn_dark_green,
     marginTop: 5,
     marginRight: 8,

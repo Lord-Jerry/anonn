@@ -7,6 +7,7 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start:dev": "NODE_ENV=local react-native start",
+    "start:prod": "NODE_ENV=production react-native start",
     "test": "jest"
   },
   "dependencies": {
