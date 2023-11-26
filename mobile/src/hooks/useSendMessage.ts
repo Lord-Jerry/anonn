@@ -11,7 +11,7 @@ export function useSendMessage(conversationId: string) {
   const queryKey = getMessagesQueryKey(conversationId);
   const conversationService = new ConversationService();
 
-  const {mutate, isSuccess} = useMutation({
+  const {mutate} = useMutation({
     retry: 100,
     retryDelay: 1000,
     mutationFn: (message: string) => {
@@ -34,18 +34,19 @@ export function useSendMessage(conversationId: string) {
           'id',
         ),
       );
-      return conversationService.sendMessage({id: messageId, content: message, conversationId});
+      return conversationService.sendMessage({
+        id: messageId,
+        content: message,
+        conversationId,
+      });
     },
-  });
-
-  if (isSuccess) {
-    queryClient
-      .invalidateQueries({
+    onMutate: async () => {
+      await queryClient.refetchQueries({
         queryKey,
         type: 'all',
-      })
-      .then();
-  }
+      });
+    },
+  });
 
   return {sendMessage: mutate};
 }

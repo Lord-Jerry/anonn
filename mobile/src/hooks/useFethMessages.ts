@@ -1,27 +1,41 @@
-import {uniqBy} from 'lodash';
+import {set, uniqBy} from 'lodash';
 import {useEffect, useState} from 'react';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import ConversationService from 'services/conversation';
-import {IMessage} from '../types/message';
 import {getMessagesQueryKey} from '../constant/querykeys';
 
 export default function useFetchMessages(conversationId: string) {
   const queryClient = useQueryClient();
+  const [hasMoreOldMessages, setHasMoreOldMessages] = useState(true);
   const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false);
   const conversationService = new ConversationService();
 
   const queryKey = getMessagesQueryKey(conversationId);
-  const {data: messages, isLoading} = useQuery({
+  const {isLoading, data: messages} = useQuery({
     queryKey,
     queryFn: () => conversationService.getConversationMessages(conversationId),
-    refetchOnMount: false,
+    refetchOnMount: true,
     enabled: true,
   });
 
   async function fetchPaginatedMessages() {
+    if (!hasMoreOldMessages) return;
+
+    setIsFetchingOldMessages(true);
     const lastMessage = messages?.[messages.length - 1];
-    const oldMessages = await conversationService.getConversationMessages(conversationId, lastMessage?.createdAt);
-    queryClient.setQueryData(queryKey, uniqBy([...(messages ?? []), ...oldMessages], 'id'));
+    const oldMessages = await conversationService.getConversationMessages(
+      conversationId,
+      lastMessage?.createdAt,
+      'before',
+    );
+    if (oldMessages.length === 0) {
+      setHasMoreOldMessages(false);
+    }
+    queryClient.setQueryData(
+      queryKey,
+      uniqBy([...(messages ?? []), ...oldMessages], 'id'),
+    );
+    setIsFetchingOldMessages(false);
   }
 
   async function fetchNewMessagess() {
@@ -29,24 +43,25 @@ export default function useFetchMessages(conversationId: string) {
     const newMessages = await conversationService.getConversationMessages(
       conversationId,
       mostRecentMessage?.updatedAt,
-      'latest',
+      'after',
     );
-    queryClient.setQueryData(queryKey, uniqBy([...newMessages, ...(messages ?? [])], 'id'));
+    queryClient.setQueryData(
+      queryKey,
+      uniqBy([...newMessages, ...(messages ?? [])], 'id'),
+    );
   }
-
-  // useEffect(() => {
-  //   setImmediate(() => {
-  //     fetchNewMessagess().then();
-  //   });
-  // }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsFetchingOldMessages(true);
-      fetchNewMessagess().finally(() => setIsFetchingOldMessages(false));
+      fetchNewMessagess().then();
     }, 5000);
     return () => clearInterval(interval);
   }, [messages]);
 
-  return {messages, fetchPaginatedMessages, isFetchingOldMessages};
+  return {
+    messages,
+    isLoading,
+    isFetchingOldMessages,
+    fetchPaginatedMessages,
+  };
 }
