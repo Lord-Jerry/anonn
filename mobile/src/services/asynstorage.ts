@@ -4,6 +4,7 @@ export const StoreKeys = {
   token: '@token',
   username: '@username',
   avatar: '@avatar',
+  notificationId: '@notificationId',
 } as const;
 
 type StoreKeysType = typeof StoreKeys;

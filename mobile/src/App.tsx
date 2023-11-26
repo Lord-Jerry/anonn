@@ -6,6 +6,7 @@ import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
 
 import Navigation from './navigation';
+import useNotification from 'hooks/useNotification';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,8 +21,11 @@ const asyncStoragePersister = createAsyncStoragePersister({
 });
 
 function App(): JSX.Element {
+  useNotification();
   return (
-    <PersistQueryClientProvider client={queryClient} persistOptions={{persister: asyncStoragePersister}}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{persister: asyncStoragePersister}}>
       <View style={{flex: 1}}>
         <Navigation />
       </View>

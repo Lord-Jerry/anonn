@@ -1,9 +1,10 @@
+import {Platform} from 'react-native';
 import BaseService from './base';
 import AVATARS from 'constant/avatars';
 
 import {storeData, StoreKeys} from './asynstorage';
 
-type AuthPlatformType = 'google' | 'apple';
+type AuthProviderType = 'google' | 'apple';
 
 export type UserResponse = {
   id: string;
@@ -19,11 +20,11 @@ export default class AuthService extends BaseService {
     user.avatar && (await storeData(StoreKeys.avatar, user.avatar));
   };
 
-  async authenticate(token: string, platform: AuthPlatformType, name?: string) {
-    const {data} = await this.api.post<UserResponse>('/auth', {
+  async authenticate(token: string, provider: AuthProviderType) {
+    const {data} = await this.api.post<UserResponse>('/authenticate', {
       token,
-      platform,
-      name,
+      provider,
+      platform: Platform.OS.toUpperCase(),
     });
 
     await this.persistUser(data);

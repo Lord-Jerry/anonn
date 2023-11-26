@@ -1,4 +1,3 @@
-import {useQueryClient} from '@tanstack/react-query';
 import {useNavigation} from '@react-navigation/native';
 import {View, StyleSheet, Pressable, Image} from 'react-native';
 
@@ -7,38 +6,47 @@ import screens from 'constant/screens';
 import colors from '../constant/colors';
 import {IConversation} from '../types/conversation';
 import {formatMessageTimestamp} from '../utils/time';
-import {getConversationsQueryKey} from '../constant/querykeys';
 
 const ConversationItem = (prop: IConversation & {index: number}) => {
-  const queryClient = useQueryClient();
   const navigation = useNavigation();
-  const handleNavigation = async () => {
-    const queryKey = getConversationsQueryKey();
+  const handleNavigation = () => {
     navigation.navigate(screens.Message, prop);
-    await queryClient.invalidateQueries({
-      queryKey,
-      type: 'all',
-    });
   };
   return (
     <Pressable onPress={handleNavigation} style={styles.conversationItem}>
-      <Image source={{uri: prop.avatar}} style={[styles.avatar, prop.hasNewMessage && styles.unreadIndicatorImage]} />
+      <Image
+        source={{uri: prop.avatar}}
+        style={[
+          styles.avatar,
+          prop.hasNewMessage && styles.unreadIndicatorImage,
+        ]}
+      />
       <View style={styles.conversationDetails}>
         <View style={styles.conversationText}>
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            style={[styles.conversationName, prop.hasNewMessage && styles.unreadIndicator]}>
+            style={[
+              styles.conversationName,
+              prop.hasNewMessage && styles.unreadIndicator,
+            ]}>
             {prop.title}
           </Text>
           <Text
             ellipsizeMode="tail"
             numberOfLines={1}
-            style={[styles.lastMessage, prop.hasNewMessage && styles.unreadIndicator]}>
+            style={[
+              styles.lastMessage,
+              prop.hasNewMessage && styles.unreadIndicator,
+            ]}>
             {prop.lastMessage.content}
           </Text>
         </View>
-        <Text style={[styles.timestamp, prop.hasNewMessage && styles.unreadIndicator]}>
+        <Text
+          style={[
+            styles.timestamp,
+            prop.hasNewMessage && styles.unreadIndicator,
+          ]}>
           {formatMessageTimestamp(prop.lastMessage.sentAt)}
         </Text>
       </View>

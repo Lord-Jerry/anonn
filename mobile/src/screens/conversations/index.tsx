@@ -1,16 +1,28 @@
 import React from 'react';
-import {View, StyleSheet, Dimensions, FlatList} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 
 import Layout from 'components/layout';
 import ConversationItem from 'components/ConversationItem';
-import MessageRequestsHeader from 'components/MessageRequest';
 import useFetchConversations from 'hooks/useFetchConversations';
 import ConversationsHeader from 'components/ConversationsHeader';
+import useRequestNotificationPermission from 'src//hooks/useRequestNotificationPermission';
 
 const {width} = Dimensions.get('window');
 
 const Conversations = () => {
-  const {conversations, fetchPaginatedConversations} = useFetchConversations();
+  const {
+    isLoading,
+    conversations,
+    isFetchingOldConversations,
+    fetchPaginatedConversations,
+  } = useFetchConversations();
+  useRequestNotificationPermission();
 
   return (
     <Layout>
@@ -25,8 +37,14 @@ const Conversations = () => {
           onEndReachedThreshold={0.5}
           onEndReached={fetchPaginatedConversations}
           // ListHeaderComponent={<MessageRequestsHeader />}
-          ListFooterComponent={<View style={{height: 100}} />}
-          renderItem={({item, index}) => <ConversationItem {...item} index={index} />}
+          ListFooterComponent={
+            <View style={{height: 50}}>
+              {isFetchingOldConversations ? <ActivityIndicator /> : null}
+            </View>
+          }
+          renderItem={({item, index}) => (
+            <ConversationItem {...item} index={index} />
+          )}
         />
       </>
     </Layout>
