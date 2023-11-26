@@ -127,23 +127,6 @@ export class NotificationService {
           title: sender[0].conversation_username,
           body: message,
         },
-        apns: {
-          payload: {
-            aps: {
-              priority: 'high',
-              'mutable-content': 1,
-              'content-available': true,
-            },
-          },
-          fcmOptions: {
-            imageUrl: AVATARS[senderAvatar.avatar],
-          },
-        },
-        android: {
-          notification: {
-            imageUrl: AVATARS[senderAvatar.avatar],
-          },
-        },
         data: {
           message,
           conversationId,
