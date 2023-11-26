@@ -10,9 +10,9 @@ type props = {
   imageStyle?: {
     width: number;
     height: number;
-    marginTop: number;
-    marginBottom: number;
-    marginLeft: number;
+    marginTop?: number;
+    marginBottom?: number;
+    marginLeft?: number;
   };
 };
 
