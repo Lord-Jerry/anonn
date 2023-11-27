@@ -6,15 +6,15 @@ import {
   appleAuthAndroid,
 } from '@invertase/react-native-apple-authentication';
 
-import AuthService from '@services/auth';
-import {getAuthScreen} from '@utils/auth';
+import AuthService from 'services/auth';
+import {getAuthScreen} from 'utils/auth';
 
 import {
   APPLE_AUTH_NONCE,
   APPLE_AUTH_STATE,
   APPLE_AUTH_CLIENT_ID,
   APPLE_AUTH_REDIRECT_URI,
-} from '@config/index';
+} from 'config/index';
 
 const iosAuth = async () => {
   const authService = new AuthService();
@@ -25,14 +25,9 @@ const iosAuth = async () => {
   });
 
   await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
-  const fullName =
-    appleAuthRequestResponse.fullName?.givenName &&
-    `${appleAuthRequestResponse.fullName?.givenName} ${appleAuthRequestResponse.fullName?.familyName}`;
-
   return authService.authenticate(
     appleAuthRequestResponse.identityToken as string,
     'apple',
-    fullName || undefined,
   );
 };
 
@@ -51,11 +46,7 @@ const androidAuth = async () => {
     response?.user?.name?.firstName &&
     `${response?.user?.name?.firstName} ${response?.user?.name?.lastName}`;
 
-  return authService.authenticate(
-    response.id_token as string,
-    'apple',
-    fullname,
-  );
+  return authService.authenticate(response.id_token as string, 'apple');
 };
 
 const useAppleAuth = () => {
@@ -67,7 +58,11 @@ const useAppleAuth = () => {
     setLoading(true);
     try {
       const user = isAndroid ? await androidAuth() : await iosAuth();
-      const nextScreen = getAuthScreen(user);
+      const nextScreen = getAuthScreen({
+        token: user.token,
+        username: user.username,
+        avatar: user.avatar,
+      });
       navigation.navigate(nextScreen as never);
     } catch (error) {
       console.log({error});

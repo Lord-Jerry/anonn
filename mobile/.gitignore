@@ -67,3 +67,6 @@ yarn-error.log
 .env.dev
 .env.staging
 .env.prod
+
+android/app/google-services.json
+android/app/src/main/assets/index.android.bundle

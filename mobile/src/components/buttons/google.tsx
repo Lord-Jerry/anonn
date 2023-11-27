@@ -1,19 +1,17 @@
+import React from 'react';
 import {Image, Pressable, StyleSheet} from 'react-native/';
 
-import Text from '@components/text';
-import colors from '@constant/colors';
+import Text from 'components/text';
+import colors from 'constant/colors';
 
 type props = {
   onPress?: () => void;
   disabled?: boolean;
-}
+};
 const GoogleBtn = (props: props) => {
   return (
     <Pressable disabled={props.disabled} style={styles.button} onPress={props.onPress}>
-      <Image
-        style={styles.icon}
-        source={require('@assets/logo/google.png')}
-      />
+      <Image style={styles.icon} source={require('@assets/logo/google.png')} />
       <Text style={styles.text}>Continue with Google</Text>
     </Pressable>
   );

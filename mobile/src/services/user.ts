@@ -1,7 +1,8 @@
 import BaseService from './base';
 import {storeData, StoreKeys} from './asynstorage';
 
-import AVATARS from '@constant/avatars';
+import AVATARS from 'constant/avatars';
+import {Platform} from 'react-native';
 
 export default class UserService extends BaseService {
   async checkUsernameAvailability(username: string) {
@@ -44,5 +45,19 @@ export default class UserService extends BaseService {
       console.log(error);
       return false;
     }
+  }
+
+  async upsertUserDeviceToken(token: string, id?: string) {
+    const {data} = await this.api.post<{id: string}>(
+      '/notification/upsert-device-token',
+      {
+        id,
+        token,
+        channel: 'mobile',
+        // channel: Platform.OS.toUpperCase(),
+      },
+    );
+
+    return data.id;
   }
 }

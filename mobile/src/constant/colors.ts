@@ -8,5 +8,5 @@ export default {
   dark_yellow_green: '#1D1D1B',
   green: '#16E5AB',
   light_red: '#F18D77',
-  light_grey: '#D3D3D3'
+  light_grey: '#D3D3D3',
 };

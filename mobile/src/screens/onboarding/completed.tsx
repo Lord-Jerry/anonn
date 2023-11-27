@@ -5,15 +5,15 @@ import {useNavigation} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRight, faLink} from '@fortawesome/free-solid-svg-icons/';
 
-import Layout from '@components/layout';
-import Text from '@components/text';
-import Button from '@components/buttons';
+import Layout from 'components/layout';
+import Text from 'components/text';
+import Button from 'components/buttons';
 
-import colors from '@constant/colors';
-import avatars from '@constant/avatars';
-import screens from '@constant/screens';
+import colors from 'constant/colors';
+import avatars from 'constant/avatars';
+import screens from 'constant/screens';
 
-import {retrieveData, StoreKeys} from '@services/asynstorage';
+import {retrieveData, StoreKeys} from 'services/asynstorage';
 
 const {width, height} = Dimensions.get('window');
 
@@ -38,17 +38,14 @@ const ProfileSetupComplete = () => {
     });
   };
 
-  const continueHandler = () =>
-    navigation.navigate(screens.Conversation as never);
+  const continueHandler = () => navigation.navigate(screens.Conversation as never);
 
   return avatar && username ? (
     <Layout showLogo imageStyle={styles.layoutLogo}>
       <React.Fragment>
         <View style={styles.container}>
           <Text style={styles.title}>Share your profile link</Text>
-          <Text style={styles.subTitle}>
-            Let the conversations flow, yeah...
-          </Text>
+          <Text style={styles.subTitle}>Let the conversations flow, yeah...</Text>
 
           <View style={styles.avatarContainer}>
             <Image style={styles.avatar} source={{uri: avatars[avatar]}} />
@@ -66,13 +63,7 @@ const ProfileSetupComplete = () => {
               textColor="primary_dark"
               backgroundColor="anonn_green"
               title="Share your profile link "
-              iconRight={
-                <FontAwesomeIcon
-                  color={colors.primary_dark}
-                  size={10}
-                  icon={faLink}
-                />
-              }
+              iconRight={<FontAwesomeIcon color={colors.primary_dark} size={10} icon={faLink} />}
               onPress={handleShare}
             />
           </View>
@@ -89,13 +80,7 @@ const ProfileSetupComplete = () => {
             backgroundColor="primary_dark"
             borderColor="anonn_green"
             title="Nah, Later"
-            iconRight={
-              <FontAwesomeIcon
-                color={colors.anonn_green}
-                size={10}
-                icon={faArrowRight}
-              />
-            }
+            iconRight={<FontAwesomeIcon color={colors.anonn_green} size={10} icon={faArrowRight} />}
             onPress={continueHandler}
           />
         </View>

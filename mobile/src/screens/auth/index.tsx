@@ -1,15 +1,15 @@
 import React from 'react';
 import {View, Linking, StyleSheet, Dimensions} from 'react-native';
 
-import Layout from '@components/layout';
-import colors from '@constant/colors';
+import Layout from 'components/layout';
+import colors from 'constant/colors';
 
-import Text from '@components/text';
-import GoogleBtn from '@components/buttons/google';
-import AppleBtn from '@components/buttons/apple';
+import Text from 'components/text';
+import GoogleBtn from 'components/buttons/google';
+import AppleBtn from 'components/buttons/apple';
 
-import useGoogleAuth from '@hooks/googleAuth';
-import useAppleAuth from '@hooks/appleAuth';
+import useGoogleAuth from 'hooks/useGoogleAuth';
+import useAppleAuth from 'hooks/useAppleAuth';
 
 const {width, height} = Dimensions.get('window');
 
@@ -31,37 +31,27 @@ const Auth = () => {
 
   return (
     <Layout showLogo imageStyle={styles.layoutLogo}>
-      <React.Fragment>
-        <View style={styles.container}>
-          <Text style={styles.title}>Continue chatting</Text>
-          <Text style={styles.description}>
-            Conntinue with your Google or Apple account
-          </Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>Continue chatting</Text>
+        <Text style={styles.description}>Conntinue with your Google or Apple account</Text>
 
-          <View style={styles.buttonContainer}>
-            <GoogleBtn disabled={disableButtons} onPress={googleSignIn} />
-            <AppleBtn disabled={disableButtons} onPress={appleSignIn} />
-          </View>
+        <View style={styles.buttonContainer}>
+          <GoogleBtn disabled={disableButtons} onPress={googleSignIn} />
+          <AppleBtn disabled={disableButtons} onPress={appleSignIn} />
+        </View>
 
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              By continuing, you are agreeing to our
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>By continuing, you are agreeing to our</Text>
+          <View style={styles.footerLinkWrapper}>
+            <Text onPress={() => openServiceTerms()} style={styles.footerLink}>
+              Terms of Service,
             </Text>
-            <View style={styles.footerLinkWrapper}>
-              <Text
-                onPress={() => openServiceTerms()}
-                style={styles.footerLink}>
-                Terms of Service,
-              </Text>
-              <Text
-                onPress={() => openPrivacyAgreement()}
-                style={styles.footerLink}>
-                Privacy Policy & Cookie Policy
-              </Text>
-            </View>
+            <Text onPress={() => openPrivacyAgreement()} style={styles.footerLink}>
+              Privacy Policy & Cookie Policy
+            </Text>
           </View>
         </View>
-      </React.Fragment>
+      </View>
     </Layout>
   );
 };
@@ -70,32 +60,34 @@ const styles = StyleSheet.create({
   layoutLogo: {
     width: 77,
     height: 22,
-    marginTop: height * 0.04,
-    marginBottom: height * 0.04,
-    marginLeft: width * 0.1,
+    marginLeft: width * 0.12,
+    marginTop: 20,
+    marginBottom: 20,
   },
   container: {
     flex: 1,
-    marginTop: height * 0.04,
-    marginLeft: width * 0.1,
-    marginRight: width * 0.1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: '700',
     color: colors.white,
+    textAlign: 'center',
   },
   description: {
     marginTop: 8,
     fontSize: 14,
     fontWeight: '500',
     color: colors.white,
+    textAlign: 'center',
   },
   buttonContainer: {
-    marginTop: 80,
+    marginTop: 30,
   },
   footer: {
-    marginTop: 50,
+    marginTop: 30,
   },
   footerText: {
     fontSize: 12,
@@ -110,7 +102,6 @@ const styles = StyleSheet.create({
   footerLink: {
     fontSize: 12,
     fontWeight: '400',
-    textAlign: 'center',
     color: colors.anonn_dark_green,
     marginTop: 5,
     marginRight: 8,

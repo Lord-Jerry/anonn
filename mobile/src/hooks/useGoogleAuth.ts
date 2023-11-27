@@ -1,15 +1,9 @@
 import {useState} from 'react';
+import AuthService from 'services/auth';
+import {getAuthScreen} from 'utils/auth';
 import {useNavigation} from '@react-navigation/native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-
-import AuthService from '@services/auth';
-import {getAuthScreen } from '@utils/auth'
-
-import {
-  GOOGLE_WEB_CLIENT_ID,
-  GOOGLE_IOS_CLIENT_ID,
-  GOOGLE_ANDROID_CLIENT_ID
-} from '@config/index';
+import {GOOGLE_WEB_CLIENT_ID, GOOGLE_IOS_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID} from 'config/index';
 
 const useGoogleAuth = () => {
   const [loading, setLoading] = useState(false);
@@ -26,15 +20,12 @@ const useGoogleAuth = () => {
       });
 
       const userInfo = await GoogleSignin.signIn();
-      const data = await authService.authenticate(
-        userInfo.idToken as string,
-        'google',
-      );
+      const data = await authService.authenticate(userInfo.idToken as string, 'google');
 
       const nextScreen = getAuthScreen(data);
       navigation.navigate(nextScreen as never);
     } catch (error) {
-      console.log(error);
+      console.log(JSON.stringify({data: error}));
     } finally {
       setLoading(false);
     }
