@@ -14,19 +14,13 @@ const useRequestNotificationPermission = () => {
       let status = await messaging().requestPermission();
       const notificationId = await retrieveData(StoreKeys.notificationId);
       if (Platform.OS === 'android') {
-        // await PermissionsAndroid.request(
-        //   PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        // );
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
       }
 
       const enabled =
-        status === messaging.AuthorizationStatus.AUTHORIZED ||
-        status === messaging.AuthorizationStatus.PROVISIONAL;
+        status === messaging.AuthorizationStatus.AUTHORIZED || status === messaging.AuthorizationStatus.PROVISIONAL;
 
-      if (
-        !notificationId &&
-        ((Platform.OS === 'ios' && enabled) || Platform.OS === 'android')
-      ) {
+      if (!notificationId && ((Platform.OS === 'ios' && enabled) || Platform.OS === 'android')) {
         try {
           // This method is necessary for iOS, but not for Android.
           // For Android, FCM automatically handles token registration.
