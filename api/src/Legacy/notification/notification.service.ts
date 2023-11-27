@@ -126,6 +126,7 @@ export class NotificationService {
         notification: {
           title: sender[0].conversation_username,
           body: message,
+          sound: 'default',
         },
         data: {
           message,
