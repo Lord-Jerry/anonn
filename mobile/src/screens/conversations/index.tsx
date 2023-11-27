@@ -1,11 +1,5 @@
-import React from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, Dimensions, FlatList, ActivityIndicator, RefreshControl} from 'react-native';
 
 import Layout from 'components/layout';
 import ConversationItem from 'components/ConversationItem';
@@ -16,13 +10,18 @@ import useRequestNotificationPermission from 'src//hooks/useRequestNotificationP
 const {width} = Dimensions.get('window');
 
 const Conversations = () => {
-  const {
-    isLoading,
-    conversations,
-    isFetchingOldConversations,
-    fetchPaginatedConversations,
-  } = useFetchConversations();
+  const {isLoading, conversations, refreshConversations, isFetchingOldConversations, fetchPaginatedConversations} =
+    useFetchConversations();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   useRequestNotificationPermission();
+
+  const onRefresh = React.useCallback(() => {
+    setIsRefreshing(true);
+    refreshConversations().finally(() => {
+      setIsRefreshing(false);
+    });
+  }, [refreshConversations]);
 
   return (
     <Layout>
@@ -36,15 +35,12 @@ const Conversations = () => {
           style={styles.container}
           onEndReachedThreshold={0.5}
           onEndReached={fetchPaginatedConversations}
-          // ListHeaderComponent={<MessageRequestsHeader />}
+          ListHeaderComponent={isLoading ? <ActivityIndicator /> : null}
           ListFooterComponent={
-            <View style={{height: 50}}>
-              {isFetchingOldConversations ? <ActivityIndicator /> : null}
-            </View>
+            <View style={{height: 50}}>{isFetchingOldConversations ? <ActivityIndicator /> : null}</View>
           }
-          renderItem={({item, index}) => (
-            <ConversationItem {...item} index={index} />
-          )}
+          renderItem={({item, index}) => <ConversationItem {...item} index={index} />}
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
         />
       </>
     </Layout>

@@ -18,6 +18,11 @@ export default function useFetchMessages(conversationId: string) {
     enabled: true,
   });
 
+  async function refreshMessages() {
+    const latestMessages = await conversationService.getConversationMessages(conversationId);
+    queryClient.setQueryData(queryKey, latestMessages);
+  }
+
   async function fetchPaginatedMessages() {
     if (!hasMoreOldMessages) return;
 
@@ -31,10 +36,7 @@ export default function useFetchMessages(conversationId: string) {
     if (oldMessages.length === 0) {
       setHasMoreOldMessages(false);
     }
-    queryClient.setQueryData(
-      queryKey,
-      uniqBy([...(messages ?? []), ...oldMessages], 'id'),
-    );
+    queryClient.setQueryData(queryKey, uniqBy([...(messages ?? []), ...oldMessages], 'id'));
     setIsFetchingOldMessages(false);
   }
 
@@ -45,10 +47,7 @@ export default function useFetchMessages(conversationId: string) {
       mostRecentMessage?.updatedAt,
       'after',
     );
-    queryClient.setQueryData(
-      queryKey,
-      uniqBy([...newMessages, ...(messages ?? [])], 'id'),
-    );
+    queryClient.setQueryData(queryKey, uniqBy([...newMessages, ...(messages ?? [])], 'id'));
   }
 
   useEffect(() => {
@@ -61,6 +60,7 @@ export default function useFetchMessages(conversationId: string) {
   return {
     messages,
     isLoading,
+    refreshMessages,
     isFetchingOldMessages,
     fetchPaginatedMessages,
   };

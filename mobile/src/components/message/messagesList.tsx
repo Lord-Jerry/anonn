@@ -1,12 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
-import {
-  ActivityIndicator,
-  SectionList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, SectionList, StyleSheet, Text, View, RefreshControl} from 'react-native';
 import MessageBubble from '../MessageBubble';
 import {IMessage} from 'src//types/message';
 import {groupMessagesByDate} from 'utils/message';
@@ -19,13 +13,20 @@ type Props = {
   recipientAvatar: string;
   handleScrollFetch: () => void;
   isFetchingOldMessages: boolean;
+  refreshMessages: () => Promise<void>;
 };
 
 const MessagesList = (props: Props) => {
   const queryClient = useQueryClient();
-  const lastReadAt = queryClient.getQueryData<Date>(
-    getMessagesLastReadAtQueryKey(props.conversationId),
-  );
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const lastReadAt = queryClient.getQueryData<Date>(getMessagesLastReadAtQueryKey(props.conversationId));
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    props.refreshMessages().finally(() => {
+      setIsRefreshing(false);
+    });
+  };
   return (
     <SectionList
       inverted
@@ -44,9 +45,7 @@ const MessagesList = (props: Props) => {
         </View>
       )}
       ListHeaderComponent={props.isLoading ? <ActivityIndicator /> : null}
-      ListFooterComponent={
-        props.isFetchingOldMessages ? <ActivityIndicator /> : null
-      }
+      ListFooterComponent={props.isFetchingOldMessages ? <ActivityIndicator /> : null}
       windowSize={21}
       sections={groupMessagesByDate(props.messages, lastReadAt)}
       initialNumToRender={10}
@@ -55,6 +54,7 @@ const MessagesList = (props: Props) => {
       keyExtractor={item => item.id}
       keyboardDismissMode="interactive"
       onEndReached={props.handleScrollFetch}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
       // contentContainerStyle={styles.listContainer}
     />
   );

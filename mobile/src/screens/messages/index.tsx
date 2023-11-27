@@ -10,10 +10,7 @@ import MessageList from 'components/message/messagesList';
 import useFetchMessages from 'hooks/useFethMessages';
 import {IConversation} from 'src//types/conversation';
 import {useSendMessage} from 'hooks/useSendMessage';
-import {
-  getConversationsQueryKey,
-  getMessagesLastReadAtQueryKey,
-} from 'constant/querykeys';
+import {getConversationsQueryKey, getMessagesLastReadAtQueryKey} from 'constant/querykeys';
 import ConversationService from 'services/conversation';
 
 type Props = {
@@ -29,6 +26,7 @@ const ConversationMessages = (props: Props) => {
   const {
     isLoading,
     messages = [],
+    refreshMessages,
     isFetchingOldMessages,
     fetchPaginatedMessages,
   } = useFetchMessages(params.conversationId);
@@ -37,24 +35,14 @@ const ConversationMessages = (props: Props) => {
   const handleMarkConversationAsRead = async () => {
     const latestMessage = messages[0];
     if (!latestMessage) return;
-    const conversationLastReadAt = queryClient.getQueryData<Date>(
-      getMessagesLastReadAtQueryKey(params.conversationId),
-    );
-    if (
-      dayjs(new Date(conversationLastReadAt!)).isAfter(latestMessage.createdAt)
-    ) {
+    const conversationLastReadAt = queryClient.getQueryData<Date>(getMessagesLastReadAtQueryKey(params.conversationId));
+    if (dayjs(new Date(conversationLastReadAt!)).isAfter(latestMessage.createdAt)) {
       return;
     }
 
-    await conversationService.markConversationAsRead(
-      params.conversationId,
-      messages[0].id,
-    );
+    await conversationService.markConversationAsRead(params.conversationId, messages[0].id);
     const queryKey = getConversationsQueryKey();
-    queryClient.setQueryData(
-      getMessagesLastReadAtQueryKey(params.conversationId),
-      Date.now(),
-    );
+    queryClient.setQueryData(getMessagesLastReadAtQueryKey(params.conversationId), Date.now());
     await queryClient.invalidateQueries({
       queryKey,
       type: 'all',
@@ -68,11 +56,11 @@ const ConversationMessages = (props: Props) => {
     <Layout>
       <>
         <MessageHeader {...params} />
-        {<Spinner />}
         <MessageList
           messages={messages}
           recipientAvatar={params.avatar}
           isLoading={isLoading}
+          refreshMessages={refreshMessages}
           conversationId={params.conversationId}
           handleScrollFetch={fetchPaginatedMessages}
           isFetchingOldMessages={isFetchingOldMessages}

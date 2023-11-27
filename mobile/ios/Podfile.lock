@@ -17,6 +17,8 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.72.7)
   - Firebase (10.18.0):
     - Firebase/Core (= 10.18.0)
+  - Firebase/Analytics (10.18.0):
+    - Firebase/Core
   - Firebase/Core (10.18.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (~> 10.18.0)
@@ -564,6 +566,10 @@ PODS:
     - React-Core
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
+  - RNFBAnalytics (18.6.2):
+    - Firebase/Analytics (= 10.18.0)
+    - React-Core
+    - RNFBApp
   - RNFBApp (18.6.2):
     - Firebase/CoreOnly (= 10.18.0)
     - React-Core
@@ -637,6 +643,7 @@ DEPENDENCIES:
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
+  - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
@@ -757,6 +764,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
+  RNFBAnalytics:
+    :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
@@ -835,6 +844,7 @@ SPEC CHECKSUMS:
   RNAppleAuthentication: e99eaf3c4c01ad8ecb6125dd6f0cfd98871685b5
   RNCAsyncStorage: f2974eca860c16a3e56eea5771fda8d12e2d2057
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
+  RNFBAnalytics: b87a1be35b0aee6087a45edbc2306c3ddcc0546f
   RNFBApp: 09fd96441b0f556a1ef50ee70fa72160ae71ecb9
   RNFBMessaging: 95fa608c79d3378b1a958a64f8be82e4699368a9
   RNGoogleSignin: aac5c1ec73422109dec1da770247a1e410dcc620
