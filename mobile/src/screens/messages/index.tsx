@@ -25,7 +25,7 @@ const ConversationMessages = (props: Props) => {
   const {
     isLoading,
     messages = [],
-    refreshMessages,
+    fetchNewMessages,
     isFetchingOldMessages,
     fetchPaginatedMessages,
   } = useFetchMessages(params.conversationId);
@@ -59,7 +59,7 @@ const ConversationMessages = (props: Props) => {
           messages={messages}
           isLoading={isLoading}
           recipientAvatar={params.avatar}
-          refreshMessages={refreshMessages}
+          refreshMessages={fetchNewMessages}
           conversationId={params.conversationId}
           handleScrollFetch={fetchPaginatedMessages}
           isFetchingOldMessages={isFetchingOldMessages}
