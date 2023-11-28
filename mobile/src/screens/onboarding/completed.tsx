@@ -33,8 +33,9 @@ const ProfileSetupComplete = () => {
   }, []);
 
   const handleShare = () => {
+    const link = `https://anonn.xyz/profile/${username}`;
     Share.share({
-      message: `https://anonn.com/profile/${username} Hey, I'm on Anonn. Let's connect and chat`,
+      message: `Let's chat on Anonn! \n Share your secrets, confessions and spicy gists with me anonnymously \n No one will ever know it's you! 🤫🤫🤫 \n ${link}`,
     });
   };
 

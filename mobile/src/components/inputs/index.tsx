@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   input: {
+    flex: 1,
     color: colors.white,
     fontWeight: '400',
   },

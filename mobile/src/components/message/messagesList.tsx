@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {FlashList} from '@shopify/flash-list';
 import {useQueryClient} from '@tanstack/react-query';
 import {ActivityIndicator, SectionList, StyleSheet, Text, View, RefreshControl} from 'react-native';
 import MessageBubble from '../MessageBubble';
@@ -28,30 +29,35 @@ const MessagesList = (props: Props) => {
     });
   };
   return (
-    <SectionList
+    <FlashList
       inverted
-      renderItem={({item}) => (
-        <MessageBubble
-          content={item.content}
-          incoming={!item.isMine}
-          timestamp={item.createdAt}
-          avatarUri={props.recipientAvatar}
-          isPending={item.isPending}
-        />
-      )}
-      renderSectionFooter={({section: {title}}) => (
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{title}</Text>
-        </View>
-      )}
+      renderItem={({item}: {item: string | IMessage}) => {
+        if (typeof item === 'string') {
+          return (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{item}</Text>
+            </View>
+          );
+        } else
+          return (
+            <MessageBubble
+              key={item.id}
+              content={item.content}
+              incoming={!item.isMine}
+              timestamp={item.createdAt}
+              avatarUri={props.recipientAvatar}
+              isPending={item.isPending}
+            />
+          );
+      }}
       ListHeaderComponent={props.isLoading ? <ActivityIndicator /> : null}
       ListFooterComponent={props.isFetchingOldMessages ? <ActivityIndicator /> : null}
-      windowSize={21}
-      sections={groupMessagesByDate(props.messages, lastReadAt)}
-      initialNumToRender={10}
-      maxToRenderPerBatch={5}
+      estimatedItemSize={50}
+      data={groupMessagesByDate(props.messages, lastReadAt)}
       onEndReachedThreshold={0.5}
-      keyExtractor={item => item.id}
+      getItemType={item => {
+        return typeof item === 'string' ? 'sectionHeader' : 'message';
+      }}
       keyboardDismissMode="interactive"
       onEndReached={props.handleScrollFetch}
       refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}

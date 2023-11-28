@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import React, {useEffect} from 'react';
 import {useQueryClient} from '@tanstack/react-query';
 
-import Spinner from 'components/Spinner';
 import Layout from 'components/layout';
 import MessageInput from 'components/MessageInput';
 import MessageHeader from 'components/MessageHeader';
@@ -58,8 +57,8 @@ const ConversationMessages = (props: Props) => {
         <MessageHeader {...params} />
         <MessageList
           messages={messages}
-          recipientAvatar={params.avatar}
           isLoading={isLoading}
+          recipientAvatar={params.avatar}
           refreshMessages={refreshMessages}
           conversationId={params.conversationId}
           handleScrollFetch={fetchPaginatedMessages}

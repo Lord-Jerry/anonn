@@ -9,7 +9,7 @@ import analytics from '@react-native-firebase/analytics';
 import Navigation from './navigation';
 import useNotification from 'hooks/useNotification';
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: Infinity, // 24 hours
@@ -22,7 +22,6 @@ const asyncStoragePersister = createAsyncStoragePersister({
 });
 
 function App(): JSX.Element {
-  useNotification();
   useEffect(() => {
     analytics().logEvent('app_open', {open: true});
   }, []);

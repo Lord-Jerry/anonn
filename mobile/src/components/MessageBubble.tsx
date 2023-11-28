@@ -1,8 +1,9 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCheck, faClock} from '@fortawesome/free-solid-svg-icons/';
 import {formatMessageTimestamp} from '../utils/time';
+import useCopyToClipboard from '../hooks/useCopyToClipboard';
 
 type Props = {
   content: string;
@@ -20,18 +21,23 @@ const MessagePendingIndicator = () => (
   <FontAwesomeIcon style={styles.indicatorIcon} icon={faClock} size={14} color="grey" />
 );
 
-const MessageBubble = (props: Props) => (
-  <View style={[styles.bubbleContainer, props.incoming ? null : styles.rightBubble]}>
-    {/* can be used for group messages */}
-    {/* {props.incoming && <Image source={{uri: props.avatarUri}} style={styles.avatar} />} */}
-    <View style={[styles.bubble, props.incoming ? styles.incomingBubble : styles.outgoingBubble]}>
-      <Text style={styles.bubbleText}>{props.content}</Text>
-      <Text style={styles.timestamp}>{formatMessageTimestamp(props.timestamp)}</Text>
-      {!props.incoming && !props.isPending && <MessageSentIndicator />}
-      {!props.incoming && props.isPending && <MessagePendingIndicator />}
-    </View>
-  </View>
-);
+const MessageBubble = (props: Props) => {
+  const copyToClipboard = useCopyToClipboard();
+  return (
+    <TouchableWithoutFeedback onLongPress={() => copyToClipboard(props.content)}>
+      <View style={[styles.bubbleContainer, props.incoming ? null : styles.rightBubble]}>
+        {/* can be used for group messages */}
+        {/* {props.incoming && <Image source={{uri: props.avatarUri}} style={styles.avatar} />} */}
+        <View style={[styles.bubble, props.incoming ? styles.incomingBubble : styles.outgoingBubble]}>
+          <Text style={styles.bubbleText}>{props.content}</Text>
+          <Text style={styles.timestamp}>{formatMessageTimestamp(props.timestamp)}</Text>
+          {!props.incoming && !props.isPending && <MessageSentIndicator />}
+          {!props.incoming && props.isPending && <MessagePendingIndicator />}
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   bubbleContainer: {

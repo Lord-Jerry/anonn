@@ -1,34 +1,42 @@
 import {useEffect} from 'react';
-import messaging, {
-  FirebaseMessagingTypes,
-} from '@react-native-firebase/messaging';
-import PushNotification from 'react-native-push-notification';
 import {Platform} from 'react-native';
+import {useQueryClient} from '@tanstack/react-query';
+import PushNotification from 'react-native-push-notification';
+import {getConversationsQueryKey, getMessagesQueryKey} from '../constant/querykeys';
+import messaging, {FirebaseMessagingTypes} from '@react-native-firebase/messaging';
 
 const useNotification = () => {
+  const queryClient = useQueryClient();
+  const queryKey = getConversationsQueryKey();
+
+  const handleDataRefresh = async (conversationId: string) => {
+    const messageQuerykey = getMessagesQueryKey(conversationId);
+    await queryClient.invalidateQueries({
+      type: 'all',
+      queryKey,
+    });
+    await queryClient.invalidateQueries({
+      type: 'all',
+      queryKey: messageQuerykey,
+    });
+  };
   useEffect(() => {
-    // Create a channel (for Android 8.0 (Oreo) and above)
     createNotificationChannel();
 
     // Foreground message handler
     const unsubscribeForeground = messaging().onMessage(async remoteMessage => {
-      console.log(
-        'A new FCM message arrived (Foreground)!',
-        JSON.stringify(remoteMessage),
-        Platform.OS,
-      );
+      // console.log('foregorund');
+      // @ts-expect-error
+      await handleDataRefresh(remoteMessage.data.conversationId);
       showLocalNotification(remoteMessage);
     });
 
     // Background message handler
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log(
-        'A new FCM message arrived (Background)!',
-        JSON.stringify(remoteMessage),
-        Platform.OS,
-      );
+      // console.log('backgroiuns');
+      // @ts-expect-error
+      await handleDataRefresh(remoteMessage.data.conversationId);
     });
-
     return unsubscribeForeground;
   }, []);
 };
@@ -39,27 +47,24 @@ const createNotificationChannel = () => {
       {
         channelId: 'default-channel-id',
         channelName: 'Default Channel',
-        channelDescription: 'A default channel for notifications', // replace with your channel description
-        soundName: 'default', // optional, see `soundName` parameter of `localNotification` function
-        importance: 4, // optional, see `importance` parameter of `createChannel` function
-        vibrate: true, // optional, see `vibrate` parameter of `createChannel` function
+        channelDescription: 'A default channel for notifications',
+        soundName: 'default',
+        importance: 4,
+        vibrate: true,
+        playSound: true,
       },
-      created =>
-        console.log(`createChannel 'default-channel-id' returned '${created}'`), // optional callback returns whether the channel was created successfully
+      created => console.log(`createChannel 'default-channel-id' returned '${created}'`),
     );
   }
 };
 
-const showLocalNotification = (
-  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
-) => {
+const showLocalNotification = (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
   const {notification} = remoteMessage;
   if (notification) {
     PushNotification.localNotification({
-      channelId: 'default-channel-id', // match the channel id you set in createNotificationChannel
+      channelId: 'default-channel-id',
       title: notification.title,
       message: notification.body || '',
-      // Other properties can be added here as needed
     });
   }
 };

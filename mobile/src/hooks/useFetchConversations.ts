@@ -1,28 +1,29 @@
 import {uniqBy} from 'lodash';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ConversationService from 'services/conversation';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {getConversationsQueryKey} from '../constant/querykeys';
 
 export default function useFetchConversations() {
   const queryClient = useQueryClient();
+  const conversationService = new ConversationService();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasMoreOldConversations, setHasMoreOldConversations] = useState(true);
   const [isFetchingOldConversations, setIsFetchingOldConversations] = useState(false);
-  const conversationService = new ConversationService();
 
   const queryKey = getConversationsQueryKey();
-
   const {isLoading, data: conversations} = useQuery({
     queryKey,
-    refetchOnMount: false,
     staleTime: Infinity,
     queryFn: () => conversationService.getAllConversations(),
   });
 
-  async function refreshConversations() {
-    const latestConversations = await conversationService.getAllConversations();
-    queryClient.setQueryData(queryKey, latestConversations);
-  }
+  const onRefresh = React.useCallback(() => {
+    setIsRefreshing(true);
+    fetchNewConversations().finally(() => {
+      setIsRefreshing(false);
+    });
+  }, []);
 
   async function fetchPaginatedConversations() {
     if (!hasMoreOldConversations) return;
@@ -44,6 +45,7 @@ export default function useFetchConversations() {
   }
 
   useEffect(() => {
+    fetchNewConversations();
     const interval = setInterval(() => {
       fetchNewConversations();
     }, 5000);
@@ -52,8 +54,9 @@ export default function useFetchConversations() {
 
   return {
     isLoading,
+    onRefresh,
+    isRefreshing,
     conversations,
-    refreshConversations,
     isFetchingOldConversations,
     fetchPaginatedConversations,
   };

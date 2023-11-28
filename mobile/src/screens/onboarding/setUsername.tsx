@@ -1,144 +1,99 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Dimensions, FlatList} from 'react-native';
+import {View, TextInput, StyleSheet, Text, Dimensions, ScrollView, ActivityIndicator} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
-
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowRight} from '@fortawesome/free-solid-svg-icons/';
 
 import Layout from 'components/layout';
-import Text from 'components/text';
-import Input from 'components/inputs';
 import Button from 'components/buttons';
-
 import colors from 'constant/colors';
 import screens from 'constant/screens';
-
-import useHandleKeyboard from 'hooks/useHandlekeyboard';
 import UserService from 'services/user';
 
 const {width, height} = Dimensions.get('window');
 
-const mockInstructions = [
-  '\u2022  Keep it Anonnn!',
-  '\u2022 You can add letters or numbers',
-  '\u2022 You cannot change your username',
-];
-
-const UserNameInstructions = () => (
-  <View style={styles.instructionsContainer}>
-    <FlatList
-      data={mockInstructions}
-      renderItem={({item}) => (
-        <View style={styles.instruction}>
-          <Text style={styles.instructionText}>{item}</Text>
-        </View>
-      )}
-    />
-  </View>
-);
-
 const SetProfileUsername = () => {
   const [username, setUsername] = useState('');
-  const [error, setError] = useState<string>();
-  const [usernameValid, setUsernameValid] = useState<boolean>();
+  const [error, setError] = useState('');
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [ischeckingUsername, setIsCheckingUsername] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const userService = new UserService();
   const navigation = useNavigation();
-  const keyboardVisible = useHandleKeyboard();
-
-  const checkUsernameValid = (username: string) => {
-    const regex = new RegExp(/^[a-zA-Z][a-zA-Z0-9_]*$/);
-    return regex.test(username);
-  };
+  const userService = new UserService();
 
   useEffect(() => {
     const trimmedUsername = username.trim();
-    if (trimmedUsername.length < 3 || !checkUsernameValid(trimmedUsername)) {
+    if (trimmedUsername.length < 3 || !/^[a-zA-Z][a-zA-Z0-9_]*$/.test(trimmedUsername)) {
+      setIsUsernameValid(false);
       return;
     }
 
-    const handler = setTimeout(async () => {
-      const isUsernameValid = await userService.checkUsernameAvailability(trimmedUsername);
-      setUsernameValid(isUsernameValid);
-      !isUsernameValid && setError('Sorry, that username is already taken');
-    }, 500);
+    const checkUsername = async () => {
+      try {
+        setIsCheckingUsername(true);
+        const valid = await userService.checkUsernameAvailability(trimmedUsername);
+        setIsUsernameValid(valid);
+        setError(valid ? '' : 'Sorry, that username is already taken');
+      } finally {
+        setIsCheckingUsername(false);
+      }
+    };
 
+    const handler = setTimeout(checkUsername, 500);
     return () => clearTimeout(handler);
   }, [username]);
 
-  const handleInputChange = (text: string) => {
-    const username = text.trim();
-    setUsername(username);
-    const usernameValid = checkUsernameValid(username);
-    if (!text || usernameValid) {
-      setError(undefined);
-      setUsernameValid(undefined);
-      return;
-    }
-
-    setError('Invalid username');
-    setUsernameValid(false);
+  const handleInputChange = (text: React.SetStateAction<string>) => {
+    setUsername(text);
+    setError('');
   };
 
   const handleSubmit = async () => {
-    if (!usernameValid) {
-      return;
-    }
+    if (!isUsernameValid || loading) return;
     setLoading(true);
-
     const data = await userService.setUsername(username);
-    data && navigation.navigate(screens.SetAvatar as never);
+    if (data) navigation.navigate(screens.SetAvatar as never);
     setLoading(false);
   };
 
   return (
     <Layout showLogo imageStyle={styles.layoutLogo}>
-      <React.Fragment>
-        <View style={styles.container}>
-          <Text style={styles.title}>Welcome to</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.title}>Anonn, </Text>
-            <Text style={styles.subTitle}>Stranger</Text>
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.description}>Quick one, please type in a username</Text>
-
-            <Input
-              autoComplete="off"
-              autoCorrect={false}
-              value={username}
-              onChangeText={handleInputChange}
-              wrapperStyle={{marginTop: 30}}
-            />
-            {!username && <UserNameInstructions />}
-            {usernameValid !== undefined && usernameValid && (
-              <Text style={styles.successMessage}>cool username, good to go!</Text>
-            )}
-            {error && usernameValid !== undefined && !usernameValid && <Text style={styles.errorMessage}>{error}</Text>}
-          </View>
+      <ScrollView scrollEnabled={false} contentContainerStyle={styles.container} keyboardDismissMode="interactive">
+        <Text style={styles.title}>Welcome to Anonn, Stranger</Text>
+        <Text style={styles.description}>Quick one, please type in a username</Text>
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.input}
+            value={username}
+            onChangeText={handleInputChange}
+            autoCorrect={false}
+            // autoCompleteType="off"
+            placeholder="Username"
+            placeholderTextColor={colors.white}
+          />
+          {ischeckingUsername && <ActivityIndicator style={styles.loadingIndicator} />}
         </View>
-
-        {!keyboardVisible && (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: 35,
-            }}>
+        <Text style={[isUsernameValid ? styles.successMessage : styles.errorMessage]}>
+          {isUsernameValid ? 'Cool username, good to go!' : null}
+          {error ? error : null}
+        </Text>
+        <View></View>
+        <View style={styles.buttonWrapper}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
             <Button
-              disabled={loading || !usernameValid}
+              disabled={loading || !isUsernameValid}
               textColor="primary_dark"
-              backgroundColor="anonn_green"
+              backgroundColor={isUsernameValid ? 'anonn_green' : 'grey'}
               title="Continue"
               iconRight={<FontAwesomeIcon size={10} icon={faArrowRight} />}
               onPress={handleSubmit}
             />
-          </View>
-        )}
-      </React.Fragment>
+          )}
+        </View>
+      </ScrollView>
     </Layout>
   );
 };
@@ -153,55 +108,54 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // marginTop: height * 0.04,
-    marginLeft: width * 0.1,
-    marginRight: width * 0.1,
+    alignItems: 'center',
+    marginHorizontal: width * 0.1,
   },
   title: {
     fontSize: 32,
     fontWeight: '700',
     color: colors.white,
   },
-  subTitle: {
-    fontSize: 32,
-    fontWeight: '500',
-    color: colors.grey,
-  },
   description: {
     color: colors.white,
     fontSize: 14,
     fontWeight: '500',
-  },
-  inputContainer: {
+    textAlign: 'center',
     marginTop: height * 0.04,
   },
-
-  instructionsContainer: {
-    // height: 100,
-    marginTop: 20,
-    borderRadius: 8,
-    padding: 15,
-    backgroundColor: colors.dark_yellow_green,
-    zIndex: 2,
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 30,
   },
-  instruction: {
-    margin: 5,
-  },
-  instructionText: {
+  input: {
     color: colors.white,
-    fontSize: 12,
+    borderBottomColor: colors.grey,
+    borderBottomWidth: 1,
+    paddingVertical: 10,
+    fontSize: 16,
+    width: '100%',
+    marginTop: 30,
+  },
+  loadingIndicator: {
+    marginLeft: 10,
+    marginTop: 30,
   },
   successMessage: {
     marginTop: 14,
     color: colors.green,
-    fontSize: 10,
-    fontWeight: '400',
+    fontSize: 12,
+    textAlign: 'center',
   },
   errorMessage: {
     marginTop: 14,
     color: colors.light_red,
-    fontSize: 10,
-    fontWeight: '400',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  buttonWrapper: {
+    marginTop: 30,
   },
 });
 

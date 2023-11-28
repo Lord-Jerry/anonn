@@ -10,19 +10,19 @@ export const groupMessagesByDate = (messages: IMessage[], lastReadAt?: Date) => 
   const groupedMessages = new Map<string, IMessage[]>();
 
   messages.forEach(message => {
-    if (message.isNewMessage && dayjs(message.createdAt).isAfter(new Date(lastReadAt!))) {
-      const messageLabel = 'New Messages';
-      const group = groupedMessages.get(messageLabel) || [];
-      group.push(message);
-      groupedMessages.set(messageLabel, group);
-    } else {
-      const messageDate = formatMessageGroupDate(message.createdAt);
-      const group = groupedMessages.get(messageDate) || [];
+    const isNewMessage = message.isNewMessage && lastReadAt && dayjs(message.createdAt).isAfter(dayjs(lastReadAt));
+    const messageLabel = isNewMessage ? 'New Messages' : formatMessageGroupDate(message.createdAt);
 
-      group.push(message);
-      groupedMessages.set(messageDate, group);
+    if (!groupedMessages.has(messageLabel)) {
+      groupedMessages.set(messageLabel, []);
     }
+    groupedMessages.get(messageLabel)!.push(message);
   });
 
-  return Array.from(groupedMessages, ([title, data]) => ({title, data}));
+  const result: (IMessage | string)[] = [];
+  groupedMessages.forEach((messages, label) => {
+    result.push(...messages, label);
+  });
+
+  return result;
 };

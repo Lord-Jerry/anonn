@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
+import colors from '../constant/colors';
 import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {TextInput, StyleSheet, View, Platform, KeyboardAvoidingView, TouchableOpacity} from 'react-native';
-import colors from '../constant/colors';
 
 type Props = {
   handleSubmit: (text: string) => void;
@@ -59,15 +59,16 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    paddingTop: 10,
     borderColor: '#292929',
     backgroundColor: '#292929',
     borderRadius: 20,
     color: 'white',
   },
   iconButton: {
-    alignItems: 'center',
     marginTop: 20,
     marginRight: 20,
+    alignItems: 'center',
   },
   icon: {},
 });
