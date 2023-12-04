@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "4Y4WXQL6ZW.com.anonn.ios"
+        ],
+        "components": [
+          {
+            "/": "/profile/*",
+            "comment": "Matches any URL whose path starts with /profile/"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "4Y4WXQL6ZW.com.anonn.ios"
+    ]
+  }
+}
