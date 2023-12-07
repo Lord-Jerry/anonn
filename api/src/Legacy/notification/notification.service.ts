@@ -127,15 +127,13 @@ export class NotificationService {
           title: sender[0].conversation_username,
           body: message,
           sound: 'default',
+          badge: '1',
         },
         data: {
           message,
           conversationId,
           senderAvatar: AVATARS[senderAvatar.avatar],
           sender: sender[0].conversation_username,
-        },
-        aps: {
-          badge: 1,
         },
       };
 
