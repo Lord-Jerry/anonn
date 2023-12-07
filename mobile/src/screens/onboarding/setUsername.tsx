@@ -10,6 +10,7 @@ import Button from 'components/buttons';
 import colors from 'constant/colors';
 import screens from 'constant/screens';
 import UserService from 'services/user';
+import mixpanel from 'src//services/analytics';
 
 const {width, height} = Dimensions.get('window');
 
@@ -53,6 +54,7 @@ const SetProfileUsername = () => {
     if (!isUsernameValid || loading) return;
     setLoading(true);
     const data = await userService.setUsername(username);
+    mixpanel.track('set_username');
     if (data) navigation.navigate(screens.SetAvatar as never);
     setLoading(false);
   };

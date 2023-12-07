@@ -1,9 +1,6 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-use_frameworks! :linkage => :static
-$RNFirebaseAsStaticFramework = true 
-
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
@@ -45,6 +42,9 @@ target 'anonn' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true 
 
   pod 'GoogleSignIn'
   pod 'Firebase', :modular_headers => true

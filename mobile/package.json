@@ -31,6 +31,7 @@
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
+    "mixpanel-react-native": "^2.3.1",
     "react": "^18.2.0",
     "react-native": "^0.72.7",
     "react-native-dotenv": "^3.4.9",

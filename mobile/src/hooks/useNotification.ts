@@ -55,6 +55,8 @@ const createNotificationChannel = () => {
       },
       created => console.log(`createChannel 'default-channel-id' returned '${created}'`),
     );
+
+    PushNotification.getApplicationIconBadgeNumber(count => count + 1);
   }
 };
 

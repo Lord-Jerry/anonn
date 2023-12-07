@@ -1,31 +1,32 @@
 import React from 'react';
+import {useNavigation} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import {faPaperclip, faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
+import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 
 import colors from 'constant/colors';
-import useGetUserAvatar from '../hooks/useGetUserAvatar';
+import screens from 'constant/screens';
+import Layout from 'components/layout';
+import useUserProfile from '../hooks/useUserProfile';
 import useShareProfile from '../hooks/useShareProfile';
 
 const ConversationsHeader = () => {
-  const avatar = useGetUserAvatar();
+  const {avatar} = useUserProfile();
+  const navigation = useNavigation();
   const handleShareProfileLink = useShareProfile();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.iconsContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate(screens.UserProfile as never)}>
             <Image source={{uri: avatar}} style={styles.avatar} />
           </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle}>Chat</Text>
         <View style={styles.iconsContainer}>
-          <TouchableOpacity>
-            <FontAwesomeIcon style={styles.iconSpacing} icon={faMagnifyingGlass} size={22} color={colors.light_grey} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareProfileLink}>
-            <FontAwesomeIcon icon={faPaperclip} size={22} color={colors.light_grey} />
-          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={() => navigation.navigate(screens.UserProfile as never)}>
+            <Image source={{uri: avatar}} style={styles.avatar} />
+          </TouchableOpacity> */}
         </View>
       </View>
     </View>

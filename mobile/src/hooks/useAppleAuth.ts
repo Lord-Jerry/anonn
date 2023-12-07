@@ -1,20 +1,13 @@
 import {useState} from 'react';
 import {Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  appleAuth,
-  appleAuthAndroid,
-} from '@invertase/react-native-apple-authentication';
+import {appleAuth, appleAuthAndroid} from '@invertase/react-native-apple-authentication';
 
 import AuthService from 'services/auth';
 import {getAuthScreen} from 'utils/auth';
 
-import {
-  APPLE_AUTH_NONCE,
-  APPLE_AUTH_STATE,
-  APPLE_AUTH_CLIENT_ID,
-  APPLE_AUTH_REDIRECT_URI,
-} from 'config/index';
+import {APPLE_AUTH_NONCE, APPLE_AUTH_STATE, APPLE_AUTH_CLIENT_ID, APPLE_AUTH_REDIRECT_URI} from 'config/index';
+import mixpanel from '../services/analytics';
 
 const iosAuth = async () => {
   const authService = new AuthService();
@@ -25,10 +18,7 @@ const iosAuth = async () => {
   });
 
   await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user);
-  return authService.authenticate(
-    appleAuthRequestResponse.identityToken as string,
-    'apple',
-  );
+  return authService.authenticate(appleAuthRequestResponse.identityToken as string, 'apple');
 };
 
 const androidAuth = async () => {
@@ -42,9 +32,6 @@ const androidAuth = async () => {
     state: APPLE_AUTH_STATE,
   });
   const response = await appleAuthAndroid.signIn();
-  const fullname =
-    response?.user?.name?.firstName &&
-    `${response?.user?.name?.firstName} ${response?.user?.name?.lastName}`;
 
   return authService.authenticate(response.id_token as string, 'apple');
 };
@@ -63,6 +50,8 @@ const useAppleAuth = () => {
         username: user.username,
         avatar: user.avatar,
       });
+      mixpanel.identify(user.id);
+      mixpanel.track('Apple Sign In');
       navigation.navigate(nextScreen as never);
     } catch (error) {
       console.log({error});

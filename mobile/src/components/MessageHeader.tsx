@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 
 import colors from 'constant/colors';
+import screens from '../constant/screens';
 import {IConversation} from '../types/conversation';
 import {useNavigation} from '@react-navigation/native';
 
@@ -11,7 +12,7 @@ const ProfileHeaderDarkMode = (props: IConversation) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={navigation.goBack}>
+      <TouchableOpacity onPress={() => navigation.navigate(screens.Conversation)}>
         <FontAwesomeIcon style={styles.iconStyle} icon={faChevronLeft} size={25} color="#fff" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.profileContainer}>

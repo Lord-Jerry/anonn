@@ -7,4 +7,7 @@ export default {
   ProfileSetupcomplete: 'ProfileSetupcomplete',
   Conversation: 'Conversation',
   Message: 'Message',
+  UserProfile: 'UserProfile',
+  ConversationProfile: 'ConversationProfile',
+  InitiateConversation: 'InitiateConversation',
 } as const;

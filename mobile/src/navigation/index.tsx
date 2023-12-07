@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {useNavigation, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import AuthScreen from 'screens/auth';
@@ -9,33 +9,38 @@ import SetProfileAvatar from 'screens/onboarding/setAvatar';
 import ProfileSetupComplete from 'screens/onboarding/completed';
 import Conversation from 'screens/conversations';
 import Messages from 'screens/messages';
+import UserProfile from 'screens/userProfile';
+import ConversationProfile from 'screens/conversationProfile';
+import InitiateConversationScreen from 'screens/InitiateConversation';
 
 import {getAuthScreen} from 'utils/auth';
 import screens from 'constant/screens';
-
 import {retrieveData, StoreKeys} from 'services/asynstorage';
 
-// import { API_SERVER } from '@config/index'
-
 const Stack = createNativeStackNavigator();
+
+const linking = {
+  config: {
+    screens: {
+      ConversationProfile: 'profile/:username',
+    },
+  },
+  prefixes: ['https://anonn.xyz/'],
+};
 
 const Navigation = () => {
   const [defaultScreen, setDefaultScreen] = useState<string>();
 
   useEffect(() => {
     (async () => {
-      const token = await retrieveData(StoreKeys.token);
-      const username = await retrieveData(StoreKeys.username);
-      const avatar = await retrieveData(StoreKeys.avatar);
-
-      const screen = await getAuthScreen({token, username, avatar});
+      const screen = await getAuthScreen();
       setDefaultScreen(screen);
     })();
   }, []);
 
   return (
     defaultScreen && (
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Stack.Navigator initialRouteName={defaultScreen}>
           <Stack.Screen name={screens.Onboarding} component={OnboardingScreen} options={{headerShown: false}} />
           <Stack.Screen name={screens.Signup} component={AuthScreen} options={{headerShown: false}} />
@@ -54,7 +59,26 @@ const Navigation = () => {
           />
           <Stack.Screen
             name={screens.Message}
+            // @ts-ignore
             component={Messages}
+            options={{headerShown: false, gestureEnabled: true}}
+          />
+          <Stack.Screen
+            name={screens.UserProfile}
+            component={UserProfile}
+            options={{headerShown: false, gestureEnabled: true}}
+          />
+          <Stack.Screen
+            name={screens.ConversationProfile}
+            // @ts-ignore
+            component={ConversationProfile}
+            options={{headerShown: false, gestureEnabled: true}}
+          />
+
+          <Stack.Screen
+            name={screens.InitiateConversation}
+            // @ts-ignore
+            component={InitiateConversationScreen}
             options={{headerShown: false, gestureEnabled: true}}
           />
         </Stack.Navigator>

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const StoreKeys = {
+  id: '@id',
   token: '@token',
   username: '@username',
   avatar: '@avatar',
@@ -17,4 +18,8 @@ export const storeData = async (key: StoreKey, value: string) => {
 export const retrieveData = async (key: StoreKey) => {
   const value = await AsyncStorage.getItem(key);
   return value;
+};
+
+export const clearData = async () => {
+  await AsyncStorage.clear();
 };

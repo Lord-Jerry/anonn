@@ -15,6 +15,7 @@ import avatars from 'constant/avatars';
 import screens from 'constant/screens';
 
 import UserService from 'services/user';
+import mixpanel from 'src//services/analytics';
 
 const {width, height} = Dimensions.get('window');
 
@@ -35,6 +36,7 @@ const SetProfileAvatar = () => {
     const data = await userService.setAvatar(selectedAvatar);
     data && navigation.navigate(screens.ProfileSetupcomplete as never);
     setLoading(false);
+    mixpanel.track('set_avatar');
   };
 
   const toogleAvatarOptions = () => setShowAvatarOptions(!showAvatarOptions);

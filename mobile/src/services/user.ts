@@ -7,12 +7,9 @@ import {Platform} from 'react-native';
 export default class UserService extends BaseService {
   async checkUsernameAvailability(username: string) {
     try {
-      const {data} = await this.api.get<boolean>(
-        '/user/check-username-availability',
-        {
-          params: {username},
-        },
-      );
+      const {data} = await this.api.get<boolean>('/user/check-username-availability', {
+        params: {username},
+      });
 
       return data;
     } catch (error) {
@@ -48,16 +45,27 @@ export default class UserService extends BaseService {
   }
 
   async upsertUserDeviceToken(token: string, id?: string) {
-    const {data} = await this.api.post<{id: string}>(
-      '/notification/upsert-device-token',
-      {
-        id,
-        token,
-        channel: 'mobile',
-        // channel: Platform.OS.toUpperCase(),
-      },
-    );
+    const {data} = await this.api.post<{id: string}>('/notification/upsert-device-token', {
+      id,
+      token,
+      channel: 'mobile',
+      // channel: Platform.OS.toUpperCase(),
+    });
 
     return data.id;
+  }
+
+  async findUserByUsername(username: string) {
+    try {
+      const {data} = await this.api.get<{
+        id: string;
+        username: string;
+        avatar: keyof typeof AVATARS;
+      }>(`/user/${username}`);
+      return {...data, avatar: AVATARS[data.avatar as keyof typeof AVATARS]};
+    } catch (error) {
+      console.log({error});
+      return null;
+    }
   }
 }

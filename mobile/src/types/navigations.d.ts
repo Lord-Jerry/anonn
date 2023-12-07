@@ -14,6 +14,8 @@ export type RootStackParamList = {
   [screens.ConversationRequest]: undefined;
   [screens.ConversationMessages]: {conversationId: string};
   [screens.Message]: IConversation;
+  [screens.ConversationProfile]: {username: string};
+  [screens.InitiateConversation]: {participantId: string};
 };
 
 declare global {

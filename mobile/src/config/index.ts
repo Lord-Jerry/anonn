@@ -7,6 +7,7 @@ import {
   GOOGLE_WEB_CLIENT_ID as googleWebClientId,
   GOOGLE_IOS_CLIENT_ID as googleIosClientId,
   GOOGLE_ANDROID_CLIENT_ID as googleAndroidClientId,
+  MIX_PANEL_TOKEN as mixPanelToken,
 } from '@env';
 
 export const API_SERVER = apiServer;
@@ -18,3 +19,4 @@ export const APPLE_AUTH_STATE = appleAuthState;
 export const GOOGLE_WEB_CLIENT_ID = googleWebClientId;
 export const GOOGLE_IOS_CLIENT_ID = googleIosClientId;
 export const GOOGLE_ANDROID_CLIENT_ID = googleAndroidClientId;
+export const MIX_PANEL_TOKEN = mixPanelToken;

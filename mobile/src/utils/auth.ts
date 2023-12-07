@@ -1,7 +1,20 @@
 import screens from 'constant/screens';
+import {StoreKeys, retrieveData} from 'services/asynstorage';
 
-export const getAuthScreen = (props: {token?: string | null; avatar?: string | null; username?: string | null}) => {
-  const {token, avatar, username} = props;
+const getData = async () => {
+  const token = await retrieveData(StoreKeys.token);
+  const username = await retrieveData(StoreKeys.username);
+  const avatar = await retrieveData(StoreKeys.avatar);
+
+  return {
+    token,
+    avatar,
+    username,
+  };
+};
+
+export const getAuthScreen = async () => {
+  const {token, avatar, username} = await getData();
 
   if (!token) {
     return screens.Onboarding;

@@ -1,4 +1,5 @@
 import {Share} from 'react-native';
+import mixpanel from '../services/analytics';
 import {StoreKeys, retrieveData} from 'services/asynstorage';
 
 const useShareProfile = () => {
@@ -9,6 +10,7 @@ const useShareProfile = () => {
       message: `
           Let's chat on Anonn! \n Share your secrets, confessions and spicy gists with me anonnymously \n No one will ever know it's you! 🤫🤫🤫 \n ${link}`,
     });
+    mixpanel.track('Share Profile');
   };
 
   return handleShare;

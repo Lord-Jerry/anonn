@@ -15,6 +15,7 @@ export type UserResponse = {
 
 export default class AuthService extends BaseService {
   persistUser = async (user: UserResponse) => {
+    user.id && (await storeData(StoreKeys.id, user.id));
     user.token && (await storeData(StoreKeys.token, user.token));
     user.username && (await storeData(StoreKeys.username, user.username));
     user.avatar && (await storeData(StoreKeys.avatar, user.avatar));

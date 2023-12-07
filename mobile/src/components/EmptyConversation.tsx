@@ -1,12 +1,12 @@
 import React from 'react';
 import ShareProfileButton from './ShareProfileButton';
-import useGetUserAvatar from 'hooks/useGetUserAvatar';
+import useUserProfile from 'src//hooks/useUserProfile';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
 
 const {width} = Dimensions.get('window');
 
 const EmptyConversation = () => {
-  const avatar = useGetUserAvatar();
+  const {avatar} = useUserProfile();
 
   return (
     <View style={styles.container}>

@@ -14,11 +14,13 @@ import avatars from 'constant/avatars';
 import screens from 'constant/screens';
 
 import {retrieveData, StoreKeys} from 'services/asynstorage';
+import useShareProfile from 'src//hooks/useShareProfile';
 
 const {width, height} = Dimensions.get('window');
 
 const ProfileSetupComplete = () => {
   const navigation = useNavigation();
+  const handleShare = useShareProfile();
   const [avatar, setAvatar] = useState<keyof typeof avatars>();
   const [username, setUsername] = useState<string>();
 
@@ -31,13 +33,6 @@ const ProfileSetupComplete = () => {
       data && setUsername(data);
     });
   }, []);
-
-  const handleShare = () => {
-    const link = `https://anonn.xyz/profile/${username}`;
-    Share.share({
-      message: `Let's chat on Anonn! \n Share your secrets, confessions and spicy gists with me anonnymously \n No one will ever know it's you! 🤫🤫🤫 \n ${link}`,
-    });
-  };
 
   const continueHandler = () => navigation.navigate(screens.Conversation as never);
 

@@ -134,6 +134,9 @@ export class NotificationService {
           senderAvatar: AVATARS[senderAvatar.avatar],
           sender: sender[0].conversation_username,
         },
+        aps: {
+          badge: 1,
+        },
       };
 
       await getMessaging(this.firebase).sendToDevice(
