@@ -16,6 +16,7 @@ export class DeleteUserAccount {
       data: {
         name: 'deleted user',
         email: `${user.email}-deleted`,
+        username: `${user.username}-deleted`,
         deletedAt: new Date(),
         notification_channels: {
           deleteMany: {},
