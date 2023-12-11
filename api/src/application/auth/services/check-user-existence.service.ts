@@ -12,7 +12,7 @@ export class CheckUserExistenceService {
       },
     });
 
-    if (!user) throw new UnauthorizedException('User does not exist');
+    if (!user || user.deletedAt) throw new UnauthorizedException('User does not exist');
 
     return user;
   }
